@@ -852,7 +852,7 @@ body {
 /* 主要內容區域整合 */
 .main-content {
     background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
-    padding: 0.4rem 0.6rem; /* 再減少上方空白 */
+    padding: 0 0.6rem; /* 與頂部貼齊 */
     margin-top: 0;
     position: relative;
     z-index: 1;
@@ -861,7 +861,7 @@ body {
 
 /* 功能選擇區域整合 */
 .function-selection {
-    padding: 0.5rem 0.6rem; /* 從 1rem 縮小為 0.5rem */
+    padding: 0 0.6rem; /* 與上方貼齊，移除頂部內距 */
     min-height: auto;
 }
 
