@@ -483,29 +483,33 @@
                     </div>
                     <div class="form-group">
                         <label for="edit-name">姓名 *</label>
-                        <input type="text" name="name" placeholder="請輸入姓名" required>
+                        <input type="text" id="edit-name" name="name" placeholder="請輸入姓名" required autocomplete="name">
                     </div>
                     <div class="form-group">
                         <label for="edit-phone">電話 *</label>
-                        <input type="tel" name="phone" placeholder="請輸入電話號碼" required>
+                        <input type="tel" id="edit-phone" name="phone" placeholder="請輸入電話號碼" required autocomplete="tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-case-number">個案號碼 *</label>
+                        <input type="text" id="edit-case-number" name="caseNumber" placeholder="請輸入個案號碼" required autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="edit-address">地址 *</label>
-                        <textarea name="address" rows="3" placeholder="請輸入完整地址" required></textarea>
+                        <textarea id="edit-address" name="address" rows="3" placeholder="請輸入完整地址" required autocomplete="street-address"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="edit-memo">備忘</label>
-                        <textarea name="memo" rows="3" placeholder="請輸入備忘資訊 (選填)"></textarea>
+                        <textarea id="edit-memo" name="memo" rows="3" placeholder="請輸入備忘資訊 (選填)"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="edit-year">年份 *</label>
-                        <select name="year" required>
+                        <select id="edit-year" name="year" required>
                             <option value="">請選擇年份</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="edit-month">月份 *</label>
-                        <select name="month" required>
+                        <select id="edit-month" name="month" required>
                             <option value="">請選擇月份</option>
                             <option value="1">1月</option>
                             <option value="2">2月</option>
@@ -523,7 +527,7 @@
                     </div>
                     <div class="form-group">
                         <label for="edit-status">狀態</label>
-                        <select name="status">
+                        <select id="edit-status" name="status">
                             <option value="pending">未完成</option>
                             <option value="completed">已完成</option>
                         </select>

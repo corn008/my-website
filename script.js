@@ -72,10 +72,10 @@ function showSection(sectionName) {
         
         // 特殊處理
         if (sectionName === 'care') {
-            filterData();
+            if (window.filterData) window.filterData();
         } else if (sectionName === 'statistics') {
-            updateStatistics();
-            initializeStatsYearSelect();
+            if (window.updateStatistics) window.updateStatistics();
+            if (window.initializeStatsYearSelect) window.initializeStatsYearSelect();
         }
 
         // 僅同步本地狀態（hash 由 navigateTo 控制）
@@ -113,21 +113,22 @@ function logout() {
     }
 }
 
-function showModal(content) {
-    // 使用現有的通用模態框
+function showModal(contentOrTitle, maybeContent) {
+    // 支援 showModal(html) 或 showModal(title, html)
     const modal = document.getElementById('modal');
     const modalBody = document.getElementById('modal-body');
-    
-    if (modal && modalBody) {
-        modalBody.innerHTML = content;
-        modal.style.display = 'flex';
-        
-        // 點擊外部關閉
+    if (!modal || !modalBody) return;
+    const html = (typeof maybeContent === 'string')
+        ? `<div class="modal-inner"><div class="modal-title">${contentOrTitle}</div>${maybeContent}</div>`
+        : contentOrTitle;
+    modalBody.innerHTML = html;
+    modal.style.display = 'flex';
+    // 點擊外部關閉（保證只綁一次）
+    if (!modal.__outsideClickBound) {
         modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModal();
-            }
+            if (e.target === modal) closeModal();
         });
+        modal.__outsideClickBound = true;
     }
 }
 
@@ -136,6 +137,35 @@ function closeModal() {
     modals.forEach(modal => {
         modal.style.display = 'none';
     });
+}
+
+// 全域時間格式化：將 ISO/Date 轉成本地可讀字串
+function formatDateTime(input) {
+    try {
+        const date = (input instanceof Date) ? input : new Date(input);
+        if (isNaN(date.getTime())) return String(input || '');
+        return date.toLocaleString('zh-TW', {
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+        });
+    } catch (_) {
+        return String(input || '');
+    }
+}
+
+// 建立安全包裝器（供最下方全域綁定使用）
+function wrapSafe(functionName, originalFn) {
+    if (typeof originalFn !== 'function') return originalFn;
+    return function wrappedFunction() {
+        try {
+            return originalFn.apply(this, arguments);
+        } catch (err) {
+            console.error(`[${functionName}] 執行錯誤:`, err);
+            const msg = err && err.message ? err.message : '未知錯誤';
+            if (msg === 'Script error.') return;
+            try { showNotification(`${functionName} 執行失敗：${msg}`, 'error'); } catch(_) {}
+        }
+    };
 }
 
 // 登入頁面返回上一頁/上一層
@@ -300,92 +330,95 @@ function exportToCSV() {
 }
 
 function exportToPDF() {
-    const selectedYear = document.getElementById('year-select')?.value || new Date().getFullYear();
-    const selectedMonth = document.getElementById('month-select')?.value || '';
-    
-    if (!selectedYear) {
-        showNotification('請先選擇年份', 'warning');
-        return;
-    }
-    
-    // 確保年份是數字類型
-    const targetYear = parseInt(selectedYear);
-    const targetMonth = selectedMonth ? parseInt(selectedMonth) : null;
-    
-    let filteredData = personList.filter(person => {
-        if (person.createdYear !== targetYear) return false;
-        if (targetMonth && person.createdMonth !== targetMonth) return false;
-        return true;
-    });
-    
-    if (filteredData.length === 0) {
-        showNotification('沒有資料可匯出', 'warning');
-        return;
-    }
-    
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>照護資料報表</title>
+    try {
+        const selectedYear = document.getElementById('year-select')?.value || new Date().getFullYear();
+        const selectedMonth = document.getElementById('month-select')?.value || '';
+        
+        if (!selectedYear) {
+            window.showNotification && window.showNotification('請先選擇年份', 'warning');
+            return;
+        }
+        
+        const targetYear = parseInt(selectedYear);
+        const targetMonth = selectedMonth ? parseInt(selectedMonth) : null;
+        
+        const filteredData = personList.filter(person => {
+            if (person.createdYear !== targetYear) return false;
+            if (targetMonth && person.createdMonth !== targetMonth) return false;
+            return true;
+        });
+        
+        if (filteredData.length === 0) {
+            window.showNotification && window.showNotification('沒有資料可匯出', 'warning');
+            return;
+        }
+        
+        const monthTitle = targetMonth ? `${targetMonth}月` : '';
+        const docHtml = `<!DOCTYPE html>
+        <html><head><meta charset="utf-8" />
+            <title>${monthTitle}遺族訪視照片</title>
             <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                th { background-color: #f2f2f2; }
-                .header { text-align: center; margin-bottom: 20px; }
-                .summary { background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+                @page { size: A4; margin: 18mm; }
+                body { font-family: 'Microsoft JhengHei', Arial, sans-serif; margin: 0; color: #222; }
+                .title { text-align: center; font-size: 28px; font-weight: 700; margin: 8px 0 18px; }
+                .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+                .card { border: 1px solid #eee; border-radius: 8px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-align: center; }
+                .photo-box { width: 100%; aspect-ratio: 1 / 1; border: 1px solid #e5e5e5; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fafafa; overflow: hidden; }
+                .photo-box img { width: 100%; height: 100%; object-fit: contain; }
+                .name { margin-top: 12px; font-size: 18px; font-weight: 700; }
+                .case { margin-top: 4px; font-size: 14px; color: #666; letter-spacing: 0.5px; }
+                .footer { position: fixed; bottom: 10mm; left: 18mm; right: 18mm; text-align: right; font-size: 12px; color: #999; }
+                .empty { color: #aaa; font-size: 14px; }
+                /* 列印安全：避免元素被分割 */
+                .card, .photo-box { break-inside: avoid; }
             </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>照護資料報表</h1>
-                <p>年份: ${targetYear}年 ${targetMonth ? '月份: ' + targetMonth + '月' : ''}</p>
-                <p>匯出時間: ${new Date().toLocaleString('zh-TW')}</p>
+        </head><body>
+            <div class="title">${monthTitle}遺族訪視照片</div>
+            <div class="grid">
+                ${filteredData.map(person => `
+                <div class="card">
+                    <div class="photo-box">
+                        ${person.photo ? `<img src="${person.photo}" alt="${person.name}" />` : `<span class="empty">無照片</span>`}
+                    </div>
+                    <div class="name">${person.name}</div>
+                    <div class="case">${person.caseNumber || ''}</div>
+                </div>
+                `).join('')}
             </div>
-            <div class="summary">
-                <h3>統計摘要</h3>
-                <p>總人數: ${filteredData.length}</p>
-                <p>已完成: ${filteredData.filter(p => p.status === 'completed').length}</p>
-                <p>待處理: ${filteredData.filter(p => p.status === 'pending').length}</p>
-                <p>有照片: ${filteredData.filter(p => p.photo).length}</p>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>姓名</th>
-                        <th>個案號碼</th>
-                        <th>電話</th>
-                        <th>地址</th>
-                        <th>備忘</th>
-                        <th>狀態</th>
-                        <th>建立月份</th>
-                        <th>建立年份</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${filteredData.map(person => `
-                        <tr>
-                            <td>${person.name}</td>
-                            <td>${person.caseNumber || ''}</td>
-                            <td>${person.phone}</td>
-                            <td>${person.address}</td>
-                            <td>${person.memo || ''}</td>
-                            <td>${person.status || 'pending'}</td>
-                            <td>${person.createdMonth}月</td>
-                            <td>${person.createdYear}年</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        </body>
-        </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-    
-    showNotification(`PDF 匯出完成，共 ${filteredData.length} 筆資料`, 'success');
+            <div class="footer">匯出時間：${new Date().toLocaleString('zh-TW')}</div>
+        </body></html>`;
+
+        // 使用隱藏 iframe 以避免彈出視窗被攔截與跨來源錯誤
+        let iframe = document.getElementById('print-iframe');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.id = 'print-iframe';
+            iframe.style.position = 'fixed';
+            iframe.style.right = '0';
+            iframe.style.bottom = '0';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = '0';
+            document.body.appendChild(iframe);
+        }
+
+        const printDoc = iframe.contentWindow || iframe.contentDocument;
+        const doc = printDoc.document || printDoc;
+        doc.open();
+        doc.write(docHtml);
+        doc.close();
+
+        const timeoutId = setTimeout(() => {
+            try { printDoc.focus(); printDoc.print(); } catch (err) {
+                window.showNotification && window.showNotification('列印啟動失敗，請允許列印或改用瀏覽器列印', 'warning');
+            }
+        }, 200);
+
+        window.showNotification && window.showNotification(`PDF 匯出就緒，共 ${filteredData.length} 筆資料`, 'success');
+    } catch (err) {
+        console.error('[exportToPDF] failed', err);
+        window.showNotification && window.showNotification('匯出 PDF 發生錯誤：' + (err && err.message ? err.message : '未知錯誤'), 'error');
+    }
 }
 
 function backupData() {
@@ -566,8 +599,9 @@ function markAsComplete(personId) {
     const person = personList.find(p => p.id === personId);
     if (person) {
         person.status = 'completed';
+        person.completedAt = new Date();
         localStorage.setItem('personList', JSON.stringify(personList));
-        showNotification(`${person.name} 已標記為完成`, 'success');
+        showNotification(`${person.name} 已標記為完成（${formatDateTime(person.completedAt)}）`, 'success');
         filterData();
     }
 }
@@ -639,6 +673,8 @@ function editPerson(personId) {
     // 填充表單
     form.querySelector('[name="name"]').value = person.name || '';
     form.querySelector('[name="phone"]').value = person.phone || '';
+    const editCaseInput = form.querySelector('[name="caseNumber"]');
+    if (editCaseInput) editCaseInput.value = person.caseNumber || '';
     form.querySelector('[name="address"]').value = person.address || '';
     form.querySelector('[name="memo"]').value = person.memo || '';
     form.querySelector('[name="year"]').value = person.createdYear || '';
@@ -663,10 +699,21 @@ function editPerson(personId) {
         person.name = formData.get('name');
         person.phone = formData.get('phone');
         person.address = formData.get('address');
+        person.caseNumber = (formData.get('caseNumber') || '').trim();
         person.memo = formData.get('memo');
-        person.createdYear = parseInt(formData.get('year'));
-        person.createdMonth = parseInt(formData.get('month'));
-        person.status = formData.get('status');
+        const y = parseInt(formData.get('year'));
+        const m = parseInt(formData.get('month'));
+        if (!isNaN(y)) person.createdYear = y;
+        if (!isNaN(m)) person.createdMonth = m;
+        const newStatus = formData.get('status');
+        // 狀態切換時處理完成時間
+        if (newStatus === 'completed' && person.status !== 'completed') {
+            person.completedAt = new Date();
+        }
+        if (newStatus === 'pending') {
+            person.completedAt = null;
+        }
+        person.status = newStatus;
         
         // 處理新照片
         const newPhoto = formData.get('photo');
@@ -674,21 +721,27 @@ function editPerson(personId) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 person.photo = e.target.result;
-                saveData();
+                window.saveData && window.saveData();
                 closeModal();
+                const editModalEl = document.getElementById('edit-modal');
+                if (editModalEl) editModalEl.style.display = 'none';
                 filterData();
+                if (document.getElementById('statistics').style.display !== 'none') { updateStatistics(); }
                 showNotification('人員資料已更新', 'success');
             };
             reader.readAsDataURL(newPhoto);
         } else {
-            saveData();
+            window.saveData && window.saveData();
             closeModal();
+            const editModalEl = document.getElementById('edit-modal');
+            if (editModalEl) editModalEl.style.display = 'none';
             filterData();
+            if (document.getElementById('statistics').style.display !== 'none') { updateStatistics(); }
             showNotification('人員資料已更新', 'success');
         }
     };
     
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
 }
 
 function deletePerson(personId) {
@@ -789,16 +842,20 @@ function showPersonDetail(personId) {
                         <label>狀態：</label>
                         <span class="status-badge ${person.status === 'completed' ? 'completed' : 'pending'}">${person.status === 'completed' ? '已完成' : '未完成'}</span>
                     </div>
+                    ${person.completedAt ? `
+                    <div class="detail-item">
+                        <label>完成時間：</label>
+                        <span>${formatDateTime(person.completedAt)}</span>
+                    </div>` : ''}
                     <div class="detail-item">
                         <label>建立時間：</label>
-                        <span>${person.createdAt}</span>
+                        <span>${formatDateTime(person.createdAt)}</span>
                     </div>
                 </div>
             </div>
         </div>
     `;
-    
-    showModal(detailHtml);
+    showModal('詳細資料', detailHtml);
 }
 
 // 顯示地圖
@@ -1060,7 +1117,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 address: address,
                 memo: formData.get('memo').trim(),
                 photo: null,
-                createdAt: createdDate.toISOString(),
+                // 建立時間採用「現在時間」（本地）
+                createdAt: new Date(),
                 createdMonth: createdMonth,
                 createdYear: createdYear,
                 status: 'pending'
@@ -1438,8 +1496,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                  <p><strong>個案號碼：</strong>${person.caseNumber}</p>
                                 <div class="status-section">
                                     <span class="status-label">狀態：</span>
-                                    <span class="status-badge ${isCurrentMonth ? 'completed' : 'pending'}">${isCurrentMonth ? '已完成' : '未完成'}</span>
-                                    ${!isCurrentMonth ? '<a href="#" class="mark-complete" onclick="markAsComplete(' + person.id + ')">標記完成</a>' : ''}
+                                    <span class="status-badge ${person.status === 'completed' ? 'completed' : 'pending'}">${person.status === 'completed' ? '已完成' : '未完成'}</span>
+                                    ${person.status !== 'completed' ? '<button class="btn btn-small btn-success mark-complete" onclick="markAsComplete(' + person.id + ')">完成</button>' : ''}
+                                    ${person.completedAt ? '<span class="completed-time">完成於：' + formatDateTime(person.completedAt) + '</span>' : ''}
                                 </div>
                             </div>
                         </div>
@@ -1453,23 +1512,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     ` : ''}
                     
                     <div class="map-section">
-                        <div class="map-placeholder">
-                            <div class="map-info">
-                                <div class="map-title">地圖位置</div>
-                                <div class="map-address">${person.address}</div>
-                                <a href="#" class="show-map-link" onclick="showMap('${person.address}')">顯示詳細地圖</a>
-                            </div>
-                        </div>
+                        <iframe class="map-embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${encodeURIComponent(person.address)}&output=embed"></iframe>
                     </div>
                     
                     <div class="action-buttons">
-                        <button class="btn btn-detail" onclick="showPersonDetail(${person.id})">
+                        <button class="btn btn-detail" data-person-id="${person.id}" onclick="showPersonDetail(${person.id})">
                             <span class="btn-icon">👁️</span>詳細
                         </button>
-                        <button class="btn btn-edit" onclick="editPerson(${person.id})">
+                        <button class="btn btn-edit" data-person-id="${person.id}" onclick="editPerson(${person.id})">
                             <span class="btn-icon">✏️</span>編輯
                         </button>
-                        <button class="btn btn-delete" onclick="deletePerson(${person.id})">
+                        <button class="btn btn-delete" data-person-id="${person.id}" onclick="deletePerson(${person.id})">
                             <span class="btn-icon">🗑️</span>刪除
                         </button>
                     </div>
@@ -1479,6 +1532,51 @@ document.addEventListener('DOMContentLoaded', function() {
         html += '</div>';
         
         dataContent.innerHTML = html;
+
+        // 事件委派（雙保險）：即使 inline onclick 失效，仍能觸發功能
+        if (!dataContent.__actionsBound) {
+            dataContent.addEventListener('click', function(e) {
+                const detailBtn = e.target.closest && e.target.closest('.btn.btn-detail');
+                const editBtn = e.target.closest && e.target.closest('.btn.btn-edit');
+                const delBtn = e.target.closest && e.target.closest('.btn.btn-delete');
+                if (detailBtn) {
+                    const pid = parseInt(detailBtn.getAttribute('data-person-id'));
+                    if (!isNaN(pid)) { try { showPersonDetail(pid); } catch (_) {} }
+                } else if (editBtn) {
+                    const pid = parseInt(editBtn.getAttribute('data-person-id'));
+                    if (!isNaN(pid)) { try { editPerson(pid); } catch (_) {} }
+                } else if (delBtn) {
+                    const pid = parseInt(delBtn.getAttribute('data-person-id'));
+                    if (!isNaN(pid)) { try { deletePerson(pid); } catch (_) {} }
+                }
+            });
+            dataContent.__actionsBound = true;
+        }
+
+        // 直接綁定每顆按鈕（再多一層保險）
+        try {
+            dataContent.querySelectorAll('.btn.btn-detail').forEach(btn => {
+                btn.addEventListener('click', function(ev){
+                    ev.preventDefault(); ev.stopPropagation();
+                    const pid = parseInt(btn.getAttribute('data-person-id'));
+                    if (!isNaN(pid)) showPersonDetail(pid);
+                }, { once: false });
+            });
+            dataContent.querySelectorAll('.btn.btn-edit').forEach(btn => {
+                btn.addEventListener('click', function(ev){
+                    ev.preventDefault(); ev.stopPropagation();
+                    const pid = parseInt(btn.getAttribute('data-person-id'));
+                    if (!isNaN(pid)) editPerson(pid);
+                }, { once: false });
+            });
+            dataContent.querySelectorAll('.btn.btn-delete').forEach(btn => {
+                btn.addEventListener('click', function(ev){
+                    ev.preventDefault(); ev.stopPropagation();
+                    const pid = parseInt(btn.getAttribute('data-person-id'));
+                    if (!isNaN(pid)) deletePerson(pid);
+                }, { once: false });
+            });
+        } catch (_) {}
     }
     
     function startTimeUpdate() {
@@ -1515,6 +1613,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (loginTimeFooterElement) {
             loginTimeFooterElement.textContent = timeString;
+        }
+    }
+
+    // 本地時間格式化（將 ISO 或 Date 轉成 zh-TW 本地可讀字串）
+    function formatDateTime(input) {
+        try {
+            const date = (input instanceof Date) ? input : new Date(input);
+            if (isNaN(date.getTime())) return String(input || '');
+            return date.toLocaleString('zh-TW', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+            });
+        } catch (_) {
+            return String(input || '');
         }
     }
 
@@ -1573,6 +1685,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, 300);
         }, 3000);
+    }
+    
+    // 儲存目前 personList 到 localStorage（提供給編輯/新增流程呼叫）
+    function saveData() {
+        try {
+            localStorage.setItem('personList', JSON.stringify(personList));
+            return true;
+        } catch (err) {
+            console.error('[saveData] 失敗', err);
+            try { showNotification('資料儲存失敗：' + (err && err.message ? err.message : '未知錯誤'), 'error'); } catch(_) {}
+            return false;
+        }
     }
     
     // 點擊模態框外部關閉
@@ -1640,7 +1764,7 @@ document.addEventListener('DOMContentLoaded', function() {
             address: '台北市測試區測試路123號',
             memo: '這是一個測試人員',
             photo: null,
-            createdAt: createdDate.toISOString(),
+            createdAt: new Date(),
             createdMonth: createdMonth,
             createdYear: createdYear,
             status: 'pending'
@@ -1934,10 +2058,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 全域錯誤攔截，避免使用者感知為「沒反應」
     window.addEventListener('error', function(e) {
-        try { showNotification('發生未預期錯誤：' + (e.message || '未知錯誤'), 'error'); } catch(_) {}
-    });
+        const msg = e.message || '未知錯誤';
+        const src = e.filename || '';
+        const line = typeof e.lineno === 'number' ? e.lineno : 0;
+        const col = typeof e.colno === 'number' ? e.colno : 0;
+        // 過濾瀏覽器通用的跨來源訊息，避免每次點擊都彈出「Script error.」
+        if (msg === 'Script error.' && (!src || src === '') && (!line || !col)) {
+            return; // 靜默抑制
+        }
+        console.error('[GlobalErrorEvent]', { message: msg, src, line, col, error: e.error });
+        try { showNotification(`錯誤：${msg} @${line || '?'}:${col || '?'}`, 'error'); } catch(_) {}
+    }, true);
+    window.onerror = function(message, source, lineno, colno, error) {
+        // 抑制無來源的跨域 Script error. 提示
+        if (message === 'Script error.' && (!source || source === '') && (!lineno || !colno)) {
+            return true; // 靜默抑制
+        }
+        console.error('[window.onerror]', { message, source, lineno, colno, stack: error && error.stack });
+        try { showNotification(`錯誤：${message} @${lineno || '?'}:${colno || '?'}`, 'error'); } catch(_) {}
+        return false;
+    };
     window.addEventListener('unhandledrejection', function(e) {
-        try { showNotification('操作失敗（未處理承諾）：' + (e.reason && e.reason.message ? e.reason.message : '未知錯誤'), 'error'); } catch(_) {}
+        const reason = e.reason || {};
+        const msg = (reason && reason.message) ? reason.message : (typeof reason === 'string' ? reason : '未知錯誤');
+        if (msg === 'Script error.') {
+            return; // 靜默抑制
+        }
+        console.error('[unhandledrejection]', reason);
+        try { showNotification('操作失敗（未處理承諾）：' + msg, 'error'); } catch(_) {}
     });
 
     // 建立安全包裝器，所有 onclick 走穩定流程
@@ -1948,7 +2096,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return originalFn.apply(this, arguments);
             } catch (err) {
                 console.error(`[${functionName}] 執行錯誤:`, err);
-                try { showNotification(`${functionName} 執行失敗：${err && err.message ? err.message : '未知錯誤'}`, 'error'); } catch(_) {}
+                const msg = err && err.message ? err.message : '未知錯誤';
+                if (msg === 'Script error.') {
+                    // 過濾通用訊息，避免誤報
+                    return;
+                }
+                try { showNotification(`${functionName} 執行失敗：${msg}`, 'error'); } catch(_) {}
             }
         };
     }
