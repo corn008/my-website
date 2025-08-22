@@ -1046,24 +1046,15 @@ body:not(.dark-theme) .theme-btn .theme-text {
 
 /* 頂部返回按鈕樣式 */
 .header-back-btn {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 15px;
-    cursor: pointer;
-    font-size: 0.75rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    margin-right: 0.5rem;
+    background: #ffffff; /* 亮底避免過亮漸層造成反白 */
+    color: #1f2937 !important; /* 深色文字強制覆蓋 */
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.10), 0 1px 0 rgba(0,0,0,0.04);
+    text-shadow: none; /* 亮底移除白色陰影避免發白 */
 }
-
 .header-back-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+    background: #f3f4f6;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.12), 0 1px 0 rgba(0,0,0,0.06);
 }
 
 /* 返回按鈕樣式整合 */
