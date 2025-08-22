@@ -354,41 +354,48 @@ function exportToPDF() {
         }
         
         const monthTitle = targetMonth ? `${targetMonth}月` : '';
+        const nowStr = new Date().toLocaleString('zh-TW');
         const docHtml = `<!DOCTYPE html>
         <html><head><meta charset="utf-8" />
             <title>${monthTitle}遺族訪視照片</title>
             <style>
-                @page { size: A4; margin: 18mm; }
+                @page { size: A4; margin: 16mm; }
                 body { font-family: 'Microsoft JhengHei', Arial, sans-serif; margin: 0; color: #222; }
-                .title { text-align: center; font-size: 28px; font-weight: 700; margin: 8px 0 18px; }
-                .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-                .card { border: 1px solid #eee; border-radius: 8px; padding: 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-align: center; }
+                .title { text-align: center; font-size: 26px; font-weight: 700; margin: 4mm 0 8mm; }
+                .content { padding-bottom: 22mm; } /* 為固定頁腳保留空間，避免遮到內容 */
+                .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; }
+                .card { border: 1px solid #eee; border-radius: 8px; padding: 6mm; box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-align: center; }
                 .photo-box { width: 100%; aspect-ratio: 1 / 1; border: 1px solid #e5e5e5; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fafafa; overflow: hidden; }
                 .photo-box img { width: 100%; height: 100%; object-fit: contain; }
-                .name { margin-top: 12px; font-size: 18px; font-weight: 700; }
-                .case { margin-top: 4px; font-size: 14px; color: #666; letter-spacing: 0.5px; }
-                .footer { position: fixed; bottom: 10mm; left: 18mm; right: 18mm; text-align: right; font-size: 12px; color: #999; }
-                .empty { color: #aaa; font-size: 14px; }
-                /* 列印安全：避免元素被分割 */
+                .name { margin-top: 4mm; font-size: 16px; font-weight: 700; }
+                .case { margin-top: 1.5mm; font-size: 12px; color: #666; letter-spacing: 0.5px; }
+                .footer { position: fixed; bottom: 8mm; left: 16mm; right: 16mm; text-align: right; font-size: 11px; color: #666; background: transparent; }
                 .card, .photo-box { break-inside: avoid; }
+                @media print {
+                  /* 手機列印或瀏覽器縮放時，縮小間距 */
+                  .grid { gap: 8mm; }
+                  .card { padding: 5mm; }
+                  .content { padding-bottom: 24mm; }
+                }
             </style>
         </head><body>
-            <div class="title">${monthTitle}遺族訪視照片</div>
-            <div class="grid">
-                ${filteredData.map(person => `
-                <div class="card">
-                    <div class="photo-box">
-                        ${person.photo ? `<img src="${person.photo}" alt="${person.name}" />` : `<span class="empty">無照片</span>`}
+            <div class="content">
+                <div class="title">${monthTitle}遺族訪視照片</div>
+                <div class="grid">
+                    ${filteredData.map(person => `
+                    <div class="card">
+                        <div class="photo-box">
+                            ${person.photo ? `<img src="${person.photo}" alt="${person.name}" />` : `<span class="empty">無照片</span>`}
+                        </div>
+                        <div class="name">${person.name}</div>
+                        <div class="case">${person.caseNumber || ''}</div>
                     </div>
-                    <div class="name">${person.name}</div>
-                    <div class="case">${person.caseNumber || ''}</div>
+                    `).join('')}
                 </div>
-                `).join('')}
             </div>
-            <div class="footer">匯出時間：${new Date().toLocaleString('zh-TW')}</div>
+            <div class="footer">匯出時間：${nowStr}</div>
         </body></html>`;
 
-        // 使用隱藏 iframe 以避免彈出視窗被攔截與跨來源錯誤
         let iframe = document.getElementById('print-iframe');
         if (!iframe) {
             iframe = document.createElement('iframe');
