@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>留守資訊系統</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- 登入介面 -->
@@ -151,77 +152,104 @@
                         </div>
                     </div>
                     
-                    <!-- 功能操作卡片區域 -->
-                    <div class="care-cards-grid">
-                        <!-- 篩選搜尋卡片 -->
-                        <div class="care-card filter-card">
-                            <div class="card-header">
-                                <span class="card-icon">🔍</span>
-                                <h3>篩選與搜尋</h3>
+                    <!-- 整合篩選與快速操作區塊 -->
+                    <div class="integrated-controls-section">
+                        <div class="integrated-header">
+                            <div class="integrated-title">
+                                <i class="fas fa-sliders-h"></i>
+                                篩選與操作中心
                             </div>
-                            <div class="card-content">
-                                <div class="filter-controls-modern">
-                                    <div class="filter-group-modern">
-                                        <label for="year-select" class="modern-label">
-                                            <span class="label-icon">📅</span>
-                                            <span class="label-text">年份</span>
-                                        </label>
-                                        <select id="year-select" class="modern-select">
-                                            <option value="">請選擇年份</option>
-                                        </select>
-                                    </div>
-                                    <div class="filter-group-modern">
-                                        <label for="month-select" class="modern-label">
-                                            <span class="label-icon">🗓️</span>
-                                            <span class="label-text">月份</span>
-                                        </label>
-                                        <select id="month-select" class="modern-select">
-                                            <option value="">請選擇月份</option>
-                                        </select>
-                                    </div>
-                                    <div class="search-group-modern">
-                                        <label for="search-input" class="modern-label">
-                                            <span class="label-icon">🔎</span>
-                                            <span class="label-text">關鍵字搜尋</span>
-                                        </label>
-                                        <div class="search-input-wrapper">
-                                            <input type="text" id="search-input" class="modern-search-input" placeholder="搜尋姓名、個案號碼...">
-                                            <button class="search-clear-btn" onclick="document.getElementById('search-input').value=''; filterData();">
-                                                <span>✕</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="integrated-subtitle">
+                                快速篩選資料並執行常用操作
                             </div>
                         </div>
                         
-                        <!-- 快速操作卡片 -->
-                        <div class="care-card action-card">
-                            <div class="card-header">
-                                <span class="card-icon">⚡</span>
-                                <h3>快速操作</h3>
+                        <div class="integrated-content">
+                            <!-- 篩選控制項區域 -->
+                            <div class="filter-section">
+                                <div class="filter-section-title">
+                                    <i class="fas fa-filter"></i>
+                                    篩選條件
+                                </div>
+                                <div class="filter-controls-grid">
+                                    <div class="filter-group">
+                                        <label for="year-select" class="filter-label">
+                                            <i class="fas fa-calendar"></i>
+                                            年份
+                                        </label>
+                                        <select id="year-select" class="filter-select">
+                                            <option value="">請選擇年份</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-group">
+                                        <label for="month-select" class="filter-label">
+                                            <i class="fas fa-calendar"></i>
+                                            月份
+                                        </label>
+                                        <select id="month-select" class="filter-select">
+                                            <option value="">請選擇月份</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-content">
-                                <div class="action-buttons-modern">
-                                    <button id="add-person-btn" type="button" class="modern-btn primary-btn">
-                                        <span class="btn-icon">➕</span>
-                                        <span class="btn-text">新增人員</span>
-                                        <span class="btn-description">建立新的照護記錄</span>
+                            
+                            <!-- 搜尋區域 -->
+                            <div class="search-section">
+                                <div class="search-section-title">
+                                    <i class="fas fa-search"></i>
+                                    關鍵字搜尋
+                                </div>
+                                <div class="search-input-container">
+                                    <input type="text" id="search-input" class="search-input" placeholder="搜尋姓名、個案號碼...">
+                                    <i class="fas fa-search search-icon"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- 快速操作區域 -->
+                            <div class="actions-section">
+                                <div class="actions-section-title">
+                                    <i class="fas fa-bolt"></i>
+                                    快速操作
+                                </div>
+                                <div class="actions-grid">
+                                    <button id="add-person-btn" type="button" class="action-button action-add">
+                                        <div class="action-icon">
+                                            <i class="fas fa-plus"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <div class="action-title">新增人員</div>
+                                            <div class="action-description">建立新的照護記錄</div>
+                                        </div>
                                     </button>
-                                    <button id="export-csv-btn" type="button" class="modern-btn export-btn">
-                                        <span class="btn-icon">📊</span>
-                                        <span class="btn-text">匯出 CSV</span>
-                                        <span class="btn-description">下載當月數據表格</span>
+                                    
+                                    <button id="export-csv-btn" type="button" class="action-button action-export">
+                                        <div class="action-icon">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <div class="action-title">匯出 CSV</div>
+                                            <div class="action-description">下載當月數據表格</div>
+                                        </div>
                                     </button>
-                                    <button id="export-pdf-btn" type="button" class="modern-btn pdf-btn">
-                                        <span class="btn-icon">📄</span>
-                                        <span class="btn-text">匯出 PDF</span>
-                                        <span class="btn-description">生成當月報告文件</span>
+                                    
+                                    <button id="export-pdf-btn" type="button" class="action-button action-pdf">
+                                        <div class="action-icon">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <div class="action-title">匯出 PDF</div>
+                                            <div class="action-description">生成當月報告文件</div>
+                                        </div>
                                     </button>
-                                    <button id="check-photos-btn" type="button" class="modern-btn check-btn">
-                                        <span class="btn-icon">📷</span>
-                                        <span class="btn-text">檢查照片</span>
-                                        <span class="btn-description">驗證照片完整性</span>
+                                    
+                                    <button id="check-photos-btn" type="button" class="action-button action-check">
+                                        <div class="action-icon">
+                                            <i class="fas fa-camera"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <div class="action-title">檢查照片</div>
+                                            <div class="action-description">驗證照片完整性</div>
+                                        </div>
                                     </button>
                                 </div>
                             </div>
