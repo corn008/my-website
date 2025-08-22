@@ -719,8 +719,17 @@ function deletePerson(personId) {
         if (originalLength > newLength) {
             // 直接保存到 localStorage
             localStorage.setItem('personList', JSON.stringify(personList));
-            // 重新渲染照護列表
-            filterData();
+            // 重新渲染照護列表（使用全域引用，避免作用域綁定問題）
+            if (window.filterData) {
+                window.filterData();
+            } else if (typeof filterData === 'function') {
+                filterData();
+            }
+            // 立即移除當前頁面上的卡片，避免視覺殘留
+            const staleCard = document.querySelector(`.person-card[data-person-id="${personId}"]`);
+            if (staleCard && staleCard.parentNode) {
+                staleCard.parentNode.removeChild(staleCard);
+            }
             // 若統計頁面開啟中，立即刷新統計資料與月份分佈
             const statisticsSection = document.getElementById('statistics');
             if (statisticsSection && statisticsSection.style.display !== 'none') {
@@ -1390,7 +1399,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 : (personYear === new Date().getFullYear() && personMonth === new Date().getMonth() + 1);
             
             html += `
-                <div class="person-card">
+                <div class="person-card" data-person-id="${person.id}">
                     <div class="person-header">
                         <div class="person-photo">
                             ${person.photo ? `<img src="${person.photo}" alt="${person.name}">` : '<div class="no-photo">無照片</div>'}

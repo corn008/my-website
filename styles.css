@@ -836,11 +836,38 @@ body {
     font-weight: 500;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
+.theme-icon { font-size: 14px; }
+.theme-text { line-height: 1; }
 
 /* iOS Safari 可能將按鈕文字套用為透明，強制文字繪製 */
 .theme-btn, .logout-btn {
     -webkit-text-fill-color: #ffffff;
+}
+
+/* 強化主題按鈕在部分瀏覽器的文字/圖示繪製穩定性 */
+.theme-btn { 
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    mix-blend-mode: normal;
+}
+.theme-btn .theme-icon,
+.theme-btn .theme-text {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: 0 0 0 #ffffff; /* 避免在特殊組合下被當作透明而不繪製 */
+}
+.theme-btn .theme-icon {
+    display: inline-block;
+    min-width: 1em; /* 預留寬度，避免偶發量測為0導致不顯示 */
+    font-family: 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol', system-ui, sans-serif;
 }
 
 .theme-btn::before {
