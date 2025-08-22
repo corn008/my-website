@@ -995,7 +995,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始化全域變數
     currentUser = null;
-    personList = JSON.parse(localStorage.getItem('personList')) || [];
+    loadData(); // 使用 loadData 函數載入資料
     currentTheme = localStorage.getItem('currentTheme') || 'light';
     timeInterval = null;
     
@@ -1383,6 +1383,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // 舊的 showMap 函數已被移除，使用新的全域函數
     
     // 輔助函數
+    function loadData() {
+        // 從 localStorage 載入人員資料
+        const savedData = localStorage.getItem('personList');
+        if (savedData) {
+            try {
+                personList = JSON.parse(savedData);
+                return personList;
+            } catch (error) {
+                console.error('載入資料時發生錯誤:', error);
+                personList = [];
+                return personList;
+            }
+        } else {
+            personList = [];
+            return personList;
+        }
+    }
+    
     function initializeSystem() {
         // 初始化年份和月份選單
         initializeDateSelectors();
