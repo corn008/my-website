@@ -39,6 +39,10 @@ document.addEventListener('DOMContentLoaded', function() {
             mainSection.style.display = 'block';
             showNotification('登入成功！歡迎使用留守資訊系統', 'success');
             startTimeUpdate();
+            
+            // 初始化系統並顯示功能選擇介面
+            initializeSystem();
+            showSection('function-selection');
         } else {
             showNotification('帳號或密碼錯誤，請重新輸入', 'error');
         }
@@ -1563,4 +1567,146 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('%c使用 fixDataFormat() 可以修復舊資料格式問題', 'color: #dc3545; font-size: 14px;');
     console.log('%c使用 quickTest() 可以快速診斷月份分配問題', 'color: #6f42c1; font-size: 14px;');
     console.log('%c使用 testMonthFilter() 可以專門測試月份篩選邏輯', 'color: #e83e8c; font-size: 14px;');
+    
+    // 顯示指定區域
+    function showSection(sectionName) {
+        // 隱藏所有區域
+        const sections = ['function-selection', 'care', 'statistics', 'settings', 'help'];
+        sections.forEach(section => {
+            const element = document.getElementById(section);
+            if (element) {
+                element.style.display = 'none';
+            }
+        });
+        
+        // 顯示指定區域
+        const targetSection = document.getElementById(sectionName);
+        if (targetSection) {
+            targetSection.style.display = 'block';
+        }
+        
+        // 如果顯示卹滿照護區域，重新篩選資料
+        if (sectionName === 'care') {
+            filterData();
+        }
+        
+        // 如果顯示統計分析區域，更新統計資料
+        if (sectionName === 'statistics') {
+            updateStatistics();
+        }
+    }
+    
+    // 更新統計資料
+    function updateStatistics() {
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1;
+        
+        // 計算本月統計
+        const currentMonthPeople = personList.filter(person => 
+            person.createdYear === currentYear && person.createdMonth === currentMonth
+        );
+        
+        const totalPeople = currentMonthPeople.length;
+        const pendingCount = currentMonthPeople.filter(person => person.status === 'pending').length;
+        const completedCount = currentMonthPeople.filter(person => person.status === 'completed').length;
+        
+        // 更新統計數字
+        const totalElement = document.getElementById('total-people');
+        const pendingElement = document.getElementById('pending-count');
+        const completedElement = document.getElementById('completed-count');
+        
+        if (totalElement) totalElement.textContent = totalPeople;
+        if (pendingElement) pendingElement.textContent = pendingCount;
+        if (completedElement) completedElement.textContent = completedCount;
+        
+        // 更新月份分佈
+        updateMonthDistribution(currentYear);
+    }
+    
+    // 更新月份分佈
+    function updateMonthDistribution(year) {
+        const monthDistribution = document.getElementById('month-distribution');
+        if (!monthDistribution) return;
+        
+        const monthData = [];
+        for (let month = 1; month <= 12; month++) {
+            const count = personList.filter(person => 
+                person.createdYear === year && person.createdMonth === month
+            ).length;
+            monthData.push({ month, count });
+        }
+        
+        // 生成月份分佈HTML
+        let html = '<div class="month-chart">';
+        monthData.forEach(({ month, count }) => {
+            const height = count > 0 ? Math.max(20, count * 10) : 20;
+            const color = count > 0 ? '#667eea' : '#e9ecef';
+            html += `
+                <div class="month-bar">
+                    <div class="bar" style="height: ${height}px; background-color: ${color};"></div>
+                    <div class="month-label">${month}月</div>
+                    <div class="month-count">${count}</div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        
+        monthDistribution.innerHTML = html;
+    }
+    
+    // 添加月份分佈圖表的CSS樣式
+    const monthChartStyle = document.createElement('style');
+    monthChartStyle.textContent = `
+        .month-chart {
+            display: flex;
+            justify-content: space-around;
+            align-items: end;
+            height: 200px;
+            padding: 1rem;
+            gap: 0.5rem;
+        }
+        
+        .month-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+        }
+        
+        .bar {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+            transition: all 0.3s ease;
+        }
+        
+        .month-label {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        .month-count {
+            font-size: 0.9rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .month-chart {
+                height: 150px;
+                gap: 0.3rem;
+            }
+            
+            .month-label {
+                font-size: 0.7rem;
+            }
+            
+            .month-count {
+                font-size: 0.8rem;
+            }
+        }
+    `;
+    document.head.appendChild(monthChartStyle);
 });

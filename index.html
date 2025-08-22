@@ -50,7 +50,6 @@
                         <span class="user-greeting">嗨, admin</span>
                     </div>
                     <div class="header-buttons">
-                        <button class="header-btn active" onclick="showSection('care')">卹滿照護</button>
                         <button class="header-btn" onclick="toggleTheme()">切換主題</button>
                         <button class="header-btn logout-btn" onclick="logout()">登出</button>
                     </div>
@@ -60,11 +59,52 @@
 
         <!-- 主要內容區域 -->
         <main class="main-content">
+            <!-- 功能選擇區域 -->
+            <section id="function-selection" class="function-selection">
+                <div class="function-container">
+                    <div class="function-header">
+                        <h2>請選擇功能</h2>
+                        <p>點擊下方按鈕進入對應功能模組</p>
+                    </div>
+                    
+                    <div class="function-grid">
+                        <div class="function-card" onclick="showSection('care')">
+                            <div class="function-icon">👥</div>
+                            <h3>卹滿照護</h3>
+                            <p>人員管理、資料查詢、匯出報表</p>
+                        </div>
+                        
+                        <div class="function-card" onclick="showSection('statistics')">
+                            <div class="function-icon">📊</div>
+                            <h3>統計分析</h3>
+                            <p>數據統計、圖表分析、報表生成</p>
+                        </div>
+                        
+                        <div class="function-card" onclick="showSection('settings')">
+                            <div class="function-icon">⚙️</div>
+                            <h3>系統設定</h3>
+                            <p>用戶管理、權限設定、系統配置</p>
+                        </div>
+                        
+                        <div class="function-card" onclick="showSection('help')">
+                            <div class="function-icon">❓</div>
+                            <h3>使用說明</h3>
+                            <p>操作指南、常見問題、聯絡支援</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- 卹滿照護區域 -->
-            <section id="care" class="care-section">
+            <section id="care" class="care-section" style="display: none;">
                 <div class="care-container">
                     <div class="care-header">
-                        <h2>卹滿照護</h2>
+                        <div class="care-header-content">
+                            <button class="back-btn" onclick="showSection('function-selection')">
+                                <span>←</span> 返回主選單
+                            </button>
+                            <h2>卹滿照護</h2>
+                        </div>
                     </div>
                     
                     <!-- 篩選和搜尋區域 -->
@@ -99,6 +139,136 @@
                     <div class="data-display-area">
                         <div id="data-content" class="data-content">
                             <p class="no-data-message">目前沒有資料</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 統計分析區域 -->
+            <section id="statistics" class="statistics-section" style="display: none;">
+                <div class="statistics-container">
+                    <div class="statistics-header">
+                        <div class="statistics-header-content">
+                            <button class="back-btn" onclick="showSection('function-selection')">
+                                <span>←</span> 返回主選單
+                            </button>
+                            <h2>統計分析</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="statistics-content">
+                        <div class="statistics-card">
+                            <h3>📈 本月統計</h3>
+                            <div class="statistics-grid">
+                                <div class="stat-item">
+                                    <div class="stat-number" id="total-people">0</div>
+                                    <div class="stat-label">總人數</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number" id="pending-count">0</div>
+                                    <div class="stat-label">待處理</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number" id="completed-count">0</div>
+                                    <div class="stat-label">已完成</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="statistics-card">
+                            <h3>📅 月份分佈</h3>
+                            <div class="month-distribution" id="month-distribution">
+                                <p>請選擇年份查看月份分佈</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 系統設定區域 -->
+            <section id="settings" class="settings-section" style="display: none;">
+                <div class="settings-container">
+                    <div class="settings-header">
+                        <div class="settings-header-content">
+                            <button class="back-btn" onclick="showSection('function-selection')">
+                                <span>←</span> 返回主選單
+                            </button>
+                            <h2>系統設定</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-content">
+                        <div class="settings-card">
+                            <h3>🎨 外觀設定</h3>
+                            <div class="setting-item">
+                                <label>主題模式</label>
+                                <button class="btn btn-secondary" onclick="toggleTheme()">切換主題</button>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <h3>🔧 系統工具</h3>
+                            <div class="setting-item">
+                                <label>資料維護</label>
+                                <button class="btn btn-warning" onclick="fixDataFormat()">修復資料格式</button>
+                            </div>
+                            <div class="setting-item">
+                                <label>測試功能</label>
+                                <button class="btn btn-info" onclick="quickTest()">快速測試</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 使用說明區域 -->
+            <section id="help" class="help-section" style="display: none;">
+                <div class="help-container">
+                    <div class="help-header">
+                        <div class="help-header-content">
+                            <button class="back-btn" onclick="showSection('function-selection')">
+                                <span>←</span> 返回主選單
+                            </button>
+                            <h2>使用說明</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="help-content">
+                        <div class="help-card">
+                            <h3>📖 快速入門</h3>
+                            <div class="help-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>選擇功能</h4>
+                                    <p>在主選單中點擊想要使用的功能模組</p>
+                                </div>
+                            </div>
+                            <div class="help-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>操作功能</h4>
+                                    <p>在功能頁面中進行具體操作</p>
+                                </div>
+                            </div>
+                            <div class="help-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>返回主選單</h4>
+                                    <p>點擊「返回主選單」按鈕回到功能選擇頁面</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="help-card">
+                            <h3>❓ 常見問題</h3>
+                            <div class="faq-item">
+                                <h4>如何新增人員？</h4>
+                                <p>進入「卹滿照護」功能，點擊「新增人員」按鈕，填寫表單後提交即可。</p>
+                            </div>
+                            <div class="faq-item">
+                                <h4>如何匯出資料？</h4>
+                                <p>在「卹滿照護」功能中，選擇年份月份後，點擊「匯出本月 CSV」或「匯出 PDF」按鈕。</p>
+                            </div>
                         </div>
                     </div>
                 </div>

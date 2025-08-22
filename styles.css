@@ -1692,640 +1692,474 @@ body {
     border-color: rgba(64, 64, 64, 0.5);
 }
 
-/* ===== 手機UI重新設計 ===== */
+/* ===== 功能選擇介面樣式 ===== */
 
-/* 手機響應式設計 - 重新設計版本 */
+/* 功能選擇區域 */
+.function-selection {
+    padding: 1rem;
+    min-height: calc(100vh - 200px);
+}
+
+.function-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.function-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    color: white;
+}
+
+.function-header h2 {
+    font-size: 2.5rem;
+    margin: 0 0 1rem 0;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.function-header p {
+    font-size: 1.2rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* 功能網格 */
+.function-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* 功能卡片 */
+.function-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.function-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.function-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+}
+
+.function-card:hover::before {
+    transform: scaleX(1);
+}
+
+.function-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.function-card h3 {
+    font-size: 1.5rem;
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.function-card p {
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+/* 返回按鈕 */
+.back-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateX(-2px);
+}
+
+.back-btn span {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* 頁面標題區域 */
+.care-header-content,
+.statistics-header-content,
+.settings-header-content,
+.help-header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.care-header-content h2,
+.statistics-header-content h2,
+.settings-header-content h2,
+.help-header-content h2 {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+/* 統計分析區域 */
+.statistics-section {
+    padding: 1rem;
+}
+
+.statistics-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.statistics-header {
+    background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+}
+
+.statistics-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.statistics-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.statistics-card h3 {
+    margin: 0 0 1.5rem 0;
+    color: #2c3e50;
+    font-size: 1.3rem;
+}
+
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.month-distribution {
+    text-align: center;
+    color: #6c757d;
+    padding: 2rem;
+}
+
+/* 系統設定區域 */
+.settings-section {
+    padding: 1rem;
+}
+
+.settings-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.settings-header {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+}
+
+.settings-content {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.settings-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.settings-card h3 {
+    margin: 0 0 1.5rem 0;
+    color: #2c3e50;
+    font-size: 1.3rem;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-item label {
+    font-weight: 600;
+    color: #495057;
+}
+
+/* 使用說明區域 */
+.help-section {
+    padding: 1rem;
+}
+
+.help-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.help-header {
+    background: linear-gradient(135deg, #fd7e14 0%, #e83e8c 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+}
+
+.help-content {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.help-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.help-card h3 {
+    margin: 0 0 1.5rem 0;
+    color: #2c3e50;
+    font-size: 1.3rem;
+}
+
+.help-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.step-number {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.step-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.step-content p {
+    margin: 0;
+    color: #6c757d;
+    line-height: 1.5;
+}
+
+.faq-item {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+}
+
+.faq-item:last-child {
+    margin-bottom: 0;
+}
+
+.faq-item h4 {
+    margin: 0 0 0.5rem 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.faq-item p {
+    margin: 0;
+    color: #6c757d;
+    line-height: 1.5;
+}
+
+/* 手機響應式設計 */
 @media (max-width: 768px) {
-    /* 整體佈局優化 */
-    body {
-        font-size: 14px;
-        line-height: 1.4;
+    .function-selection {
+        padding: 0.8rem;
     }
     
-    /* 登入介面手機優化 */
-    .login-container {
-        padding: 10px;
-    }
-    
-    .login-card {
+    .function-header {
         padding: 1.5rem 1rem;
-        border-radius: 12px;
-        margin: 10px;
-    }
-    
-    .login-title {
-        font-size: 1.8rem;
+        border-radius: 16px;
         margin-bottom: 1.5rem;
     }
     
-    .form-group {
-        margin-bottom: 1rem;
+    .function-header h2 {
+        font-size: 2rem;
     }
     
-    .form-group input {
-        padding: 12px 14px;
-        font-size: 16px;
-        border-radius: 8px;
-    }
-    
-    .btn {
-        padding: 12px 18px;
-        font-size: 16px;
-        width: 100%;
-        border-radius: 8px;
-    }
-    
-    /* 主系統介面手機重新設計 */
-    .main-header {
-        padding: 0.8rem 0;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    .header-content {
-        padding: 0 0.8rem;
-        flex-direction: column;
-        gap: 0.8rem;
-    }
-    
-    .header-left {
-        order: 1;
-        width: 100%;
-    }
-    
-    .header-center {
-        order: 2;
-        width: 100%;
-    }
-    
-    .header-right {
-        order: 3;
-        width: 100%;
-    }
-    
-    /* 時間顯示優化 */
-    .time-display {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        padding: 0.8rem;
-        text-align: center;
-        backdrop-filter: blur(10px);
-    }
-    
-    .time-label {
-        font-size: 0.9rem;
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 0.3rem;
-    }
-    
-    .current-time {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: white;
-    }
-    
-    /* 系統標題優化 */
-    .system-title {
-        font-size: 1.6rem;
-        text-align: center;
-        color: white;
-        margin: 0;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* 用戶資訊和按鈕優化 */
-    .user-info {
-        text-align: center;
-        margin-bottom: 0.8rem;
-    }
-    
-    .user-greeting {
-        background: rgba(255, 255, 255, 0.2);
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        color: white;
-        font-size: 0.9rem;
-    }
-    
-    .header-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        width: 100%;
-    }
-    
-    .header-btn {
-        padding: 0.8rem;
-        font-size: 0.9rem;
-        border-radius: 8px;
-        border: none;
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-    }
-    
-    .header-btn.active {
-        background: rgba(255, 255, 255, 0.3);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-    
-    .header-btn.logout-btn {
-        background: rgba(220, 53, 69, 0.8);
-    }
-    
-    /* 主要內容區域優化 */
-    .main-content {
-        padding: 0.8rem;
-    }
-    
-    .care-container {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-    
-    .care-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 1rem;
-        text-align: center;
-    }
-    
-    .care-header h2 {
-        margin: 0;
-        font-size: 1.4rem;
-        font-weight: 600;
-    }
-    
-    /* 篩選區域重新設計 */
-    .filter-search-area {
-        padding: 1rem;
-        background: #f8f9fa;
-        border-bottom: 1px solid #e9ecef;
-    }
-    
-    .filter-controls {
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
-        margin-bottom: 1rem;
-    }
-    
-    .filter-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
-    }
-    
-    .filter-group label {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #495057;
-    }
-    
-    .form-select {
-        padding: 0.8rem;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 16px;
-        background: white;
-        transition: border-color 0.3s ease;
-    }
-    
-    .form-select:focus {
-        border-color: #667eea;
-        outline: none;
-    }
-    
-    .search-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
-    }
-    
-    .search-input {
-        padding: 0.8rem;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 16px;
-        background: white;
-        transition: border-color 0.3s ease;
-    }
-    
-    .search-input:focus {
-        border-color: #667eea;
-        outline: none;
-    }
-    
-    /* 按鈕區域優化 */
-    .action-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.6rem;
-    }
-    
-    .btn {
-        padding: 0.8rem;
-        font-size: 0.85rem;
-        border-radius: 8px;
-        border: none;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        min-height: 44px;
-    }
-    
-    .btn-success {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
-        grid-column: 1 / -1;
-    }
-    
-    .btn-export {
-        background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
-        color: white;
-    }
-    
-    .btn-export-orange {
-        background: linear-gradient(135deg, #fd7e14 0%, #e83e8c 100%);
-        color: white;
-    }
-    
-    .btn-check {
-        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-        color: white;
-    }
-    
-    /* 資料顯示區域優化 */
-    .data-display-area {
-        padding: 1rem;
-        min-height: 300px;
-    }
-    
-    .no-data-message {
-        text-align: center;
-        color: #6c757d;
+    .function-header p {
         font-size: 1rem;
-        margin: 2rem 0;
     }
     
-    /* 人員卡片手機優化 */
-    .person-card {
-        background: white;
-        border: 1px solid #e9ecef;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    .function-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 1.5rem;
     }
     
-    .person-header {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        margin-bottom: 0.8rem;
-    }
-    
-    .person-photo {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #e9ecef;
-    }
-    
-    .person-info {
-        flex: 1;
-    }
-    
-    .person-name {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #212529;
-        margin: 0 0 0.2rem 0;
-    }
-    
-    .person-details {
-        font-size: 0.85rem;
-        color: #6c757d;
-        line-height: 1.3;
-    }
-    
-    .person-status {
-        padding: 0.3rem 0.6rem;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-    
-    .status-pending {
-        background: #fff3cd;
-        color: #856404;
-    }
-    
-    .status-completed {
-        background: #d1ecf1;
-        color: #0c5460;
-    }
-    
-    .person-actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 0.8rem;
-    }
-    
-    .person-actions .btn {
-        flex: 1;
-        padding: 0.6rem;
-        font-size: 0.8rem;
-        min-height: 40px;
-    }
-    
-    /* 模態框手機優化 */
-    .modal {
-        padding: 0.5rem;
-    }
-    
-    .modal-content {
-        width: 95%;
-        max-width: 95%;
-        max-height: 90vh;
+    .function-card {
+        padding: 1.5rem;
         border-radius: 16px;
-        overflow: hidden;
     }
     
-    .modal-header {
-        padding: 1rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+    .function-icon {
+        font-size: 3rem;
     }
     
-    .modal-header h3 {
-        margin: 0;
+    .function-card h3 {
         font-size: 1.3rem;
     }
     
-    .close {
-        font-size: 1.5rem;
-        color: white;
-        opacity: 0.8;
-    }
-    
-    .modal-form {
-        padding: 1rem;
-        max-height: calc(90vh - 80px);
-        overflow-y: auto;
-    }
-    
-    .form-section {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-    }
-    
-    .section-header {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    .section-icon {
-        font-size: 1.2rem;
-    }
-    
-    .section-header h4 {
-        margin: 0;
-        font-size: 1.1rem;
-        color: #495057;
-    }
-    
-    .form-group {
-        margin-bottom: 1rem;
-    }
-    
-    .form-group label {
-        display: block;
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #495057;
-        margin-bottom: 0.4rem;
-    }
-    
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        padding: 0.8rem;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 16px;
-        background: white;
-        transition: border-color 0.3s ease;
-        box-sizing: border-box;
-    }
-    
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        border-color: #667eea;
-        outline: none;
-    }
-    
-    .file-upload-area {
-        border: 2px dashed #dee2e6;
-        border-radius: 8px;
-        padding: 1rem;
-        text-align: center;
-        background: #f8f9fa;
-        transition: all 0.3s ease;
-    }
-    
-    .file-upload-area:hover {
-        border-color: #667eea;
-        background: #e3f2fd;
-    }
-    
-    .file-upload-content {
-        color: #6c757d;
-        font-size: 0.9rem;
-    }
-    
-    .file-info {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
+    .back-btn {
+        padding: 0.5rem 0.8rem;
         font-size: 0.8rem;
-        color: #6c757d;
     }
     
-    .form-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
-        margin-top: 1.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid #e9ecef;
-    }
-    
-    .form-actions .btn {
-        width: 100%;
-        padding: 1rem;
+    .back-btn span {
         font-size: 1rem;
-        font-weight: 600;
-        border-radius: 8px;
-        min-height: 48px;
-    }
-}
-
-/* 超小螢幕額外優化 */
-@media (max-width: 480px) {
-    .main-content {
-        padding: 0.5rem;
     }
     
-    .care-container {
-        border-radius: 12px;
-    }
-    
-    .filter-search-area {
-        padding: 0.8rem;
-    }
-    
-    .action-buttons {
+    .statistics-content,
+    .settings-content,
+    .help-content {
         grid-template-columns: 1fr;
-        gap: 0.5rem;
-    }
-    
-    .btn-success {
-        grid-column: 1;
-    }
-    
-    .person-card {
-        padding: 0.8rem;
-        margin-bottom: 0.8rem;
-    }
-    
-    .person-header {
-        gap: 0.6rem;
-    }
-    
-    .person-photo {
-        width: 45px;
-        height: 45px;
-    }
-    
-    .person-name {
-        font-size: 1rem;
-    }
-    
-    .person-details {
-        font-size: 0.8rem;
-    }
-    
-    .modal-content {
-        width: 98%;
-        max-width: 98%;
-    }
-    
-    .modal-form {
-        padding: 0.8rem;
-    }
-    
-    .form-section {
-        padding: 0.8rem;
-    }
-}
-
-/* 橫向模式優化 */
-@media (max-width: 768px) and (orientation: landscape) {
-    .header-content {
-        flex-direction: row;
-        align-items: center;
         gap: 1rem;
     }
     
-    .header-left,
-    .header-center,
-    .header-right {
-        order: unset;
-        width: auto;
+    .statistics-grid {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
     }
     
-    .header-buttons {
-        flex-direction: row;
-        gap: 0.5rem;
+    .stat-item {
+        padding: 0.8rem;
     }
     
-    .filter-controls {
-        flex-direction: row;
-        gap: 1rem;
+    .stat-number {
+        font-size: 1.5rem;
     }
     
-    .filter-group {
-        flex: 1;
+    .help-step {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.8rem;
     }
     
-    .action-buttons {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.5rem;
-    }
-    
-    .btn-success {
-        grid-column: 1 / -1;
+    .step-number {
+        align-self: center;
     }
 }
 
-/* 觸控優化 */
-@media (max-width: 768px) {
-    .btn,
-    .header-btn,
-    .form-select,
-    .search-input,
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-        min-height: 44px; /* iOS建議的最小觸控目標 */
+/* 超小螢幕優化 */
+@media (max-width: 480px) {
+    .function-header {
+        padding: 1rem;
     }
     
-    .close {
-        min-width: 44px;
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .function-header h2 {
+        font-size: 1.8rem;
     }
     
-    .mark-complete {
-        min-height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+    .function-card {
+        padding: 1.2rem;
     }
     
-    .show-map-link {
-        min-height: 36px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-}
-
-/* 手機滾動優化 */
-@media (max-width: 768px) {
-    .main-section {
-        -webkit-overflow-scrolling: touch;
+    .function-icon {
+        font-size: 2.5rem;
     }
     
-    .modal {
-        -webkit-overflow-scrolling: touch;
+    .statistics-header,
+    .settings-header,
+    .help-header {
+        padding: 1rem;
     }
     
-    .person-list {
-        -webkit-overflow-scrolling: touch;
+    .statistics-card,
+    .settings-card,
+    .help-card {
+        padding: 1rem;
     }
 }
 
