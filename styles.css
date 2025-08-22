@@ -855,7 +855,7 @@ body {
 /* 主要內容區域整合 */
 .main-content {
     background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
-    padding: 0.6rem 0.8rem; /* 進一步減少上方空白 */
+    padding: 0.4rem 0.6rem; /* 再減少上方空白 */
     margin-top: 0;
     position: relative;
     z-index: 1;
@@ -2702,7 +2702,7 @@ body {
 .function-card {
     background: white;
     border-radius: 24px;
-    padding: 2.5rem;
+    padding: 2rem; /* 降低卡片內距 */
     text-align: center;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
@@ -2710,7 +2710,7 @@ body {
     border: 2px solid transparent;
     position: relative;
     overflow: hidden;
-    min-height: 280px;
+    min-height: 240px; /* 降低卡片最低高度 */
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -84,7 +84,7 @@
 
             <!-- 右側用戶區塊 -->
             <div class="user-block">
-                <button id="header-back-btn" class="header-back-btn" onclick="showSection('function-selection')" style="display: none;">
+                <button id="header-back-btn" class="header-back-btn" onclick="goBack()" style="display: none;">
                     <span>←</span> 主選單
                 </button>
                 <span class="user-icon">👤</span>
@@ -105,28 +105,28 @@
                 
                 <div class="function-grid">
                     <!-- 卹滿照護功能 -->
-                    <div class="function-card" onclick="showSection('care')">
+                    <div class="function-card" onclick="navigateTo('care')">
                         <div class="card-icon">👥</div>
                         <h3>卹滿照護</h3>
                         <p>人員管理、資料查詢、匯出報表</p>
                     </div>
                     
                     <!-- 統計分析功能 -->
-                    <div class="function-card" onclick="showSection('statistics')">
+                    <div class="function-card" onclick="navigateTo('statistics')">
                         <div class="card-icon">📊</div>
                         <h3>統計分析</h3>
                         <p>資料統計、圖表分析、趨勢報告</p>
                     </div>
                     
                     <!-- 系統設定功能 -->
-                    <div class="function-card" onclick="showSection('settings')">
+                    <div class="function-card" onclick="navigateTo('settings')">
                         <div class="card-icon">⚙️</div>
                         <h3>系統設定</h3>
                         <p>主題設定、資料備份、系統維護</p>
                     </div>
                     
                     <!-- 使用說明功能 -->
-                    <div class="function-card" onclick="showSection('help')">
+                    <div class="function-card" onclick="navigateTo('help')">
                         <div class="card-icon">❓</div>
                         <h3>使用說明</h3>
                         <p>操作指南、常見問題、聯絡支援</p>
@@ -139,7 +139,7 @@
                 <div class="care-container">
                     <div class="care-header">
                         <div class="care-header-content">
-                            <button class="back-btn" onclick="showSection('function-selection')">
+                            <button class="back-btn" onclick="navigateTo('function-selection')">
                                 <span>←</span> 返回主選單
                             </button>
                             <h2>卹滿照護</h2>
@@ -188,7 +188,7 @@
                 <div class="statistics-container">
                     <div class="statistics-header">
                         <div class="statistics-header-content">
-                            <button class="back-btn" onclick="showSection('function-selection')">
+                            <button class="back-btn" onclick="navigateTo('function-selection')">
                                 <span>←</span> 返回主選單
                             </button>
                             <h2>統計分析</h2>
@@ -235,7 +235,7 @@
                 <div class="settings-container">
                     <div class="settings-header">
                         <div class="settings-header-content">
-                            <button class="back-btn" onclick="showSection('function-selection')">
+                            <button class="back-btn" onclick="navigateTo('function-selection')">
                                 <span>←</span> 返回主選單
                             </button>
                             <h2>系統設定</h2>
@@ -283,7 +283,7 @@
                 <div class="help-container">
                     <div class="help-header">
                         <div class="help-header-content">
-                            <button class="back-btn" onclick="showSection('function-selection')">
+                            <button class="back-btn" onclick="navigateTo('function-selection')">
                                 <span>←</span> 返回主選單
                             </button>
                             <h2>使用說明</h2>

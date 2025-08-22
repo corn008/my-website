@@ -1,5 +1,49 @@
 // 全域函數定義
 let isHandlingPopstate = false;
+let currentViewName = null; // 目前顯示的功能區段
+const ROUTES = ['login','function-selection','care','statistics','settings','help'];
+
+// Hash 導航
+function navigateTo(viewName) {
+    if (!ROUTES.includes(viewName)) return;
+    if (location.hash !== '#' + viewName) {
+        location.hash = '#' + viewName;
+    } else {
+        // 相同 hash 時手動觸發渲染
+        router();
+    }
+}
+
+function router() {
+    const raw = (location.hash || '').replace('#','');
+    const target = ROUTES.includes(raw) ? raw : (currentUser ? 'function-selection' : 'login');
+    if (!currentUser && target !== 'login') {
+        // 未登入一律導回登入
+        renderLogin();
+        return;
+    }
+    if (target === 'login') {
+        renderLogin();
+        return;
+    }
+    renderMain(target);
+}
+
+function renderLogin() {
+    const loginSection = document.getElementById('login-section');
+    const mainSection = document.getElementById('main-section');
+    if (mainSection) mainSection.style.display = 'none';
+    if (loginSection) loginSection.style.display = 'flex';
+    currentViewName = 'login';
+}
+
+function renderMain(view) {
+    const loginSection = document.getElementById('login-section');
+    const mainSection = document.getElementById('main-section');
+    if (loginSection) loginSection.style.display = 'none';
+    if (mainSection) mainSection.style.display = 'block';
+    showSection(view || 'function-selection');
+}
 
 function showSection(sectionName) {
     // 隱藏所有主要區段
@@ -34,14 +78,9 @@ function showSection(sectionName) {
             initializeStatsYearSelect();
         }
 
-        // 建立瀏覽紀錄（支援瀏覽器返回鍵）
-        if (!isHandlingPopstate) {
-            try {
-                history.pushState({ view: sectionName }, '');
-            } catch (_) {
-                // 忽略pushState失敗
-            }
-        }
+        // 僅同步本地狀態（hash 由 navigateTo 控制）
+        try { localStorage.setItem('currentView', sectionName); } catch (_) {}
+        currentViewName = sectionName;
     }
 }
 
@@ -49,6 +88,10 @@ function logout() {
     if (confirm('確定要登出嗎？')) {
         // 清除用戶狀態
         currentUser = null;
+        try {
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('currentView');
+        } catch (_) {}
         
         // 隱藏主系統介面
         document.getElementById('main-section').style.display = 'none';
@@ -162,7 +205,9 @@ function initializeMobileBackButton() {
     // 初始狀態：登入頁
     try {
         if (!history.state || !history.state.view) {
-            history.replaceState({ view: 'login' }, '');
+            const savedUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+            const initialView = savedUser ? (localStorage.getItem('currentView') || 'function-selection') : 'login';
+            history.replaceState({ view: initialView }, '');
         }
     } catch (_) {}
 
@@ -183,6 +228,7 @@ function initializeMobileBackButton() {
                 if (loginSection) loginSection.style.display = 'none';
                 if (mainSection) mainSection.style.display = 'block';
                 showSection(state.view);
+                try { localStorage.setItem('currentView', state.view); } catch (_) {}
             }
         } finally {
             isHandlingPopstate = false;
@@ -191,19 +237,17 @@ function initializeMobileBackButton() {
 }
 
 function toggleTheme() {
+    // 單一權威：以 body 是否有 dark-theme 判斷
     const body = document.body;
-    const currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    
-    if (newTheme === 'dark') {
+    const isDark = body.classList.contains('dark-theme');
+    const next = isDark ? 'light' : 'dark';
+    if (next === 'dark') {
         body.classList.add('dark-theme');
-        localStorage.setItem('theme', 'dark');
-        showNotification('已切換至深色主題', 'success');
     } else {
         body.classList.remove('dark-theme');
-        localStorage.setItem('theme', 'light');
-        showNotification('已切換至淺色主題', 'success');
     }
+    localStorage.setItem('currentTheme', next);
+    showNotification(`已切換至${next === 'dark' ? '深色' : '淺色'}主題`, 'success');
 }
 
 function exportToCSV() {
@@ -804,13 +848,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if (currentTheme === 'dark') {
         document.body.classList.add('dark-theme');
     }
+
+    // 判斷是否已登入（持久化），並啟用 Hash Router
+    const savedUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+    if (savedUser) currentUser = savedUser;
+    window.addEventListener('hashchange', router);
+    router();
     
     // 啟動時間更新（包括登入頁面）
     startTimeUpdate();
     
-    // 初始化手機功能
+    // 初始化手機功能（返回由 hash 處理即可）
     initializeMobileGestures();
-    initializeMobileBackButton();
     
     // 登入表單處理
     loginForm.addEventListener('submit', function(e) {
@@ -822,13 +871,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // 簡單的登入驗證
         if (username === 'admin' && password === '123456') {
             currentUser = { username: username };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
             loginSection.style.display = 'none';
             mainSection.style.display = 'block';
             showNotification('登入成功！歡迎使用留守資訊系統', 'success');
             
             // 初始化系統並顯示功能選擇介面
             initializeSystem();
+            // 設定初始檢視
+            isHandlingPopstate = true;
             showSection('function-selection');
+            history.replaceState({ view: 'function-selection' }, '');
+            isHandlingPopstate = false;
+            localStorage.setItem('currentView', 'function-selection');
         } else {
             showNotification('帳號或密碼錯誤，請重新輸入', 'error');
         }
@@ -1995,29 +2050,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ===== 系統功能函數 =====
     
-    // 主題切換功能
-    function toggleTheme() {
-        if (currentTheme === 'light') {
-            currentTheme = 'dark';
-            document.body.classList.add('dark-theme');
-        } else {
-            currentTheme = 'light';
-            document.body.classList.remove('dark-theme');
-        }
-        
-        // 儲存主題設定
-        localStorage.setItem('currentTheme', currentTheme);
-        
-        // 顯示通知
-        const themeText = currentTheme === 'dark' ? '深色主題' : '淺色主題';
-        showNotification(`已切換至${themeText}`, 'success');
-        
-        // 更新按鈕文字
-        const themeButton = document.querySelector('.btn-secondary');
-        if (themeButton) {
-            themeButton.textContent = currentTheme === 'dark' ? '切換至淺色' : '切換至深色';
-        }
-    }
+    // 主題切換功能（移除重複，統一用上方的 toggleTheme）
     
     // 資料格式修復功能
     function fixDataFormat() {
