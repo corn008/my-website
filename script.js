@@ -641,7 +641,7 @@ function searchPeople() {
         filtered = filtered.filter(person => person.createdMonth === parseInt(searchMonth));
     }
     
-    displayPeople(filtered);
+    displayData(filtered);
     showNotification(`搜尋結果: ${filtered.length} 筆資料`, 'info');
 }
 
@@ -894,7 +894,7 @@ function showMap(address) {
 
 // 移除重複的 initializeSearchYearSelect 函數定義
 
-// 移除重複的 displayPeople 函數定義
+// 移除重複的 displayData 函數定義
 
 // 移除重複的函數定義
 
@@ -2400,7 +2400,7 @@ document.addEventListener('DOMContentLoaded', function() {
             filtered = filtered.filter(person => person.createdMonth === parseInt(searchMonth));
         }
         
-        displayPeople(filtered);
+        displayData(filtered);
         window.showNotification && window.showNotification(`搜尋結果: ${filtered.length} 筆資料`, 'info');
     }
     
@@ -2475,7 +2475,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.fixDataFormat = wrapSafe('fixDataFormat', fixDataFormat);
     window.quickTest = wrapSafe('quickTest', quickTest);
     window.showNotification = wrapSafe('showNotification', showNotification);
-    window.displayPeople = wrapSafe('displayPeople', displayPeople);
+    window.displayData = wrapSafe('displayData', displayData);
     window.saveData = wrapSafe('saveData', saveData);
     window.initializeStatsYearSelect = wrapSafe('initializeStatsYearSelect', initializeStatsYearSelect);
     window.initializeSearchYearSelect = wrapSafe('initializeSearchYearSelect', initializeSearchYearSelect);
