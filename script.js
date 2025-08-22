@@ -1,4 +1,6 @@
 // 全域函數定義
+let isHandlingPopstate = false;
+
 function showSection(sectionName) {
     // 隱藏所有主要區段
     const sections = ['function-selection', 'care', 'statistics', 'settings', 'help'];
@@ -30,6 +32,15 @@ function showSection(sectionName) {
         } else if (sectionName === 'statistics') {
             updateStatistics();
             initializeStatsYearSelect();
+        }
+
+        // 建立瀏覽紀錄（支援瀏覽器返回鍵）
+        if (!isHandlingPopstate) {
+            try {
+                history.pushState({ view: sectionName }, '');
+            } catch (_) {
+                // 忽略pushState失敗
+            }
         }
     }
 }
@@ -86,47 +97,8 @@ function closeModal() {
 
 // 登入頁面返回上一頁/上一層
 function goBack() {
-    // 檢查是否在手機瀏覽器中
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    // 檢查是否有歷史記錄
-    if (window.history.length > 1) {
-        // 有歷史記錄，使用瀏覽器返回
-        history.back();
-        return;
-    }
-    
-    // 檢查當前頁面狀態
-    const mainSection = document.getElementById('main-section');
-    const loginSection = document.getElementById('login-section');
-    
-    if (mainSection && mainSection.style.display !== 'none') {
-        // 已登入狀態
-        const currentSection = getCurrentActiveSection();
-        if (currentSection && currentSection !== 'function-selection') {
-            // 在功能頁面，返回主選單
-            showSection('function-selection');
-        } else {
-            // 在主選單，顯示確認對話框
-            if (confirm('確定要登出系統嗎？')) {
-                logout();
-            }
-        }
-    } else if (loginSection && loginSection.style.display !== 'none') {
-        // 在登入頁面
-        if (isMobile) {
-            // 手機上，嘗試關閉頁面或顯示提示
-            if (confirm('確定要離開系統嗎？')) {
-                // 嘗試關閉視窗（可能被瀏覽器阻擋）
-                window.close();
-                // 如果無法關閉，則顯示提示
-                showNotification('請使用手機的返回鍵或手勢返回', 'info');
-            }
-        } else {
-            // 桌面版，顯示提示
-            showNotification('請使用瀏覽器的返回按鈕', 'info');
-        }
-    }
+    // 符合使用者期待：真正的瀏覽器回上一頁
+    history.back();
 }
 
 // 獲取當前活躍的區段
@@ -187,22 +159,35 @@ function initializeMobileGestures() {
 
 // 添加手機瀏覽器返回按鈕支援
 function initializeMobileBackButton() {
-    // 監聽 popstate 事件（瀏覽器返回按鈕）
+    // 初始狀態：登入頁
+    try {
+        if (!history.state || !history.state.view) {
+            history.replaceState({ view: 'login' }, '');
+        }
+    } catch (_) {}
+
+    // 監聽瀏覽器返回/前進
     window.addEventListener('popstate', function(e) {
-        // 防止重複處理
-        if (e.state && e.state.handled) return;
-        
-        // 標記已處理
-        history.replaceState({ handled: true }, '');
-        
-        // 執行返回邏輯
-        goBack();
+        const state = e.state || {};
+        isHandlingPopstate = true;
+        try {
+            if (state.view === 'login') {
+                const mainSection = document.getElementById('main-section');
+                const loginSection = document.getElementById('login-section');
+                if (mainSection) mainSection.style.display = 'none';
+                if (loginSection) loginSection.style.display = 'flex';
+            } else if (state.view) {
+                // 已登入後的各功能頁
+                const mainSection = document.getElementById('main-section');
+                const loginSection = document.getElementById('login-section');
+                if (loginSection) loginSection.style.display = 'none';
+                if (mainSection) mainSection.style.display = 'block';
+                showSection(state.view);
+            }
+        } finally {
+            isHandlingPopstate = false;
+        }
     });
-    
-    // 在頁面載入時添加歷史記錄
-    if (window.history.length === 1) {
-        history.replaceState({ handled: true }, '');
-    }
 }
 
 function toggleTheme() {
