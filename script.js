@@ -52,12 +52,22 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         
         const formData = new FormData(this);
+        const name = formData.get('name').trim();
+        const phone = formData.get('phone').trim();
+        const address = formData.get('address').trim();
+        
+        // 基本驗證
+        if (!name || !phone || !address) {
+            showNotification('請填寫所有必填欄位', 'error');
+            return;
+        }
+        
         const staffData = {
             id: Date.now(),
-            name: formData.get('name'),
-            phone: formData.get('phone'),
-            address: formData.get('address'),
-            memo: formData.get('memo'),
+            name: name,
+            phone: phone,
+            address: address,
+            memo: formData.get('memo').trim(),
             photo: null,
             createdAt: new Date().toISOString()
         };
@@ -65,10 +75,25 @@ document.addEventListener('DOMContentLoaded', function() {
         // 處理照片上傳
         const photoFile = formData.get('photo');
         if (photoFile && photoFile.size > 0) {
+            // 檢查檔案大小（限制為5MB）
+            if (photoFile.size > 5 * 1024 * 1024) {
+                showNotification('照片檔案大小不能超過5MB', 'error');
+                return;
+            }
+            
+            // 檢查檔案類型
+            if (!photoFile.type.startsWith('image/')) {
+                showNotification('請選擇有效的圖片檔案', 'error');
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 staffData.photo = e.target.result;
                 addStaffToList(staffData);
+            };
+            reader.onerror = function() {
+                showNotification('照片讀取失敗，請重試', 'error');
             };
             reader.readAsDataURL(photoFile);
         } else {
@@ -80,11 +105,33 @@ document.addEventListener('DOMContentLoaded', function() {
     staffPhotoInput.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
+            // 檢查檔案大小
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('照片檔案大小不能超過5MB', 'error');
+                this.value = '';
+                photoPreview.innerHTML = '';
+                return;
+            }
+            
+            // 檢查檔案類型
+            if (!file.type.startsWith('image/')) {
+                showNotification('請選擇有效的圖片檔案', 'error');
+                this.value = '';
+                photoPreview.innerHTML = '';
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 photoPreview.innerHTML = `<img src="${e.target.result}" alt="照片預覽">`;
             };
+            reader.onerror = function() {
+                showNotification('照片讀取失敗，請重試', 'error');
+                photoPreview.innerHTML = '';
+            };
             reader.readAsDataURL(file);
+        } else {
+            photoPreview.innerHTML = '';
         }
     });
     
@@ -101,6 +148,15 @@ document.addEventListener('DOMContentLoaded', function() {
             targetSection.style.display = 'block';
         }
         
+        // 更新導航連結狀態
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        const activeLink = document.querySelector(`[href="#${sectionId}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+        
         // 載入對應資料
         if (sectionId === 'staff') {
             loadStaffList();
@@ -108,6 +164,15 @@ document.addEventListener('DOMContentLoaded', function() {
             loadCareRecords();
         }
     };
+    
+    // 為導航連結添加點擊事件
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const sectionId = this.getAttribute('href').substring(1);
+            showSection(sectionId);
+        });
+    });
     
     window.showAddStaffForm = function() {
         addStaffModal.style.display = 'flex';
@@ -140,6 +205,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         displayCareRecords(filteredRecords);
+        
+        // 顯示篩選結果通知
+        const resultCount = filteredRecords.length;
+        if (year || month) {
+            showNotification(`找到 ${resultCount} 筆記錄`, 'info');
+        }
     };
     
     // 輔助函數
@@ -226,6 +297,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     patientName: '陳爺爺',
                     careType: '藥物管理',
                     notes: '按時服藥，無異常'
+                },
+                {
+                    id: 3,
+                    date: '2024-02-01',
+                    staffName: '王護理師',
+                    patientName: '林奶奶',
+                    careType: '復健照護',
+                    notes: '復健進度良好，可進行簡單運動'
                 }
             ];
             localStorage.setItem('careRecords', JSON.stringify(careRecords));
@@ -239,20 +318,13 @@ document.addEventListener('DOMContentLoaded', function() {
         recordsList.innerHTML = '';
         
         if (records.length === 0) {
-            recordsList.innerHTML = '<p style="text-align: center; color: #666;">該期間無照護記錄</p>';
+            recordsList.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">該期間無照護記錄</p>';
             return;
         }
         
         records.forEach(record => {
             const recordItem = document.createElement('div');
             recordItem.className = 'record-item';
-            recordItem.style.cssText = `
-                background: #f8f9fa;
-                padding: 1rem;
-                margin-bottom: 1rem;
-                border-radius: 8px;
-                border-left: 4px solid #667eea;
-            `;
             recordItem.innerHTML = `
                 <h4>${record.patientName} - ${record.careType}</h4>
                 <p><strong>日期：</strong>${new Date(record.date).toLocaleDateString('zh-TW')}</p>
@@ -315,6 +387,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target === this) {
             closeModal();
         }
+    });
+    
+    // 防止模態框內部點擊事件冒泡
+    addStaffModal.querySelector('.modal-content').addEventListener('click', function(e) {
+        e.stopPropagation();
     });
     
     // 鍵盤快捷鍵

@@ -111,6 +111,11 @@ body {
     color: #ffd700;
 }
 
+.nav-link.active {
+    color: #ffd700;
+    font-weight: bold;
+}
+
 /* 主要內容區域 */
 main {
     margin-top: 80px;
@@ -211,6 +216,30 @@ main {
 
 .records-list {
     margin-top: 1rem;
+}
+
+.record-item {
+    background: #f8f9fa;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.record-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.record-item h4 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.record-item p {
+    margin-bottom: 0.3rem;
+    color: #666;
 }
 
 /* 人員管理 */
