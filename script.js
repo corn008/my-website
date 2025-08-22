@@ -1613,8 +1613,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                                  <div class="person-basic-info">
                              <div class="person-name">${person.name}</div>
                              <div class="person-details">
-                                 <p><strong>電話：</strong>${person.phone}</p>
-                                 <p><strong>地址：</strong>${person.address}</p>
+                                 <p><strong>電話：</strong><a href="tel:${person.phone}" class="phone-link">${person.phone}</a></p>
+                                 <p><strong>地址：</strong><a href="https://maps.google.com/?q=${encodeURIComponent(person.address)}" class="address-link" target="_blank">${person.address}</a></p>
                                  <p><strong>個案號碼：</strong>${person.caseNumber}</p>
                                                                  <div class="status-section">
                                      <span class="status-label">狀態：</span>

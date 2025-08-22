@@ -5884,3 +5884,519 @@ body:not(.dark-theme) .header-back-btn:hover {
     }
 }
 
+/* 電話號碼和地址連結樣式 */
+.phone-link,
+.address-link {
+    color: #667eea;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+    padding: 2px 0;
+}
+
+.phone-link:hover,
+.address-link:hover {
+    color: #5a67d8;
+    border-bottom-color: #5a67d8;
+    text-decoration: none;
+}
+
+.phone-link:active,
+.address-link:active {
+    color: #4c51bf;
+    transform: scale(0.98);
+}
+
+/* 手機版電話號碼和地址連結優化 */
+@media (max-width: 768px) {
+    .phone-link,
+    .address-link {
+        display: inline-block;
+        padding: 4px 8px;
+        margin: 2px 0;
+        border-radius: 8px;
+        background: rgba(102, 126, 234, 0.1);
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        font-weight: 500;
+        min-height: 32px;
+        line-height: 24px;
+        text-align: center;
+        -webkit-tap-highlight-color: rgba(102, 126, 234, 0.3);
+    }
+    
+    .phone-link:hover,
+    .address-link:hover {
+        background: rgba(102, 126, 234, 0.15);
+        border-color: rgba(102, 126, 234, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    }
+    
+    .phone-link:active,
+    .address-link:active {
+        background: rgba(102, 126, 234, 0.2);
+        transform: translateY(0) scale(0.98);
+        box-shadow: 0 1px 4px rgba(102, 126, 234, 0.3);
+    }
+    
+    /* 電話號碼特殊樣式 */
+    .phone-link {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.2);
+        color: #059669;
+    }
+    
+    .phone-link:hover {
+        background: rgba(34, 197, 94, 0.15);
+        border-color: rgba(34, 197, 94, 0.3);
+        box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+    }
+    
+    .phone-link:active {
+        background: rgba(34, 197, 94, 0.2);
+        box-shadow: 0 1px 4px rgba(34, 197, 94, 0.3);
+    }
+    
+    /* 地址連結特殊樣式 */
+    .address-link {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.2);
+        color: #2563eb;
+    }
+    
+    .address-link:hover {
+        background: rgba(59, 130, 246, 0.15);
+        border-color: rgba(59, 130, 246, 0.3);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+    }
+    
+    .address-link:active {
+        background: rgba(59, 130, 246, 0.2);
+        box-shadow: 0 1px 4px rgba(59, 130, 246, 0.3);
+    }
+}
+
+/* 超小螢幕進一步優化 */
+@media (max-width: 480px) {
+    .phone-link,
+    .address-link {
+        padding: 6px 10px;
+        min-height: 36px;
+        line-height: 24px;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+    
+    .person-details p {
+        margin-bottom: 0.8rem;
+    }
+    
+    .person-details p strong {
+        display: block;
+        margin-bottom: 0.3rem;
+        font-size: 0.8rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+}
+
+/* 深色主題下的連結樣式 */
+@media (max-width: 768px) {
+    .dark-theme .phone-link {
+        background: rgba(34, 197, 94, 0.15);
+        border-color: rgba(34, 197, 94, 0.3);
+        color: #10b981;
+    }
+    
+    .dark-theme .phone-link:hover {
+        background: rgba(34, 197, 94, 0.2);
+        border-color: rgba(34, 197, 94, 0.4);
+        box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+    }
+    
+    .dark-theme .address-link {
+        background: rgba(59, 130, 246, 0.15);
+        border-color: rgba(59, 130, 246, 0.3);
+        color: #3b82f6;
+    }
+    
+    .dark-theme .address-link:hover {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.4);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+}
+
+/* 觸控反饋優化 */
+@media (max-width: 768px) {
+    .phone-link,
+    .address-link {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+    }
+    
+    /* 觸控狀態指示 */
+    .phone-link:focus,
+    .address-link:focus {
+        outline: 2px solid rgba(102, 126, 234, 0.5);
+        outline-offset: 2px;
+    }
+}
+
+/* 手機版人員卡片整體布局優化 */
+@media (max-width: 768px) {
+    /* 人員卡片網格優化 */
+    .person-list {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+        padding: 0 1rem;
+        margin-top: 1rem;
+    }
+    
+    /* 人員卡片內部優化 */
+    .person-card {
+        padding: 1.5rem;
+        border-radius: 18px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(102, 126, 234, 0.15);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* 人員頭部區域優化 */
+    .person-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1.2rem;
+        margin-bottom: 1.2rem;
+        position: relative;
+    }
+    
+    /* 照片區域優化 */
+    .person-photo {
+        flex-shrink: 0;
+        width: 85px;
+        height: 85px;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 3px solid rgba(102, 126, 234, 0.25);
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .person-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 13px;
+    }
+    
+    .person-photo .no-photo {
+        font-size: 2.2rem;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    /* 基本資訊區域優化 */
+    .person-basic-info {
+        flex: 1;
+        min-width: 0;
+        padding-top: 0.2rem;
+    }
+    
+    /* 姓名樣式優化 */
+    .person-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        letter-spacing: -0.5px;
+    }
+    
+    /* 詳細資訊優化 */
+    .person-details p {
+        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.5;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+    }
+    
+    .person-details p strong {
+        color: #2c3e50;
+        min-width: 65px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+    
+    /* 狀態區域優化 */
+    .status-section {
+        margin-top: 1.2rem;
+        padding: 1rem;
+        background: rgba(248, 249, 250, 0.9);
+        border-radius: 12px;
+        border: 1px solid rgba(233, 236, 239, 0.6);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .status-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #495057;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-badge {
+        padding: 6px 14px;
+        border-radius: 22px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    /* 完成按鈕優化 */
+    .mark-complete,
+    .mark-incomplete {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        border-radius: 18px;
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    
+    .mark-complete:hover,
+    .mark-incomplete:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* 完成時間顯示優化 */
+    .completed-time {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-left: auto;
+        font-style: italic;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 4px 8px;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    /* 備註區域優化 */
+    .memo-section {
+        margin: 1.2rem 0;
+        padding: 1rem;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border-radius: 12px;
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .memo-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+    
+    .memo-text {
+        font-size: 0.9rem;
+        color: #495057;
+        line-height: 1.5;
+        padding-left: 0.5rem;
+    }
+    
+    /* 地圖區域優化 */
+    .map-section {
+        margin: 1.2rem 0;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 2px solid rgba(0,0,0,0.08);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+    
+    .map-embed {
+        width: 100%;
+        height: 200px;
+        border: none;
+        display: block;
+    }
+    
+    /* 操作按鈕區域優化 */
+    .person-actions-compact {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+        display: flex;
+        justify-content: space-between;
+        z-index: 10;
+    }
+    
+    .btn-edit-compact,
+    .btn-delete-compact {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-edit-compact {
+        background: rgba(59, 130, 246, 0.9);
+        color: white;
+    }
+    
+    .btn-delete-compact {
+        background: rgba(239, 68, 68, 0.9);
+        color: white;
+    }
+    
+    .btn-edit-compact:hover,
+    .btn-delete-compact:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+    
+    .btn-edit-compact:active,
+    .btn-delete-compact:active {
+        transform: scale(0.95);
+    }
+}
+
+/* 超小螢幕進一步優化 */
+@media (max-width: 480px) {
+    .person-list {
+        padding: 0 0.8rem;
+        gap: 1rem;
+    }
+    
+    .person-card {
+        padding: 1.2rem;
+        border-radius: 16px;
+    }
+    
+    .person-header {
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .person-photo {
+        width: 75px;
+        height: 75px;
+        border-radius: 14px;
+        border-width: 2px;
+    }
+    
+    .person-photo .no-photo {
+        font-size: 2rem;
+    }
+    
+    .person-name {
+        font-size: 1.4rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .person-details p {
+        font-size: 0.9rem;
+        margin-bottom: 0.7rem;
+    }
+    
+    .person-details p strong {
+        min-width: 60px;
+        font-size: 0.85rem;
+    }
+    
+    .status-section {
+        margin-top: 1rem;
+        padding: 0.8rem;
+        gap: 0.8rem;
+    }
+    
+    .status-label {
+        font-size: 0.8rem;
+    }
+    
+    .status-badge {
+        padding: 5px 12px;
+        font-size: 0.75rem;
+    }
+    
+    .mark-complete,
+    .mark-incomplete {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        min-height: 28px;
+    }
+    
+    .completed-time {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+    }
+    
+    .memo-section {
+        margin: 1rem 0;
+        padding: 0.8rem;
+    }
+    
+    .memo-text {
+        font-size: 0.85rem;
+    }
+    
+    .map-embed {
+        height: 180px;
+    }
+    
+    .btn-edit-compact,
+    .btn-delete-compact {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+}
+
