@@ -870,6 +870,24 @@ body {
     font-family: 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol', system-ui, sans-serif;
 }
 
+/* 淺色主題（非 .dark-theme）下，主題按鈕需要深色文字以維持對比 */
+body:not(.dark-theme) .theme-btn {
+    color: #333333 !important;
+    -webkit-text-fill-color: #333333 !important;
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+body:not(.dark-theme) .theme-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: rgba(0, 0, 0, 0.12);
+}
+body:not(.dark-theme) .theme-btn .theme-icon,
+body:not(.dark-theme) .theme-btn .theme-text {
+    color: #333333 !important;
+    -webkit-text-fill-color: #333333 !important;
+    text-shadow: 0 0 0 #333333;
+}
+
 .theme-btn::before {
     content: '主題'; /* 避免短文本在某些字型下被裁切看起來像空白 */
     display: none;

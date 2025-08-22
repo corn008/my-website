@@ -1056,16 +1056,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 status: 'pending'
             };
             
-            // 處理照片上傳
-            const photoFile = formData.get('photo');
-            if (photoFile && photoFile.size > 0) {
-                if (photoFile.size > 5 * 1024 * 1024) {
-                    showNotification('照片檔案大小不能超過5MB', 'error');
+            // 處理照片上傳（穩定取得第一張檔案，並容錯避免提交無反應）
+            const formFile = formData.get('photo');
+            const inputEl = document.getElementById('person-photo');
+            const fileFromInput = (inputEl && inputEl.files && inputEl.files.length > 0) ? inputEl.files[0] : null;
+            const photoFile = fileFromInput || (formFile && formFile.size > 0 ? formFile : null);
+            
+            if (photoFile) {
+                if (!photoFile.type || !photoFile.type.startsWith('image/')) {
+                    showNotification('請選擇有效的圖片檔案', 'error');
+                    // 照片無效，仍保存其他資料
+                    addPersonToList(personData);
                     return;
                 }
                 
-                if (!photoFile.type.startsWith('image/')) {
-                    showNotification('請選擇有效的圖片檔案', 'error');
+                if (photoFile.size > 5 * 1024 * 1024) {
+                    showNotification('照片過大，將不附加照片但仍保存資料', 'warning');
+                    addPersonToList(personData);
                     return;
                 }
                 
@@ -1073,16 +1080,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification('正在處理照片，請稍候...', 'info');
                 
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    personData.photo = e.target.result;
+                let hasSettled = false;
+                const settle = (withPhoto) => {
+                    if (hasSettled) return;
+                    hasSettled = true;
+                    if (withPhoto) personData.photo = withPhoto;
                     addPersonToList(personData);
                 };
+                reader.onload = function(e) { settle(e.target.result); };
                 reader.onerror = function() {
-                    showNotification('照片讀取失敗，請重試', 'error');
+                    showNotification('照片讀取失敗，將不附加照片但仍保存資料', 'warning');
+                    settle(null);
+                };
+                reader.onabort = function() {
+                    showNotification('照片讀取中止，將不附加照片但仍保存資料', 'warning');
+                    settle(null);
                 };
                 reader.readAsDataURL(photoFile);
             } else {
-                // 沒有照片，直接新增
+                // 沒有選擇照片，直接新增
                 addPersonToList(personData);
             }
         }
@@ -1905,6 +1921,27 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('%c使用 fixDataFormat() 可以修復舊資料格式問題', 'color: #dc3545; font-size: 14px;');
     console.log('%c使用 quickTest() 可以快速診斷月份分配問題', 'color: #6f42c1; font-size: 14px;');
     console.log('%c使用 testMonthFilter() 可以專門測試月份篩選邏輯', 'color: #e83e8c; font-size: 14px;');
+
+    // 全域錯誤攔截，避免使用者感知為「沒反應」
+    window.addEventListener('error', function(e) {
+        try { showNotification('發生未預期錯誤：' + (e.message || '未知錯誤'), 'error'); } catch(_) {}
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+        try { showNotification('操作失敗（未處理承諾）：' + (e.reason && e.reason.message ? e.reason.message : '未知錯誤'), 'error'); } catch(_) {}
+    });
+
+    // 建立安全包裝器，所有 onclick 走穩定流程
+    function wrapSafe(functionName, originalFn) {
+        if (typeof originalFn !== 'function') return originalFn;
+        return function wrappedFunction() {
+            try {
+                return originalFn.apply(this, arguments);
+            } catch (err) {
+                console.error(`[${functionName}] 執行錯誤:`, err);
+                try { showNotification(`${functionName} 執行失敗：${err && err.message ? err.message : '未知錯誤'}`, 'error'); } catch(_) {}
+            }
+        };
+    }
     
     // 顯示指定區域
     function showSection(sectionName) {
@@ -2239,42 +2276,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 將所有函數附加到全域範圍，使其可以被 onclick 屬性調用
 window.showSection = showSection;
-window.showModal = showModal;
-window.closeModal = closeModal;
-window.goBack = goBack;
-window.getCurrentActiveSection = getCurrentActiveSection;
-window.initializeMobileGestures = initializeMobileGestures;
-window.initializeMobileBackButton = initializeMobileBackButton;
-window.toggleTheme = toggleTheme;
-window.exportToCSV = exportToCSV;
-window.exportToPDF = exportToPDF;
-window.backupData = backupData;
-window.restoreData = restoreData;
-window.showSystemInfo = showSystemInfo;
-window.checkPhotos = checkPhotos;
-window.showAddPersonForm = showAddPersonForm;
-window.markAsComplete = markAsComplete;
-window.searchPeople = searchPeople;
-window.clearSearch = clearSearch;
-window.editPerson = editPerson;
-window.deletePerson = deletePerson;
-window.filterData = filterData;
-window.updateStatistics = updateStatistics;
-window.fixDataFormat = fixDataFormat;
-window.quickTest = quickTest;
-window.showNotification = showNotification;
-window.displayPeople = displayPeople;
-window.saveData = saveData;
-window.initializeStatsYearSelect = initializeStatsYearSelect;
-window.initializeSearchYearSelect = initializeSearchYearSelect;
-window.showPersonDetail = showPersonDetail;
-window.showMap = showMap;
-window.updateMonthDistribution = updateMonthDistribution;
-window.loadData = loadData;
-window.loadTheme = loadTheme;
-window.startTimeUpdate = startTimeUpdate;
-window.addPersonToList = addPersonToList;
-window.updatePersonInList = updatePersonInList;
-window.initializeSystem = initializeSystem;
-window.initializeDateSelectors = initializeDateSelectors;
-window.logout = logout;
+window.showModal = wrapSafe('showModal', showModal);
+window.closeModal = wrapSafe('closeModal', closeModal);
+window.goBack = wrapSafe('goBack', goBack);
+window.getCurrentActiveSection = wrapSafe('getCurrentActiveSection', getCurrentActiveSection);
+window.initializeMobileGestures = wrapSafe('initializeMobileGestures', initializeMobileGestures);
+window.initializeMobileBackButton = wrapSafe('initializeMobileBackButton', initializeMobileBackButton);
+window.toggleTheme = wrapSafe('toggleTheme', toggleTheme);
+window.exportToCSV = wrapSafe('exportToCSV', exportToCSV);
+window.exportToPDF = wrapSafe('exportToPDF', exportToPDF);
+window.backupData = wrapSafe('backupData', backupData);
+window.restoreData = wrapSafe('restoreData', restoreData);
+window.showSystemInfo = wrapSafe('showSystemInfo', showSystemInfo);
+window.checkPhotos = wrapSafe('checkPhotos', checkPhotos);
+window.showAddPersonForm = wrapSafe('showAddPersonForm', showAddPersonForm);
+window.markAsComplete = wrapSafe('markAsComplete', markAsComplete);
+window.searchPeople = wrapSafe('searchPeople', searchPeople);
+window.clearSearch = wrapSafe('clearSearch', clearSearch);
+window.editPerson = wrapSafe('editPerson', editPerson);
+window.deletePerson = wrapSafe('deletePerson', deletePerson);
+window.filterData = wrapSafe('filterData', filterData);
+window.updateStatistics = wrapSafe('updateStatistics', updateStatistics);
+window.fixDataFormat = wrapSafe('fixDataFormat', fixDataFormat);
+window.quickTest = wrapSafe('quickTest', quickTest);
+window.showNotification = wrapSafe('showNotification', showNotification);
+window.displayPeople = wrapSafe('displayPeople', displayPeople);
+window.saveData = wrapSafe('saveData', saveData);
+window.initializeStatsYearSelect = wrapSafe('initializeStatsYearSelect', initializeStatsYearSelect);
+window.initializeSearchYearSelect = wrapSafe('initializeSearchYearSelect', initializeSearchYearSelect);
+window.showPersonDetail = wrapSafe('showPersonDetail', showPersonDetail);
+window.showMap = wrapSafe('showMap', showMap);
+window.updateMonthDistribution = wrapSafe('updateMonthDistribution', updateMonthDistribution);
+window.loadData = wrapSafe('loadData', loadData);
+window.loadTheme = wrapSafe('loadTheme', loadTheme);
+window.startTimeUpdate = wrapSafe('startTimeUpdate', startTimeUpdate);
+window.addPersonToList = wrapSafe('addPersonToList', addPersonToList);
+window.updatePersonInList = wrapSafe('updatePersonInList', updatePersonInList);
+window.initializeSystem = wrapSafe('initializeSystem', initializeSystem);
+window.initializeDateSelectors = wrapSafe('initializeDateSelectors', initializeDateSelectors);
+window.logout = wrapSafe('logout', logout);
