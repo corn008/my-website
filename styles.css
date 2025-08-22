@@ -3254,7 +3254,7 @@ body {
 /* 超小螢幕優化 */
 @media (max-width: 480px) {
     .main-content {
-        padding-top: 200px; /* 為超小螢幕導航留出更多空間 */
+        padding-top: 0; /* 與頂部貼齊 */
     }
     
     .function-header {
@@ -3306,7 +3306,7 @@ body {
 /* 橫向模式優化 */
 @media (max-width: 768px) and (orientation: landscape) {
     .main-content {
-        padding-top: 140px;
+        padding-top: 0;
     }
     
     .header-content {
