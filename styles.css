@@ -824,7 +824,7 @@ body {
 
 .theme-btn, .logout-btn {
     background: rgba(255, 255, 255, 0.15);
-    color: white;
+    color: #ffffff; /* 保持白色，不受瀏覽器預設按鈕樣式影響 */
     border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 6px 12px;
     border-radius: 15px;
