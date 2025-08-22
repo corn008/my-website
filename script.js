@@ -1591,6 +1591,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 顯示人員列表
         let html = '<div class="person-list">';
         data.forEach(person => {
+            console.log('創建人員卡片:', person.id, person.name, person.phone, person.address);
             // 獲取篩選條件中的年月
             const filterYear = document.getElementById('year-select')?.value;
             const filterMonth = document.getElementById('month-select')?.value;
@@ -1613,8 +1614,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                                  <div class="person-basic-info">
                              <div class="person-name">${person.name}</div>
                              <div class="person-details">
-                                 <p><strong>電話：</strong><a href="tel:${person.phone}" class="phone-link">${person.phone}</a></p>
-                                 <p><strong>地址：</strong><a href="https://maps.google.com/?q=${encodeURIComponent(person.address)}" class="address-link" target="_blank">${person.address}</a></p>
+                                 <p><strong>電話：</strong><a href="tel:${person.phone}" class="phone-link" onclick="handlePhoneClick(event, '${person.phone}')" data-debug="phone-${person.id}">${person.phone}</a></p>
+                                 <p><strong>地址：</strong><a href="https://maps.google.com/?q=${encodeURIComponent(person.address)}" class="address-link" target="_blank" onclick="handleAddressClick(event, '${person.address}')" data-debug="address-${person.id}">${person.address}</a></p>
                                  <p><strong>個案號碼：</strong>${person.caseNumber}</p>
                                                                  <div class="status-section">
                                      <span class="status-label">狀態：</span>
@@ -2611,6 +2612,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.initializeDateSelectors = wrapSafe('initializeDateSelectors', initializeDateSelectors);
     window.logout = wrapSafe('logout', logout);
     window.toggleFaq = wrapSafe('toggleFaq', toggleFaq);
+    window.handlePhoneClick = wrapSafe('handlePhoneClick', handlePhoneClick);
+    window.handleAddressClick = wrapSafe('handleAddressClick', handleAddressClick);
 });
 
 // FAQ 折疊展開功能
@@ -2644,5 +2647,128 @@ function loadTheme() {
         // 若存取 localStorage 失敗，保守採用淺色主題
         document.body.classList.remove('dark-theme');
         return 'light';
+    }
+}
+
+// 處理電話號碼點擊
+function handlePhoneClick(event, phoneNumber) {
+    try {
+        console.log('電話號碼點擊:', phoneNumber);
+        console.log('事件對象:', event);
+        
+        // 檢查電話號碼是否有效
+        if (!phoneNumber || phoneNumber.trim() === '') {
+            console.error('電話號碼為空或無效');
+            event.preventDefault();
+            window.showNotification && window.showNotification('電話號碼無效', 'error');
+            return;
+        }
+        
+        // 清理電話號碼格式（移除空格、括號、破折號等）
+        const cleanPhone = phoneNumber.replace(/[\s\(\)\-\s]/g, '');
+        
+        // 檢查是否為有效的電話號碼格式（允許數字、加號、井號、星號）
+        if (!/^[\d\+\#\*]+$/.test(cleanPhone)) {
+            console.error('電話號碼格式無效:', cleanPhone);
+            event.preventDefault();
+            window.showNotification && window.showNotification('電話號碼格式無效', 'error');
+            return;
+        }
+        
+        console.log('準備撥打電話:', cleanPhone);
+        
+        // 在移動設備上，tel: 協議會自動觸發撥號
+        // 在桌面設備上，可能會顯示錯誤或無反應，這是正常的
+        // 我們可以嘗試使用 window.open 作為備用方案
+        try {
+            // 嘗試使用 tel: 協議
+            const telUrl = `tel:${cleanPhone}`;
+            console.log('嘗試撥打電話 URL:', telUrl);
+            
+            // 在移動設備上，這會觸發撥號
+            // 在桌面設備上，這可能會失敗，但不會拋出錯誤
+            window.location.href = telUrl;
+            
+        } catch (telError) {
+            console.log('tel: 協議失敗，嘗試備用方案:', telError);
+            // 備用方案：複製到剪貼板
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(cleanPhone).then(() => {
+                    window.showNotification && window.showNotification(`電話號碼 ${cleanPhone} 已複製到剪貼板`, 'success');
+                }).catch(() => {
+                    window.showNotification && window.showNotification(`電話號碼: ${cleanPhone}`, 'info');
+                });
+            } else {
+                // 如果剪貼板 API 不可用，顯示電話號碼
+                window.showNotification && window.showNotification(`電話號碼: ${cleanPhone}`, 'info');
+            }
+        }
+        
+    } catch (error) {
+        console.error('處理電話號碼點擊時發生錯誤:', error);
+        console.error('錯誤詳情:', {
+            message: error.message,
+            stack: error.stack,
+            phoneNumber: phoneNumber
+        });
+        event.preventDefault();
+        window.showNotification && window.showNotification('處理電話號碼時發生錯誤', 'error');
+    }
+}
+
+// 處理地址點擊
+function handleAddressClick(event, address) {
+    try {
+        console.log('地址點擊:', address);
+        console.log('事件對象:', event);
+        
+        // 檢查地址是否有效
+        if (!address || address.trim() === '') {
+            console.error('地址為空或無效');
+            event.preventDefault();
+            window.showNotification && window.showNotification('地址無效', 'error');
+            return;
+        }
+        
+        // 清理地址格式
+        const cleanAddress = address.trim();
+        
+        console.log('準備開啟地圖:', cleanAddress);
+        
+        // 構建 Google Maps URL
+        const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(cleanAddress)}`;
+        console.log('地圖 URL:', mapsUrl);
+        
+        try {
+            // 在新標籤頁中開啟 Google Maps
+            window.open(mapsUrl, '_blank');
+            
+            // 顯示成功通知
+            window.showNotification && window.showNotification('正在開啟 Google Maps', 'success');
+            
+        } catch (mapsError) {
+            console.error('開啟地圖失敗:', mapsError);
+            
+            // 備用方案：複製地址到剪貼板
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(cleanAddress).then(() => {
+                    window.showNotification && window.showNotification(`地址 ${cleanAddress} 已複製到剪貼板`, 'success');
+                }).catch(() => {
+                    window.showNotification && window.showNotification(`地址: ${cleanAddress}`, 'info');
+                });
+            } else {
+                window.showNotification && window.showNotification(`地址: ${cleanAddress}`, 'info');
+            }
+        }
+        
+    } catch (error) {
+        console.error('處理地址點擊時發生錯誤:', error);
+        console.error('錯誤詳情:', {
+            message: error.message,
+            stack: error.stack,
+            address: address
+        });
+        event.preventDefault();
+        window.showNotification && window.showNotification('處理地址時發生錯誤', 'error');
     }
 }
