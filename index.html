@@ -177,6 +177,12 @@
                         
                         <div class="statistics-card">
                             <h3>📅 月份分佈</h3>
+                            <div class="setting-item" style="margin-bottom: 1rem;">
+                                <label>選擇年份：</label>
+                                <select id="stats-year-select" onchange="updateStatistics()" style="min-width: 120px;">
+                                    <option value="">請選擇年份</option>
+                                </select>
+                            </div>
                             <div class="month-distribution" id="month-distribution">
                                 <p>請選擇年份查看月份分佈</p>
                             </div>
@@ -215,6 +221,18 @@
                             <div class="setting-item">
                                 <label>測試功能</label>
                                 <button class="btn btn-info" onclick="quickTest()">快速測試</button>
+                            </div>
+                            <div class="setting-item">
+                                <label>資料備份</label>
+                                <button class="btn btn-success" onclick="backupData()">備份資料</button>
+                            </div>
+                            <div class="setting-item">
+                                <label>資料還原</label>
+                                <button class="btn btn-export" onclick="restoreData()">還原資料</button>
+                            </div>
+                            <div class="setting-item">
+                                <label>系統資訊</label>
+                                <button class="btn btn-check" onclick="showSystemInfo()">查看系統資訊</button>
                             </div>
                         </div>
                     </div>
@@ -268,6 +286,54 @@
                             <div class="faq-item">
                                 <h4>如何匯出資料？</h4>
                                 <p>在「卹滿照護」功能中，選擇年份月份後，點擊「匯出本月 CSV」或「匯出 PDF」按鈕。</p>
+                            </div>
+                            <div class="faq-item">
+                                <h4>如何檢查照片完整性？</h4>
+                                <p>選擇年份月份後，點擊「照片檢查」按鈕，系統會顯示該月份人員的照片完整度統計。</p>
+                            </div>
+                            <div class="faq-item">
+                                <h4>如何標記案件完成？</h4>
+                                <p>在人員卡片中，點擊「標記完成」連結，即可將案件狀態更新為已完成。</p>
+                            </div>
+                            <div class="faq-item">
+                                <h4>如何備份和還原資料？</h4>
+                                <p>進入「系統設定」功能，使用「資料備份」和「資料還原」按鈕進行資料管理。</p>
+                            </div>
+                            <div class="faq-item">
+                                <h4>如何切換主題模式？</h4>
+                                <p>在「系統設定」功能中，點擊「切換主題」按鈕即可在淺色和深色主題間切換。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="help-card">
+                            <h3>📋 功能說明</h3>
+                            <div class="help-step">
+                                <div class="step-number">👥</div>
+                                <div class="step-content">
+                                    <h4>卹滿照護</h4>
+                                    <p>人員管理、資料查詢、匯出報表、照片檢查等核心功能</p>
+                                </div>
+                            </div>
+                            <div class="help-step">
+                                <div class="step-number">📊</div>
+                                <div class="step-content">
+                                    <h4>統計分析</h4>
+                                    <p>本月統計、月份分佈圖表、資料分析等統計功能</p>
+                                </div>
+                            </div>
+                            <div class="help-step">
+                                <div class="step-number">⚙️</div>
+                                <div class="step-content">
+                                    <h4>系統設定</h4>
+                                    <p>主題切換、資料維護、備份還原、系統工具等設定功能</p>
+                                </div>
+                            </div>
+                            <div class="help-step">
+                                <div class="step-number">❓</div>
+                                <div class="step-content">
+                                    <h4>使用說明</h4>
+                                    <p>操作指南、常見問題、功能說明等幫助文件</p>
+                                </div>
                             </div>
                         </div>
                     </div>

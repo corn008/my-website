@@ -1593,6 +1593,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 如果顯示統計分析區域，更新統計資料
         if (sectionName === 'statistics') {
             updateStatistics();
+            initializeStatsYearSelect();
         }
     }
     
@@ -1602,14 +1603,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentYear = currentDate.getFullYear();
         const currentMonth = currentDate.getMonth() + 1;
         
-        // 計算本月統計
-        const currentMonthPeople = personList.filter(person => 
-            person.createdYear === currentYear && person.createdMonth === currentMonth
+        // 獲取選擇的年份（如果有的話）
+        const selectedYear = document.getElementById('stats-year-select')?.value;
+        const targetYear = selectedYear ? parseInt(selectedYear) : currentYear;
+        
+        // 計算選擇年份的統計
+        const targetYearPeople = personList.filter(person => 
+            person.createdYear === targetYear
         );
         
-        const totalPeople = currentMonthPeople.length;
-        const pendingCount = currentMonthPeople.filter(person => person.status === 'pending').length;
-        const completedCount = currentMonthPeople.filter(person => person.status === 'completed').length;
+        // 計算本月統計（如果選擇的是當前年份）
+        const currentMonthPeople = targetYear === currentYear ? 
+            targetYearPeople.filter(person => person.createdMonth === currentMonth) : [];
+        
+        const totalPeople = targetYearPeople.length;
+        const currentMonthTotal = currentMonthPeople.length;
+        const pendingCount = targetYearPeople.filter(person => person.status === 'pending').length;
+        const completedCount = targetYearPeople.filter(person => person.status === 'completed').length;
         
         // 更新統計數字
         const totalElement = document.getElementById('total-people');
@@ -1621,38 +1631,43 @@ document.addEventListener('DOMContentLoaded', function() {
         if (completedElement) completedElement.textContent = completedCount;
         
         // 更新月份分佈
-        updateMonthDistribution(currentYear);
+        updateMonthDistribution(targetYear);
+        
+        // 更新統計標題
+        const statsTitle = document.querySelector('.statistics-card h3');
+        if (statsTitle && statsTitle.textContent.includes('本月統計')) {
+            if (targetYear === currentYear) {
+                statsTitle.textContent = `📈 ${targetYear}年${currentMonth}月統計`;
+            } else {
+                statsTitle.textContent = `📈 ${targetYear}年統計`;
+            }
+        }
     }
     
-    // 更新月份分佈
-    function updateMonthDistribution(year) {
-        const monthDistribution = document.getElementById('month-distribution');
-        if (!monthDistribution) return;
+    // 初始化統計頁面的年份選項
+    function initializeStatsYearSelect() {
+        const yearSelect = document.getElementById('stats-year-select');
+        if (!yearSelect) return;
         
-        const monthData = [];
-        for (let month = 1; month <= 12; month++) {
-            const count = personList.filter(person => 
-                person.createdYear === year && person.createdMonth === month
-            ).length;
-            monthData.push({ month, count });
-        }
+        // 清空現有選項
+        yearSelect.innerHTML = '<option value="">請選擇年份</option>';
         
-        // 生成月份分佈HTML
-        let html = '<div class="month-chart">';
-        monthData.forEach(({ month, count }) => {
-            const height = count > 0 ? Math.max(20, count * 10) : 20;
-            const color = count > 0 ? '#667eea' : '#e9ecef';
-            html += `
-                <div class="month-bar">
-                    <div class="bar" style="height: ${height}px; background-color: ${color};"></div>
-                    <div class="month-label">${month}月</div>
-                    <div class="month-count">${count}</div>
-                </div>
-            `;
+        // 獲取所有年份
+        const years = [...new Set(personList.map(person => person.createdYear))].sort((a, b) => b - a);
+        
+        // 添加年份選項
+        years.forEach(year => {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = `${year}年`;
+            yearSelect.appendChild(option);
         });
-        html += '</div>';
         
-        monthDistribution.innerHTML = html;
+        // 預設選擇當前年份
+        const currentYear = new Date().getFullYear();
+        if (years.includes(currentYear)) {
+            yearSelect.value = currentYear;
+        }
     }
     
     // 添加月份分佈圖表的CSS樣式
@@ -1709,4 +1724,548 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(monthChartStyle);
+    
+    // ===== 系統功能函數 =====
+    
+    // 主題切換功能
+    function toggleTheme() {
+        if (currentTheme === 'light') {
+            currentTheme = 'dark';
+            document.body.classList.add('dark-theme');
+        } else {
+            currentTheme = 'light';
+            document.body.classList.remove('dark-theme');
+        }
+        
+        // 儲存主題設定
+        localStorage.setItem('currentTheme', currentTheme);
+        
+        // 顯示通知
+        const themeText = currentTheme === 'dark' ? '深色主題' : '淺色主題';
+        showNotification(`已切換至${themeText}`, 'success');
+        
+        // 更新按鈕文字
+        const themeButton = document.querySelector('.btn-secondary');
+        if (themeButton) {
+            themeButton.textContent = currentTheme === 'dark' ? '切換至淺色' : '切換至深色';
+        }
+    }
+    
+    // 資料格式修復功能
+    function fixDataFormat() {
+        let fixedCount = 0;
+        let totalCount = personList.length;
+        
+        personList = personList.map(person => {
+            let needsFix = false;
+            const fixedPerson = { ...person };
+            
+            // 修復月份格式（確保是數字）
+            if (typeof person.createdMonth === 'string') {
+                fixedPerson.createdMonth = parseInt(person.createdMonth);
+                needsFix = true;
+            }
+            
+            // 修復年份格式（確保是數字）
+            if (typeof person.createdYear === 'string') {
+                fixedPerson.createdYear = parseInt(person.createdYear);
+                needsFix = true;
+            }
+            
+            // 修復狀態（確保有狀態欄位）
+            if (!person.status) {
+                fixedPerson.status = 'pending';
+                needsFix = true;
+            }
+            
+            // 修復創建時間（確保有時間戳）
+            if (!person.createdAt) {
+                const date = new Date(person.createdYear || new Date().getFullYear(), 
+                                    (person.createdMonth || 1) - 1, 1);
+                fixedPerson.createdAt = date.toISOString();
+                needsFix = true;
+            }
+            
+            if (needsFix) {
+                fixedCount++;
+            }
+            
+            return fixedPerson;
+        });
+        
+        // 儲存修復後的資料
+        localStorage.setItem('personList', JSON.stringify(personList));
+        
+        // 顯示修復結果
+        if (fixedCount > 0) {
+            showNotification(`資料格式修復完成！共修復 ${fixedCount}/${totalCount} 筆資料`, 'success');
+        } else {
+            showNotification('所有資料格式都正確，無需修復', 'info');
+        }
+        
+        // 如果當前在統計頁面，更新統計資料
+        if (document.getElementById('statistics').style.display !== 'none') {
+            updateStatistics();
+        }
+    }
+    
+    // 快速測試功能
+    function quickTest() {
+        showNotification('開始執行系統測試...', 'info');
+        
+        // 測試資料儲存
+        const testData = {
+            id: Date.now(),
+            name: '測試人員',
+            caseNumber: 'TEST001',
+            phone: '0912345678',
+            address: '測試地址',
+            memo: '這是一個測試資料',
+            photo: null,
+            createdAt: new Date().toISOString(),
+            createdMonth: new Date().getMonth() + 1,
+            createdYear: new Date().getFullYear(),
+            status: 'pending'
+        };
+        
+        // 暫時添加測試資料
+        personList.push(testData);
+        localStorage.setItem('personList', JSON.stringify(personList));
+        
+        setTimeout(() => {
+            // 移除測試資料
+            personList = personList.filter(p => p.id !== testData.id);
+            localStorage.setItem('personList', JSON.stringify(personList));
+            
+            showNotification('系統測試完成！所有功能正常運作', 'success');
+        }, 2000);
+    }
+    
+    // 匯出CSV功能
+    function exportToCSV() {
+        const selectedYear = document.getElementById('year-select')?.value;
+        const selectedMonth = document.getElementById('month-select')?.value;
+        
+        if (!selectedYear || !selectedMonth) {
+            showNotification('請先選擇年份和月份', 'error');
+            return;
+        }
+        
+        const filteredPeople = personList.filter(person => 
+            person.createdYear === parseInt(selectedYear) && 
+            person.createdMonth === parseInt(selectedMonth)
+        );
+        
+        if (filteredPeople.length === 0) {
+            showNotification('該月份沒有資料可匯出', 'info');
+            return;
+        }
+        
+        // 準備CSV資料
+        const headers = ['姓名', '個案號碼', '電話', '地址', '備註', '狀態', '創建月份', '創建年份'];
+        const csvData = filteredPeople.map(person => [
+            person.name,
+            person.caseNumber,
+            person.phone,
+            person.address,
+            person.memo || '',
+            person.status === 'completed' ? '已完成' : '待處理',
+            person.createdMonth,
+            person.createdYear
+        ]);
+        
+        // 組合CSV內容
+        const csvContent = [headers, ...csvData]
+            .map(row => row.map(cell => `"${cell}"`).join(','))
+            .join('\n');
+        
+        // 創建下載連結
+        const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `留守資訊_${selectedYear}年${selectedMonth}月.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showNotification(`CSV匯出成功！共匯出 ${filteredPeople.length} 筆資料`, 'success');
+    }
+    
+    // 匯出PDF功能
+    function exportToPDF() {
+        const selectedYear = document.getElementById('year-select')?.value;
+        const selectedMonth = document.getElementById('month-select')?.value;
+        
+        if (!selectedYear || !selectedMonth) {
+            showNotification('請先選擇年份和月份', 'error');
+            return;
+        }
+        
+        const filteredPeople = personList.filter(person => 
+            person.createdYear === parseInt(selectedYear) && 
+            person.createdMonth === parseInt(selectedMonth)
+        );
+        
+        if (filteredPeople.length === 0) {
+            showNotification('該月份沒有資料可匯出', 'info');
+            return;
+        }
+        
+        // 創建PDF內容
+        const pdfContent = `
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>留守資訊報表</title>
+                <style>
+                    body { font-family: 'Microsoft JhengHei', Arial, sans-serif; margin: 20px; }
+                    .header { text-align: center; margin-bottom: 30px; }
+                    .header h1 { color: #333; margin-bottom: 10px; }
+                    .info { margin-bottom: 20px; color: #666; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+                    th { background-color: #f8f9fa; font-weight: bold; }
+                    .status-completed { color: #28a745; font-weight: bold; }
+                    .status-pending { color: #6c757d; font-weight: bold; }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>留守資訊系統報表</h1>
+                    <div class="info">${selectedYear}年${selectedMonth}月</div>
+                    <div class="info">匯出時間：${new Date().toLocaleString('zh-TW')}</div>
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>個案號碼</th>
+                            <th>電話</th>
+                            <th>地址</th>
+                            <th>備註</th>
+                            <th>狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filteredPeople.map(person => `
+                            <tr>
+                                <td>${person.name}</td>
+                                <td>${person.caseNumber}</td>
+                                <td>${person.phone}</td>
+                                <td>${person.address}</td>
+                                <td>${person.memo || ''}</td>
+                                <td class="status-${person.status}">
+                                    ${person.status === 'completed' ? '已完成' : '待處理'}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 30px; text-align: center; color: #666;">
+                    共 ${filteredPeople.length} 筆資料
+                </div>
+            </body>
+            </html>
+        `;
+        
+        // 使用瀏覽器列印功能（模擬PDF匯出）
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(pdfContent);
+        printWindow.document.close();
+        
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 500);
+        
+        showNotification(`PDF匯出成功！共匯出 ${filteredPeople.length} 筆資料`, 'success');
+    }
+    
+    // 照片檢查功能
+    function checkPhotos() {
+        const selectedYear = document.getElementById('year-select')?.value;
+        const selectedMonth = document.getElementById('month-select')?.value;
+        
+        if (!selectedYear || !selectedMonth) {
+            showNotification('請先選擇年份和月份', 'error');
+            return;
+        }
+        
+        const filteredPeople = personList.filter(person => 
+            person.createdYear === parseInt(selectedYear) && 
+            person.createdMonth === parseInt(selectedMonth)
+        );
+        
+        if (filteredPeople.length === 0) {
+            showNotification('該月份沒有資料', 'info');
+            return;
+        }
+        
+        const withPhoto = filteredPeople.filter(person => person.photo).length;
+        const withoutPhoto = filteredPeople.length - withPhoto;
+        
+        showNotification(`照片檢查結果：有照片 ${withPhoto} 人，無照片 ${withoutPhoto} 人`, 'info');
+        
+        // 顯示詳細檢查結果
+        const resultHtml = `
+            <div style="padding: 20px;">
+                <h3>照片檢查結果</h3>
+                <p><strong>總人數：</strong>${filteredPeople.length}</p>
+                <p><strong>有照片：</strong>${withPhoto} 人</p>
+                <p><strong>無照片：</strong>${withoutPhoto} 人</p>
+                <p><strong>照片完整度：</strong>${Math.round((withPhoto / filteredPeople.length) * 100)}%</p>
+                
+                <h4>無照片人員：</h4>
+                <ul>
+                    ${filteredPeople.filter(person => !person.photo)
+                        .map(person => `<li>${person.name} (${person.caseNumber})</li>`)
+                        .join('')}
+                </ul>
+            </div>
+        `;
+        
+        // 創建模態框顯示結果
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'flex';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h3>照片檢查結果</h3>
+                    <span class="close" onclick="this.closest('.modal').style.display='none'">&times;</span>
+                </div>
+                <div class="modal-form">
+                    ${resultHtml}
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // 點擊背景關閉
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+    }
+    
+    // 標記完成功能
+    function markAsComplete(personId) {
+        const personIndex = personList.findIndex(p => p.id === personId);
+        if (personIndex !== -1) {
+            personList[personIndex].status = 'completed';
+            personList[personIndex].updatedAt = new Date().toISOString();
+            
+            localStorage.setItem('personList', JSON.stringify(personList));
+            
+            // 重新顯示資料
+            filterData();
+            
+            showNotification('狀態已更新為已完成', 'success');
+        }
+    }
+    
+    // 搜尋功能
+    function searchPeople() {
+        const searchTerm = document.getElementById('search-input')?.value.trim().toLowerCase();
+        const selectedYear = document.getElementById('year-select')?.value;
+        const selectedMonth = document.getElementById('month-select')?.value;
+        
+        if (!searchTerm && !selectedYear && !selectedMonth) {
+            // 如果沒有搜尋條件，顯示所有資料
+            displayData(personList);
+            return;
+        }
+        
+        let filteredResults = personList;
+        
+        // 按年份篩選
+        if (selectedYear) {
+            filteredResults = filteredResults.filter(person => 
+                person.createdYear === parseInt(selectedYear)
+            );
+        }
+        
+        // 按月份篩選
+        if (selectedMonth) {
+            filteredResults = filteredResults.filter(person => 
+                person.createdMonth === parseInt(selectedMonth)
+            );
+        }
+        
+        // 按搜尋詞篩選
+        if (searchTerm) {
+            filteredResults = filteredResults.filter(person =>
+                person.name.toLowerCase().includes(searchTerm) ||
+                person.caseNumber.toLowerCase().includes(searchTerm) ||
+                person.phone.includes(searchTerm) ||
+                person.address.toLowerCase().includes(searchTerm) ||
+                (person.memo && person.memo.toLowerCase().includes(searchTerm))
+            );
+        }
+        
+        displayData(filteredResults);
+        
+        // 顯示搜尋結果數量
+        if (searchTerm || selectedYear || selectedMonth) {
+            showNotification(`搜尋結果：找到 ${filteredResults.length} 筆資料`, 'info');
+        }
+    }
+    
+    // 清除搜尋功能
+    function clearSearch() {
+        const searchInput = document.getElementById('search-input');
+        const yearSelect = document.getElementById('year-select');
+        const monthSelect = document.getElementById('month-select');
+        
+        if (searchInput) searchInput.value = '';
+        if (yearSelect) yearSelect.value = '';
+        if (monthSelect) monthSelect.value = '';
+        
+        // 顯示所有資料
+        displayData(personList);
+        showNotification('搜尋條件已清除', 'info');
+    }
+    
+    // 資料備份功能
+    function backupData() {
+        const backupData = {
+            personList: personList,
+            backupTime: new Date().toISOString(),
+            version: '1.0'
+        };
+        
+        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `留守資訊備份_${new Date().toISOString().split('T')[0]}.json`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        showNotification('資料備份成功！', 'success');
+    }
+    
+    // 資料還原功能
+    function restoreData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const backupData = JSON.parse(e.target.result);
+                        
+                        if (backupData.personList && Array.isArray(backupData.personList)) {
+                            // 確認還原
+                            if (confirm(`確定要還原資料嗎？這將覆蓋現有資料。\n備份時間：${backupData.backupTime}`)) {
+                                personList = backupData.personList;
+                                localStorage.setItem('personList', JSON.stringify(personList));
+                                
+                                // 重新顯示資料
+                                if (document.getElementById('care').style.display !== 'none') {
+                                    filterData();
+                                }
+                                
+                                showNotification('資料還原成功！', 'success');
+                            }
+                        } else {
+                            showNotification('備份檔案格式錯誤', 'error');
+                        }
+                    } catch (error) {
+                        showNotification('備份檔案讀取失敗', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        };
+        
+        input.click();
+    }
+    
+    // 系統資訊顯示
+    function showSystemInfo() {
+        const info = {
+            '總人員數': personList.length,
+            '有照片人員': personList.filter(p => p.photo).length,
+            '已完成案件': personList.filter(p => p.status === 'completed').length,
+            '待處理案件': personList.filter(p => p.status === 'pending').length,
+            '資料大小': `${(JSON.stringify(personList).length / 1024).toFixed(2)} KB`,
+            '最後更新': new Date().toLocaleString('zh-TW'),
+            '瀏覽器': navigator.userAgent.split(' ').pop(),
+            '系統版本': '1.0.0'
+        };
+        
+        const infoHtml = Object.entries(info).map(([key, value]) => 
+            `<div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                <strong>${key}：</strong>
+                <span>${value}</span>
+             </div>`
+        ).join('');
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'flex';
+        modal.innerHTML = `
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h3>系統資訊</h3>
+                    <span class="close" onclick="this.closest('.modal').style.display='none'">&times;</span>
+                </div>
+                <div class="modal-form">
+                    ${infoHtml}
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+    }
+    
+    // 更新月份分佈
+    function updateMonthDistribution(year) {
+        const monthDistribution = document.getElementById('month-distribution');
+        if (!monthDistribution) return;
+        
+        const monthData = [];
+        for (let month = 1; month <= 12; month++) {
+            const count = personList.filter(person => 
+                person.createdYear === year && person.createdMonth === month
+            ).length;
+            monthData.push({ month, count });
+        }
+        
+        // 生成月份分佈HTML
+        let html = '<div class="month-chart">';
+        monthData.forEach(({ month, count }) => {
+            const height = count > 0 ? Math.max(20, count * 10) : 20;
+            const color = count > 0 ? '#667eea' : '#e9ecef';
+            html += `
+                <div class="month-bar">
+                    <div class="bar" style="height: ${height}px; background-color: ${color};"></div>
+                    <div class="month-label">${month}月</div>
+                    <div class="month-count">${count}</div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        
+        monthDistribution.innerHTML = html;
+    }
 });
