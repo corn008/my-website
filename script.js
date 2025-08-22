@@ -59,40 +59,28 @@ function logout() {
     }
 }
 
-function showModal(title, content) {
-    // 創建模態框
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.style.display = 'flex';
+function showModal(content) {
+    // 使用現有的通用模態框
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modal-body');
     
-    modal.innerHTML = `
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>${title}</h3>
-                <span class="close" onclick="closeModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                ${content}
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // 點擊外部關閉
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
+    if (modal && modalBody) {
+        modalBody.innerHTML = content;
+        modal.style.display = 'flex';
+        
+        // 點擊外部關閉
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    }
 }
 
 function closeModal() {
     const modals = document.querySelectorAll('.modal');
     modals.forEach(modal => {
-        if (modal.parentNode) {
-            modal.parentNode.removeChild(modal);
-        }
+        modal.style.display = 'none';
     });
 }
 
@@ -472,26 +460,49 @@ function clearSearch() {
 
 function editPerson(personId) {
     const person = personList.find(p => p.id === personId);
-    if (!person) return;
+    if (!person) {
+        showNotification('未找到人員資料', 'error');
+        return;
+    }
     
     const modal = document.getElementById('edit-modal');
     const form = document.getElementById('edit-form');
     
+    if (!modal || !form) {
+        showNotification('編輯模態框載入失敗', 'error');
+        return;
+    }
+    
+    // 填充年份選項
+    const yearSelect = form.querySelector('[name="year"]');
+    if (yearSelect) {
+        yearSelect.innerHTML = '<option value="">請選擇年份</option>';
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year + '年';
+            yearSelect.appendChild(option);
+        }
+    }
+    
     // 填充表單
-    form.querySelector('[name="name"]').value = person.name;
-    form.querySelector('[name="phone"]').value = person.phone;
-    form.querySelector('[name="address"]').value = person.address;
-    form.querySelector('[name="memo"]').value = person.memo;
-    form.querySelector('[name="year"]').value = person.createdYear;
-    form.querySelector('[name="month"]').value = person.createdMonth;
-    form.querySelector('[name="status"]').value = person.status;
+    form.querySelector('[name="name"]').value = person.name || '';
+    form.querySelector('[name="phone"]').value = person.phone || '';
+    form.querySelector('[name="address"]').value = person.address || '';
+    form.querySelector('[name="memo"]').value = person.memo || '';
+    form.querySelector('[name="year"]').value = person.createdYear || '';
+    form.querySelector('[name="month"]').value = person.createdMonth || '';
+    form.querySelector('[name="status"]').value = person.status || 'pending';
     
     // 顯示照片預覽
     const photoPreview = form.querySelector('.photo-preview');
-    if (person.photo) {
-        photoPreview.innerHTML = `<img src="${person.photo}" alt="照片" style="max-width: 100px; max-height: 100px;">`;
-    } else {
-        photoPreview.innerHTML = '<p>無照片</p>';
+    if (photoPreview) {
+        if (person.photo) {
+            photoPreview.innerHTML = `<img src="${person.photo}" alt="照片" style="max-width: 100px; max-height: 100px; border-radius: 8px;">`;
+        } else {
+            photoPreview.innerHTML = '<p style="color: #666; font-style: italic;">無照片</p>';
+        }
     }
     
     // 設置表單提交處理
@@ -568,6 +579,77 @@ function deletePerson(personId) {
     } else {
         console.log('用戶取消刪除操作');
     }
+}
+
+// 顯示人員詳情
+function showPersonDetail(personId) {
+    const person = personList.find(p => p.id === personId);
+    if (!person) {
+        showNotification('未找到人員資料', 'error');
+        return;
+    }
+    
+    const detailHtml = `
+        <div class="person-detail-modal">
+            <div class="detail-header">
+                <h3>${person.name} 的詳細資料</h3>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            <div class="detail-content">
+                <div class="detail-photo">
+                    ${person.photo ? `<img src="${person.photo}" alt="${person.name}">` : '<div class="no-photo">無照片</div>'}
+                </div>
+                <div class="detail-info">
+                    <div class="detail-item">
+                        <label>姓名：</label>
+                        <span>${person.name}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>電話：</label>
+                        <span>${person.phone}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>地址：</label>
+                        <span>${person.address}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>個案號碼：</label>
+                        <span>${person.caseNumber || '無'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>備忘：</label>
+                        <span>${person.memo || '無'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>狀態：</label>
+                        <span class="status-badge ${person.status === 'completed' ? 'completed' : 'pending'}">${person.status === 'completed' ? '已完成' : '未完成'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>建立時間：</label>
+                        <span>${person.createdAt}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    showModal(detailHtml);
+}
+
+// 顯示地圖
+function showMap(address) {
+    if (!address) {
+        showNotification('地址資訊不完整', 'warning');
+        return;
+    }
+    
+    // 使用 Google Maps 搜尋地址
+    const encodedAddress = encodeURIComponent(address);
+    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+    
+    // 在新視窗中開啟地圖
+    window.open(mapUrl, '_blank');
+    showNotification('已在新視窗中開啟地圖', 'info');
 }
 
 // 移除重複的 filterData 函數定義

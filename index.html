@@ -27,19 +27,38 @@
         <!-- 中央登入卡片 -->
         <div class="login-container">
             <div class="login-card">
+                <div class="login-header-icon">
+                    <span class="system-icon">🏥</span>
+                </div>
                 <h1 class="login-title">留守資訊系統</h1>
+                <p class="login-subtitle">歡迎使用專業的照護管理平台</p>
+                
                 <form id="login-form" class="login-form">
                     <div class="form-group">
-                        <label for="username">帳號：</label>
-                        <input type="text" id="username" name="username" required>
+                        <label for="username">帳號</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="username" name="username" placeholder="請輸入您的帳號" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label for="password">密碼：</label>
-                        <input type="password" id="password" name="password" required>
+                        <label for="password">密碼</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">🔒</span>
+                            <input type="password" id="password" name="password" placeholder="請輸入您的密碼" required>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">登入</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-icon">🚀</span>
+                        <span class="btn-text">登入系統</span>
+                    </button>
                 </form>
+                
                 <div class="login-info">
+                    <div class="info-header">
+                        <span class="info-icon">💡</span>
+                        <span class="info-title">登入資訊</span>
+                    </div>
                     <div class="credential-item">
                         <span class="key-icon">🔑</span>
                         <span>預設帳號：admin</span>
@@ -48,6 +67,10 @@
                         <span class="key-icon">🔑</span>
                         <span>預設密碼：123456</span>
                     </div>
+                </div>
+                
+                <div class="login-footer-info">
+                    <p class="footer-text">© 2024 留守資訊系統 - 專業照護管理解決方案</p>
                 </div>
             </div>
         </div>
@@ -461,6 +484,104 @@
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">返回列表</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- 編輯人員模態框 -->
+    <div id="edit-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>編輯人員資料</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="edit-form" class="modal-form">
+                <input type="hidden" name="id">
+                
+                <!-- 基本資料區塊 -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-icon">👤</span>
+                        <h4>基本資料</h4>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-name">姓名 *</label>
+                        <input type="text" name="name" placeholder="請輸入姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-phone">電話 *</label>
+                        <input type="tel" name="phone" placeholder="請輸入電話號碼" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-address">地址 *</label>
+                        <textarea name="address" rows="3" placeholder="請輸入完整地址" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-memo">備忘</label>
+                        <textarea name="memo" rows="3" placeholder="請輸入備忘資訊 (選填)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-year">年份 *</label>
+                        <select name="year" required>
+                            <option value="">請選擇年份</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-month">月份 *</label>
+                        <select name="month" required>
+                            <option value="">請選擇月份</option>
+                            <option value="1">1月</option>
+                            <option value="2">2月</option>
+                            <option value="3">3月</option>
+                            <option value="4">4月</option>
+                            <option value="5">5月</option>
+                            <option value="6">6月</option>
+                            <option value="7">7月</option>
+                            <option value="8">8月</option>
+                            <option value="9">9月</option>
+                            <option value="10">10月</option>
+                            <option value="11">11月</option>
+                            <option value="12">12月</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-status">狀態</label>
+                        <select name="status">
+                            <option value="pending">未完成</option>
+                            <option value="completed">已完成</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 照片區塊 -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-icon">📷</span>
+                        <h4>照片</h4>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-photo">更新照片</label>
+                        <div class="file-upload-area">
+                            <input type="file" name="photo" accept="image/*">
+                            <div class="file-upload-content">
+                                <span class="file-upload-text">選擇新照片 (選填)</span>
+                            </div>
+                        </div>
+                        <div class="photo-preview"></div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">更新資料</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 通用模態框 -->
+    <div id="modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div id="modal-body"></div>
         </div>
     </div>
 
