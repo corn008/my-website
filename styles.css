@@ -115,6 +115,12 @@ body {
     letter-spacing: 1px;
 }
 
+/* 若時間文字未成功寫入，避免顯示空白膠囊 */
+.login-time-inline:empty,
+.time-inline:empty {
+    display: none;
+}
+
 .login-footer {
     position: sticky;
     bottom: 0;
@@ -821,8 +827,8 @@ body {
 
 .theme-btn, .logout-btn {
     background: rgba(255, 255, 255, 0.15);
-    color: #ffffff; /* 保持白色，不受瀏覽器預設按鈕樣式影響 */
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff; /* 按鈕文字固定白色 */
+    border: 1px solid rgba(255, 255, 255, 0.35);
     padding: 6px 12px;
     border-radius: 15px;
     cursor: pointer;
@@ -830,6 +836,16 @@ body {
     font-weight: 500;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+}
+
+/* iOS Safari 可能將按鈕文字套用為透明，強制文字繪製 */
+.theme-btn, .logout-btn {
+    -webkit-text-fill-color: #ffffff;
+}
+
+.theme-btn::before {
+    content: '主題'; /* 避免短文本在某些字型下被裁切看起來像空白 */
+    display: none;
 }
 
 .theme-btn:hover {
