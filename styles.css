@@ -6075,3 +6075,37 @@ body:not(.dark-theme) .header-back-btn:hover {
     background: #f3f4f6;
 }
 
+/* 進一步縮小角落按鈕尺寸並避免繼承大型 .btn 樣式 */
+.btn-edit-compact,
+.btn-delete-compact {
+    flex: 0 0 auto;           /* 不拉伸 */
+    width: auto;              /* 不佔滿 */
+    height: auto;
+    padding: 0.3rem;          /* 更小內距 */
+    min-width: 28px;          /* 由 36 降低 */
+    min-height: 28px;         /* 由 36 降低 */
+    font-size: 0.95rem;       /* 圖標更小 */
+    line-height: 1;           /* 壓縮高度 */
+}
+
+/* 行動裝置更小尺寸 */
+@media (max-width: 768px) {
+    .btn-edit-compact,
+    .btn-delete-compact {
+        padding: 0.25rem;
+        min-width: 24px;      /* 由 32 降低 */
+        min-height: 24px;     /* 由 32 降低 */
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-edit-compact,
+    .btn-delete-compact {
+        padding: 0.2rem;
+        min-width: 20px;      /* 由 28 降低 */
+        min-height: 20px;     /* 由 28 降低 */
+        font-size: 0.8rem;
+    }
+}
+
