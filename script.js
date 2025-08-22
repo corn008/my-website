@@ -818,49 +818,135 @@ function showPersonDetail(personId) {
     }
     
     const detailHtml = `
-        <div class="person-detail-modal">
-            <div class="detail-header">
-                <h3>${person.name} 的詳細資料</h3>
-                <button class="close-btn" onclick="closeModal()">×</button>
-            </div>
-            <div class="detail-content">
-                <div class="detail-photo">
-                    ${person.photo ? `<img src="${person.photo}" alt="${person.name}">` : '<div class="no-photo">無照片</div>'}
+        <div class="person-detail-modal-modern">
+            <div class="detail-header-modern">
+                <div class="header-content">
+                    <div class="person-avatar">
+                        ${person.photo ? `<img src="${person.photo}" alt="${person.name}">` : '<div class="avatar-placeholder">👤</div>'}
+                    </div>
+                    <div class="person-title">
+                        <h3>${person.name}</h3>
+                        <p class="person-subtitle">詳細資料檢視</p>
+                    </div>
                 </div>
-                <div class="detail-info">
-                    <div class="detail-item">
-                        <label>姓名：</label>
-                        <span>${person.name}</span>
+                <button class="close-btn-modern" onclick="closeModal()">
+                    <span class="close-icon">✕</span>
+                </button>
+            </div>
+            
+            <div class="detail-content-modern">
+                <div class="detail-sections">
+                    <!-- 基本資料區塊 -->
+                    <div class="detail-section">
+                        <div class="section-header-modern">
+                            <span class="section-icon-modern">📋</span>
+                            <h4>基本資料</h4>
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-card">
+                                <div class="info-icon">👤</div>
+                                <div class="info-content">
+                                    <div class="info-label">姓名</div>
+                                    <div class="info-value">${person.name}</div>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-icon">📞</div>
+                                <div class="info-content">
+                                    <div class="info-label">電話</div>
+                                    <div class="info-value">${person.phone}</div>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-icon">🏠</div>
+                                <div class="info-content">
+                                    <div class="info-label">地址</div>
+                                    <div class="info-value">${person.address}</div>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-icon">🔢</div>
+                                <div class="info-content">
+                                    <div class="info-label">個案號碼</div>
+                                    <div class="info-value">${person.caseNumber || '未設定'}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <label>電話：</label>
-                        <span>${person.phone}</span>
+                    
+                    <!-- 狀態與備註區塊 -->
+                    <div class="detail-section">
+                        <div class="section-header-modern">
+                            <span class="section-icon-modern">📝</span>
+                            <h4>狀態與備註</h4>
+                        </div>
+                        <div class="status-memo-grid">
+                            <div class="status-card ${person.status === 'completed' ? 'completed' : 'pending'}">
+                                <div class="status-icon">${person.status === 'completed' ? '✅' : '⏳'}</div>
+                                <div class="status-content">
+                                    <div class="status-label">處理狀態</div>
+                                    <div class="status-value">${person.status === 'completed' ? '已完成' : '待處理'}</div>
+                                    ${person.completedAt ? `<div class="status-time">完成時間：${formatDateTime(person.completedAt)}</div>` : ''}
+                                </div>
+                            </div>
+                            <div class="memo-card">
+                                <div class="memo-icon">💭</div>
+                                <div class="memo-content">
+                                    <div class="memo-label">備註</div>
+                                    <div class="memo-value">${person.memo || '無備註'}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <label>地址：</label>
-                        <span>${person.address}</span>
+                    
+                    <!-- 時間資訊區塊 -->
+                    <div class="detail-section">
+                        <div class="section-header-modern">
+                            <span class="section-icon-modern">⏰</span>
+                            <h4>時間資訊</h4>
+                        </div>
+                        <div class="time-grid">
+                            <div class="time-card">
+                                <div class="time-icon">📅</div>
+                                <div class="time-content">
+                                    <div class="time-label">建立時間</div>
+                                    <div class="time-value">${formatDateTime(person.createdAt)}</div>
+                                </div>
+                            </div>
+                            ${person.completedAt ? `
+                            <div class="time-card completed">
+                                <div class="time-icon">✅</div>
+                                <div class="time-content">
+                                    <div class="time-label">完成時間</div>
+                                    <div class="time-value">${formatDateTime(person.completedAt)}</div>
+                                </div>
+                            </div>
+                            ` : ''}
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <label>個案號碼：</label>
-                        <span>${person.caseNumber || '無'}</span>
+                    
+                    <!-- 地圖區塊 -->
+                    <div class="detail-section">
+                        <div class="section-header-modern">
+                            <span class="section-icon-modern">🗺️</span>
+                            <h4>位置資訊</h4>
+                        </div>
+                        <div class="map-container">
+                            <iframe class="detail-map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${encodeURIComponent(person.address)}&output=embed"></iframe>
+                        </div>
                     </div>
-                    <div class="detail-item">
-                        <label>備忘：</label>
-                        <span>${person.memo || '無'}</span>
-                    </div>
-                    <div class="detail-item">
-                        <label>狀態：</label>
-                        <span class="status-badge ${person.status === 'completed' ? 'completed' : 'pending'}">${person.status === 'completed' ? '已完成' : '未完成'}</span>
-                    </div>
-                    ${person.completedAt ? `
-                    <div class="detail-item">
-                        <label>完成時間：</label>
-                        <span>${formatDateTime(person.completedAt)}</span>
-                    </div>` : ''}
-                    <div class="detail-item">
-                        <label>建立時間：</label>
-                        <span>${formatDateTime(person.createdAt)}</span>
-                    </div>
+                </div>
+                
+                <!-- 操作按鈕 -->
+                <div class="detail-actions">
+                    <button class="action-btn edit-btn" onclick="editPerson(${person.id}); closeModal();">
+                        <span class="btn-icon">✏️</span>
+                        <span class="btn-text">編輯資料</span>
+                    </button>
+                    <button class="action-btn delete-btn" onclick="deletePerson(${person.id}); closeModal();">
+                        <span class="btn-icon">🗑️</span>
+                        <span class="btn-text">刪除資料</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -892,7 +978,7 @@ function showMap(address) {
 
 // 移除重複的 initializeStatsYearSelect 函數定義
 
-// 移除重複的 initializeSearchYearSelect 函數定義
+// initializeSearchYearSelect 函數已移除（年份選擇器由 initializeDateSelectors 統一管理）
 
 // 移除重複的 displayData 函數定義
 
@@ -1470,6 +1556,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayData(data) {
         const dataContent = document.getElementById('data-content');
         if (!dataContent) return;
+        
+        // 更新數據計數信息
+        const dataCountInfo = document.getElementById('data-count-info');
+        if (dataCountInfo) {
+            dataCountInfo.textContent = `共 ${data.length} 筆資料`;
+        }
         
         if (data.length === 0) {
             dataContent.innerHTML = '<p class="no-data-message">目前沒有資料</p>';
@@ -2178,6 +2270,29 @@ document.addEventListener('DOMContentLoaded', function() {
         if (pendingElement) pendingElement.textContent = pendingCount;
         if (completedElement) completedElement.textContent = completedCount;
         
+        // 計算並更新完成率
+        const completionRate = totalPeople > 0 ? Math.round((completedCount / totalPeople) * 100) : 0;
+        const completionRateElement = document.getElementById('completion-rate');
+        if (completionRateElement) {
+            completionRateElement.textContent = `${completionRate}%`;
+        }
+        
+        // 計算詳細統計率
+        const photoCompletionRate = Math.round((targetYearPeople.filter(p => p.photo).length / totalPeople) * 100) || 0;
+        const contactCompletionRate = Math.round((targetYearPeople.filter(p => p.phone && p.phone.trim()).length / totalPeople) * 100) || 0;
+        const memoCompletionRate = Math.round((targetYearPeople.filter(p => p.memo && p.memo.trim()).length / totalPeople) * 100) || 0;
+        const addressCompletionRate = Math.round((targetYearPeople.filter(p => p.address && p.address.trim()).length / totalPeople) * 100) || 0;
+        
+        const photoRateElement = document.getElementById('photo-completion-rate');
+        const contactRateElement = document.getElementById('contact-completion-rate');
+        const memoRateElement = document.getElementById('memo-completion-rate');
+        const addressRateElement = document.getElementById('address-completion-rate');
+        
+        if (photoRateElement) photoRateElement.textContent = `${photoCompletionRate}%`;
+        if (contactRateElement) contactRateElement.textContent = `${contactCompletionRate}%`;
+        if (memoRateElement) memoRateElement.textContent = `${memoCompletionRate}%`;
+        if (addressRateElement) addressRateElement.textContent = `${addressCompletionRate}%`;
+        
         // 更新月份分佈
         updateMonthDistribution(targetYear);
         
@@ -2478,7 +2593,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.displayData = wrapSafe('displayData', displayData);
     window.saveData = wrapSafe('saveData', saveData);
     window.initializeStatsYearSelect = wrapSafe('initializeStatsYearSelect', initializeStatsYearSelect);
-    window.initializeSearchYearSelect = wrapSafe('initializeSearchYearSelect', initializeSearchYearSelect);
     window.showPersonDetail = wrapSafe('showPersonDetail', showPersonDetail);
     window.showMap = wrapSafe('showMap', showMap);
     window.updateMonthDistribution = wrapSafe('updateMonthDistribution', updateMonthDistribution);
@@ -2490,4 +2604,22 @@ document.addEventListener('DOMContentLoaded', function() {
     window.initializeSystem = wrapSafe('initializeSystem', initializeSystem);
     window.initializeDateSelectors = wrapSafe('initializeDateSelectors', initializeDateSelectors);
     window.logout = wrapSafe('logout', logout);
+    window.toggleFaq = wrapSafe('toggleFaq', toggleFaq);
 });
+
+// FAQ 折疊展開功能
+function toggleFaq(questionElement) {
+    const faqItem = questionElement.closest('.faq-item-modern');
+    const answer = faqItem.querySelector('.faq-answer');
+    const toggle = questionElement.querySelector('.faq-toggle');
+    
+    if (answer.style.display === 'block') {
+        answer.style.display = 'none';
+        toggle.textContent = '▼';
+        questionElement.classList.remove('active');
+    } else {
+        answer.style.display = 'block';
+        toggle.textContent = '▲';
+        questionElement.classList.add('active');
+    }
+}

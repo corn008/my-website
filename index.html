@@ -140,44 +140,111 @@
                     <div class="care-header">
                         <div class="care-header-content">
                             <button class="back-btn" onclick="navigateTo('function-selection')">
-                                <span>←</span> 返回主選單
+                                <span class="back-icon">←</span> 
+                                <span class="back-text">返回主選單</span>
                             </button>
-                            <h2>卹滿照護</h2>
+                            <div class="section-title">
+                                <span class="section-icon">👥</span>
+                                <h2>卹滿照護</h2>
+                                <span class="section-subtitle">人員管理與資料維護</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- 篩選和搜尋區域 -->
-                    <div class="filter-search-area">
-                        <div class="filter-controls">
-                            <div class="filter-group">
-                                <label for="year-select">年份</label>
-                                <select id="year-select" class="form-select">
-                                    <option value="">請選擇年份</option>
-                                </select>
+                    <!-- 功能操作卡片區域 -->
+                    <div class="care-cards-grid">
+                        <!-- 篩選搜尋卡片 -->
+                        <div class="care-card filter-card">
+                            <div class="card-header">
+                                <span class="card-icon">🔍</span>
+                                <h3>篩選與搜尋</h3>
                             </div>
-                            <div class="filter-group">
-                                <label for="month-select">月份</label>
-                                <select id="month-select" class="form-select">
-                                    <option value="">請選擇月份</option>
-                                </select>
-                            </div>
-                            <div class="search-group">
-                                <input type="text" id="search-input" class="search-input" placeholder="搜尋姓名/個案號碼">
+                            <div class="card-content">
+                                <div class="filter-controls-modern">
+                                    <div class="filter-group-modern">
+                                        <label for="year-select" class="modern-label">
+                                            <span class="label-icon">📅</span>
+                                            <span class="label-text">年份</span>
+                                        </label>
+                                        <select id="year-select" class="modern-select">
+                                            <option value="">請選擇年份</option>
+                                        </select>
+                                    </div>
+                                    <div class="filter-group-modern">
+                                        <label for="month-select" class="modern-label">
+                                            <span class="label-icon">🗓️</span>
+                                            <span class="label-text">月份</span>
+                                        </label>
+                                        <select id="month-select" class="modern-select">
+                                            <option value="">請選擇月份</option>
+                                        </select>
+                                    </div>
+                                    <div class="search-group-modern">
+                                        <label for="search-input" class="modern-label">
+                                            <span class="label-icon">🔎</span>
+                                            <span class="label-text">關鍵字搜尋</span>
+                                        </label>
+                                        <div class="search-input-wrapper">
+                                            <input type="text" id="search-input" class="modern-search-input" placeholder="搜尋姓名、個案號碼...">
+                                            <button class="search-clear-btn" onclick="document.getElementById('search-input').value=''; filterData();">
+                                                <span>✕</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="action-buttons">
-                                                    <button id="add-person-btn" type="button" class="btn btn-success">新增人員</button>
-                        <button id="export-csv-btn" type="button" class="btn btn-export">匯出本月 CSV</button>
-                        <button id="export-pdf-btn" type="button" class="btn btn-export-orange">匯出 PDF</button>
-                        <button id="check-photos-btn" type="button" class="btn btn-check">檢查照片</button>
+                        <!-- 快速操作卡片 -->
+                        <div class="care-card action-card">
+                            <div class="card-header">
+                                <span class="card-icon">⚡</span>
+                                <h3>快速操作</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="action-buttons-modern">
+                                    <button id="add-person-btn" type="button" class="modern-btn primary-btn">
+                                        <span class="btn-icon">➕</span>
+                                        <span class="btn-text">新增人員</span>
+                                        <span class="btn-description">建立新的照護記錄</span>
+                                    </button>
+                                    <button id="export-csv-btn" type="button" class="modern-btn export-btn">
+                                        <span class="btn-icon">📊</span>
+                                        <span class="btn-text">匯出 CSV</span>
+                                        <span class="btn-description">下載當月數據表格</span>
+                                    </button>
+                                    <button id="export-pdf-btn" type="button" class="modern-btn pdf-btn">
+                                        <span class="btn-icon">📄</span>
+                                        <span class="btn-text">匯出 PDF</span>
+                                        <span class="btn-description">生成當月報告文件</span>
+                                    </button>
+                                    <button id="check-photos-btn" type="button" class="modern-btn check-btn">
+                                        <span class="btn-icon">📷</span>
+                                        <span class="btn-text">檢查照片</span>
+                                        <span class="btn-description">驗證照片完整性</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- 資料顯示區域 -->
-                    <div class="data-display-area">
-                        <div id="data-content" class="data-content">
-                            <p class="no-data-message">目前沒有資料</p>
+                    <div class="data-display-modern">
+                        <div class="data-header">
+                            <h3>
+                                <span class="data-icon">📋</span>
+                                <span class="data-title">人員資料列表</span>
+                            </h3>
+                            <div class="data-info">
+                                <span id="data-count-info">共 0 筆資料</span>
+                            </div>
+                        </div>
+                        <div id="data-content" class="data-content-modern">
+                            <div class="no-data-modern">
+                                <div class="no-data-icon">📭</div>
+                                <h4>目前沒有資料</h4>
+                                <p>請選擇篩選條件或新增人員資料</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -189,41 +256,124 @@
                     <div class="statistics-header">
                         <div class="statistics-header-content">
                             <button class="back-btn" onclick="navigateTo('function-selection')">
-                                <span>←</span> 返回主選單
+                                <span class="back-icon">←</span> 
+                                <span class="back-text">返回主選單</span>
                             </button>
-                            <h2>統計分析</h2>
+                            <div class="section-title">
+                                <span class="section-icon">📊</span>
+                                <h2>統計分析</h2>
+                                <span class="section-subtitle">數據分析與趨勢報告</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="statistics-content">
-                        <div class="statistics-card">
-                            <h3>📈 本月統計</h3>
-                            <div class="statistics-grid">
-                                <div class="stat-item">
-                                    <div class="stat-number" id="total-people">0</div>
-                                    <div class="stat-label">總人數</div>
+                    <div class="statistics-content-modern">
+                        <!-- 本月統計卡片 -->
+                        <div class="statistics-card-modern summary-card">
+                            <div class="card-header">
+                                <span class="card-icon">📈</span>
+                                <h3>本月統計概覽</h3>
+                                <span class="card-subtitle">當前月份的整體數據表現</span>
+                            </div>
+                            <div class="statistics-grid-modern">
+                                <div class="stat-item-modern total-stat">
+                                    <div class="stat-icon">👥</div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="total-people">0</div>
+                                        <div class="stat-label">總人數</div>
+                                        <div class="stat-description">累計管理人員</div>
+                                    </div>
                                 </div>
-                                <div class="stat-item">
-                                    <div class="stat-number" id="pending-count">0</div>
-                                    <div class="stat-label">待處理</div>
+                                <div class="stat-item-modern pending-stat">
+                                    <div class="stat-icon">⏳</div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="pending-count">0</div>
+                                        <div class="stat-label">待處理</div>
+                                        <div class="stat-description">需要跟進處理</div>
+                                    </div>
                                 </div>
-                                <div class="stat-item">
-                                    <div class="stat-number" id="completed-count">0</div>
-                                    <div class="stat-label">已完成</div>
+                                <div class="stat-item-modern completed-stat">
+                                    <div class="stat-icon">✅</div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="completed-count">0</div>
+                                        <div class="stat-label">已完成</div>
+                                        <div class="stat-description">已處理完成</div>
+                                    </div>
+                                </div>
+                                <div class="stat-item-modern progress-stat">
+                                    <div class="stat-icon">📊</div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="completion-rate">0%</div>
+                                        <div class="stat-label">完成率</div>
+                                        <div class="stat-description">處理進度百分比</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="statistics-card">
-                            <h3>📅 月份分佈</h3>
-                            <div class="setting-item" style="margin-bottom: 1rem;">
-                                <label>選擇年份：</label>
-                                <select id="stats-year-select" onchange="updateStatistics()" style="min-width: 120px;">
-                                    <option value="">請選擇年份</option>
-                                </select>
+                        <!-- 月份分佈卡片 -->
+                        <div class="statistics-card-modern distribution-card">
+                            <div class="card-header">
+                                <span class="card-icon">📅</span>
+                                <h3>月份分佈圖表</h3>
+                                <span class="card-subtitle">各月份人員數量變化趨勢</span>
                             </div>
-                            <div class="month-distribution" id="month-distribution">
-                                <p>請選擇年份查看月份分佈</p>
+                            <div class="card-content">
+                                <div class="year-selector-modern">
+                                    <label for="stats-year-select" class="modern-label">
+                                        <span class="label-icon">🗓️</span>
+                                        <span class="label-text">選擇年份</span>
+                                    </label>
+                                    <select id="stats-year-select" onchange="updateStatistics()" class="modern-select">
+                                        <option value="">請選擇年份</option>
+                                    </select>
+                                </div>
+                                <div class="month-distribution-modern" id="month-distribution">
+                                    <div class="distribution-placeholder">
+                                        <div class="placeholder-icon">📊</div>
+                                        <h4>月份分佈圖表</h4>
+                                        <p>請選擇年份查看該年度各月份的人員分佈情況</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 詳細統計卡片 -->
+                        <div class="statistics-card-modern details-card">
+                            <div class="card-header">
+                                <span class="card-icon">📋</span>
+                                <h3>詳細統計</h3>
+                                <span class="card-subtitle">更多統計數據與分析</span>
+                            </div>
+                            <div class="details-grid">
+                                <div class="detail-item">
+                                    <div class="detail-icon">📸</div>
+                                    <div class="detail-content">
+                                        <div class="detail-label">照片完整率</div>
+                                        <div class="detail-value" id="photo-completion-rate">計算中...</div>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">📞</div>
+                                    <div class="detail-content">
+                                        <div class="detail-label">聯絡資訊完整率</div>
+                                        <div class="detail-value" id="contact-completion-rate">計算中...</div>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">📝</div>
+                                    <div class="detail-content">
+                                        <div class="detail-label">備註填寫率</div>
+                                        <div class="detail-value" id="memo-completion-rate">計算中...</div>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-icon">🏠</div>
+                                    <div class="detail-content">
+                                        <div class="detail-label">地址完整率</div>
+                                        <div class="detail-value" id="address-completion-rate">計算中...</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -236,42 +386,182 @@
                     <div class="settings-header">
                         <div class="settings-header-content">
                             <button class="back-btn" onclick="navigateTo('function-selection')">
-                                <span>←</span> 返回主選單
+                                <span class="back-icon">←</span> 
+                                <span class="back-text">返回主選單</span>
                             </button>
-                            <h2>系統設定</h2>
+                            <div class="section-title">
+                                <span class="section-icon">⚙️</span>
+                                <h2>系統設定</h2>
+                                <span class="section-subtitle">系統配置與維護工具</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="settings-content">
-                        <div class="settings-card">
-                            <h3>🎨 外觀設定</h3>
-                            <div class="setting-item">
-                                <label>主題模式</label>
-                                <button class="btn btn-secondary" onclick="toggleTheme()">切換主題</button>
+                    <div class="settings-content-modern">
+                        <!-- 外觀設定卡片 -->
+                        <div class="settings-card-modern appearance-card">
+                            <div class="card-header">
+                                <span class="card-icon">🎨</span>
+                                <h3>外觀設定</h3>
+                                <span class="card-subtitle">個性化界面配置</span>
+                            </div>
+                            <div class="card-content">
+                                <div class="setting-item-modern">
+                                    <div class="setting-info">
+                                        <div class="setting-icon">🌗</div>
+                                        <div class="setting-details">
+                                            <div class="setting-label">主題模式</div>
+                                            <div class="setting-description">切換深色或淺色主題界面</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-control">
+                                        <button class="modern-btn theme-btn-setting" onclick="toggleTheme()">
+                                            <span class="btn-icon">🎯</span>
+                                            <span class="btn-text">切換主題</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="settings-card">
-                            <h3>🔧 系統工具</h3>
-                            <div class="setting-item">
-                                <label>資料維護</label>
-                                <button class="btn btn-warning" onclick="fixDataFormat()">修復資料格式</button>
+                        <!-- 資料管理卡片 -->
+                        <div class="settings-card-modern data-card">
+                            <div class="card-header">
+                                <span class="card-icon">💾</span>
+                                <h3>資料管理</h3>
+                                <span class="card-subtitle">備份、還原與資料維護</span>
                             </div>
-                            <div class="setting-item">
-                                <label>測試功能</label>
-                                <button class="btn btn-info" onclick="quickTest()">快速測試</button>
+                            <div class="card-content">
+                                <div class="setting-item-modern">
+                                    <div class="setting-info">
+                                        <div class="setting-icon">📁</div>
+                                        <div class="setting-details">
+                                            <div class="setting-label">資料備份</div>
+                                            <div class="setting-description">將所有資料匯出為備份檔案</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-control">
+                                        <button class="modern-btn backup-btn" onclick="backupData()">
+                                            <span class="btn-icon">💾</span>
+                                            <span class="btn-text">備份資料</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-item-modern">
+                                    <div class="setting-info">
+                                        <div class="setting-icon">📂</div>
+                                        <div class="setting-details">
+                                            <div class="setting-label">資料還原</div>
+                                            <div class="setting-description">從備份檔案恢復資料</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-control">
+                                        <button class="modern-btn restore-btn" onclick="restoreData()">
+                                            <span class="btn-icon">📥</span>
+                                            <span class="btn-text">還原資料</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-item-modern">
+                                    <div class="setting-info">
+                                        <div class="setting-icon">🔧</div>
+                                        <div class="setting-details">
+                                            <div class="setting-label">資料維護</div>
+                                            <div class="setting-description">修復資料格式與清理冗餘資料</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-control">
+                                        <button class="modern-btn fix-btn" onclick="fixDataFormat()">
+                                            <span class="btn-icon">🛠️</span>
+                                            <span class="btn-text">修復資料</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="setting-item">
-                                <label>資料備份</label>
-                                <button class="btn btn-success" onclick="backupData()">備份資料</button>
+                        </div>
+                        
+                        <!-- 系統工具卡片 -->
+                        <div class="settings-card-modern tools-card">
+                            <div class="card-header">
+                                <span class="card-icon">🔨</span>
+                                <h3>系統工具</h3>
+                                <span class="card-subtitle">診斷與測試工具</span>
                             </div>
-                            <div class="setting-item">
-                                <label>資料還原</label>
-                                <button class="btn btn-export" onclick="restoreData()">還原資料</button>
+                            <div class="card-content">
+                                <div class="setting-item-modern">
+                                    <div class="setting-info">
+                                        <div class="setting-icon">ℹ️</div>
+                                        <div class="setting-details">
+                                            <div class="setting-label">系統資訊</div>
+                                            <div class="setting-description">查看系統運行狀態與版本資訊</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-control">
+                                        <button class="modern-btn info-btn" onclick="showSystemInfo()">
+                                            <span class="btn-icon">📊</span>
+                                            <span class="btn-text">系統資訊</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-item-modern">
+                                    <div class="setting-info">
+                                        <div class="setting-icon">🧪</div>
+                                        <div class="setting-details">
+                                            <div class="setting-label">快速測試</div>
+                                            <div class="setting-description">執行系統功能測試與診斷</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-control">
+                                        <button class="modern-btn test-btn" onclick="quickTest()">
+                                            <span class="btn-icon">🔬</span>
+                                            <span class="btn-text">執行測試</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="setting-item">
-                                <label>系統資訊</label>
-                                <button class="btn btn-check" onclick="showSystemInfo()">查看系統資訊</button>
+                        </div>
+                        
+                        <!-- 系統狀態卡片 -->
+                        <div class="settings-card-modern status-card">
+                            <div class="card-header">
+                                <span class="card-icon">📈</span>
+                                <h3>系統狀態</h3>
+                                <span class="card-subtitle">當前系統運行狀況</span>
+                            </div>
+                            <div class="card-content">
+                                <div class="status-grid">
+                                    <div class="status-item">
+                                        <div class="status-icon">🟢</div>
+                                        <div class="status-info">
+                                            <div class="status-label">系統狀態</div>
+                                            <div class="status-value">正常運行</div>
+                                        </div>
+                                    </div>
+                                    <div class="status-item">
+                                        <div class="status-icon">💾</div>
+                                        <div class="status-info">
+                                            <div class="status-label">資料儲存</div>
+                                            <div class="status-value">本地儲存</div>
+                                        </div>
+                                    </div>
+                                    <div class="status-item">
+                                        <div class="status-icon">🔒</div>
+                                        <div class="status-info">
+                                            <div class="status-label">安全狀態</div>
+                                            <div class="status-value">已驗證</div>
+                                        </div>
+                                    </div>
+                                    <div class="status-item">
+                                        <div class="status-icon">📱</div>
+                                        <div class="status-info">
+                                            <div class="status-label">響應式設計</div>
+                                            <div class="status-value">已啟用</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -284,94 +574,285 @@
                     <div class="help-header">
                         <div class="help-header-content">
                             <button class="back-btn" onclick="navigateTo('function-selection')">
-                                <span>←</span> 返回主選單
+                                <span class="back-icon">←</span> 
+                                <span class="back-text">返回主選單</span>
                             </button>
-                            <h2>使用說明</h2>
+                            <div class="section-title">
+                                <span class="section-icon">❓</span>
+                                <h2>使用說明</h2>
+                                <span class="section-subtitle">操作指南與系統幫助</span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="help-content">
-                        <div class="help-card">
-                            <h3>📖 快速入門</h3>
-                            <div class="help-step">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h4>選擇功能</h4>
-                                    <p>在主選單中點擊想要使用的功能模組</p>
-                                </div>
+                    <div class="help-content-modern">
+                        <!-- 快速入門卡片 -->
+                        <div class="help-card-modern tutorial-card">
+                            <div class="card-header">
+                                <span class="card-icon">🚀</span>
+                                <h3>快速入門指南</h3>
+                                <span class="card-subtitle">三步驟輕鬆上手系統操作</span>
                             </div>
-                            <div class="help-step">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h4>操作功能</h4>
-                                    <p>在功能頁面中進行具體操作</p>
+                            <div class="tutorial-steps">
+                                <div class="tutorial-step">
+                                    <div class="step-indicator">
+                                        <div class="step-number">1</div>
+                                        <div class="step-line"></div>
+                                    </div>
+                                    <div class="step-content">
+                                        <div class="step-title">
+                                            <span class="step-icon">🎯</span>
+                                            <h4>選擇功能模組</h4>
+                                        </div>
+                                        <p>在主選單中選擇您需要使用的功能：卹滿照護、統計分析、系統設定或使用說明</p>
+                                        <div class="step-tips">
+                                            <span class="tip-icon">💡</span>
+                                            <span>提示：每個功能模組都有清楚的圖示和說明</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="help-step">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h4>返回主選單</h4>
-                                    <p>點擊「返回主選單」按鈕回到功能選擇頁面</p>
+                                
+                                <div class="tutorial-step">
+                                    <div class="step-indicator">
+                                        <div class="step-number">2</div>
+                                        <div class="step-line"></div>
+                                    </div>
+                                    <div class="step-content">
+                                        <div class="step-title">
+                                            <span class="step-icon">⚡</span>
+                                            <h4>執行具體操作</h4>
+                                        </div>
+                                        <p>在功能頁面中進行您需要的操作：新增資料、查詢資訊、匯出報表等</p>
+                                        <div class="step-tips">
+                                            <span class="tip-icon">💡</span>
+                                            <span>提示：所有操作都有清楚的按鈕和說明文字</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tutorial-step">
+                                    <div class="step-indicator">
+                                        <div class="step-number">3</div>
+                                    </div>
+                                    <div class="step-content">
+                                        <div class="step-title">
+                                            <span class="step-icon">🔄</span>
+                                            <h4>返回與導航</h4>
+                                        </div>
+                                        <p>使用「返回主選單」按鈕或瀏覽器返回鍵輕鬆切換功能模組</p>
+                                        <div class="step-tips">
+                                            <span class="tip-icon">💡</span>
+                                            <span>提示：支援手機滑動手勢和瀏覽器導航</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="help-card">
-                            <h3>❓ 常見問題</h3>
-                            <div class="faq-item">
-                                <h4>如何新增人員？</h4>
-                                <p>進入「卹滿照護」功能，點擊「新增人員」按鈕，填寫表單後提交即可。</p>
+                        <!-- 功能說明卡片 -->
+                        <div class="help-card-modern features-card">
+                            <div class="card-header">
+                                <span class="card-icon">📋</span>
+                                <h3>功能模組說明</h3>
+                                <span class="card-subtitle">了解各功能模組的作用與特色</span>
                             </div>
-                            <div class="faq-item">
-                                <h4>如何匯出資料？</h4>
-                                <p>在「卹滿照護」功能中，選擇年份月份後，點擊「匯出本月 CSV」或「匯出 PDF」按鈕。</p>
-                            </div>
-                            <div class="faq-item">
-                                <h4>如何檢查照片完整性？</h4>
-                                <p>選擇年份月份後，點擊「照片檢查」按鈕，系統會顯示該月份人員的照片完整度統計。</p>
-                            </div>
-                            <div class="faq-item">
-                                <h4>如何標記案件完成？</h4>
-                                <p>在人員卡片中，點擊「標記完成」連結，即可將案件狀態更新為已完成。</p>
-                            </div>
-                            <div class="faq-item">
-                                <h4>如何備份和還原資料？</h4>
-                                <p>進入「系統設定」功能，使用「資料備份」和「資料還原」按鈕進行資料管理。</p>
-                            </div>
-                            <div class="faq-item">
-                                <h4>如何切換主題模式？</h4>
-                                <p>在「系統設定」功能中，點擊「切換主題」按鈕即可在淺色和深色主題間切換。</p>
+                            <div class="features-grid">
+                                <div class="feature-item care-feature">
+                                    <div class="feature-icon">👥</div>
+                                    <div class="feature-content">
+                                        <h4>卹滿照護</h4>
+                                        <p class="feature-description">核心業務功能模組</p>
+                                        <ul class="feature-list">
+                                            <li>✓ 人員資料管理</li>
+                                            <li>✓ 智能篩選搜尋</li>
+                                            <li>✓ 報表匯出功能</li>
+                                            <li>✓ 照片完整性檢查</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item stats-feature">
+                                    <div class="feature-icon">📊</div>
+                                    <div class="feature-content">
+                                        <h4>統計分析</h4>
+                                        <p class="feature-description">數據分析與視覺化</p>
+                                        <ul class="feature-list">
+                                            <li>✓ 本月統計概覽</li>
+                                            <li>✓ 月份分佈圖表</li>
+                                            <li>✓ 完成率分析</li>
+                                            <li>✓ 資料完整性統計</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item settings-feature">
+                                    <div class="feature-icon">⚙️</div>
+                                    <div class="feature-content">
+                                        <h4>系統設定</h4>
+                                        <p class="feature-description">系統配置與維護</p>
+                                        <ul class="feature-list">
+                                            <li>✓ 主題模式切換</li>
+                                            <li>✓ 資料備份還原</li>
+                                            <li>✓ 系統診斷工具</li>
+                                            <li>✓ 狀態監控面板</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="feature-item help-feature">
+                                    <div class="feature-icon">❓</div>
+                                    <div class="feature-content">
+                                        <h4>使用說明</h4>
+                                        <p class="feature-description">幫助文檔與支援</p>
+                                        <ul class="feature-list">
+                                            <li>✓ 快速入門教學</li>
+                                            <li>✓ 常見問題解答</li>
+                                            <li>✓ 操作步驟說明</li>
+                                            <li>✓ 系統使用技巧</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="help-card">
-                            <h3>📋 功能說明</h3>
-                            <div class="help-step">
-                                <div class="step-number">👥</div>
-                                <div class="step-content">
-                                    <h4>卹滿照護</h4>
-                                    <p>人員管理、資料查詢、匯出報表、照片檢查等核心功能</p>
+                        <!-- 常見問題卡片 -->
+                        <div class="help-card-modern faq-card">
+                            <div class="card-header">
+                                <span class="card-icon">❓</span>
+                                <h3>常見問題解答</h3>
+                                <span class="card-subtitle">快速找到問題解決方案</span>
+                            </div>
+                            <div class="faq-accordion">
+                                <div class="faq-item-modern">
+                                    <div class="faq-question" onclick="toggleFaq(this)">
+                                        <span class="faq-icon">➕</span>
+                                        <h4>如何新增人員資料？</h4>
+                                        <span class="faq-toggle">▼</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <div class="faq-steps">
+                                            <div class="faq-step">1. 進入「卹滿照護」功能模組</div>
+                                            <div class="faq-step">2. 點擊「新增人員」按鈕</div>
+                                            <div class="faq-step">3. 填寫完整的人員資訊表單</div>
+                                            <div class="faq-step">4. 上傳照片（可選）</div>
+                                            <div class="faq-step">5. 點擊「儲存」完成新增</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item-modern">
+                                    <div class="faq-question" onclick="toggleFaq(this)">
+                                        <span class="faq-icon">📊</span>
+                                        <h4>如何匯出資料報表？</h4>
+                                        <span class="faq-toggle">▼</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <div class="faq-steps">
+                                            <div class="faq-step">1. 在卹滿照護頁面選擇年份和月份</div>
+                                            <div class="faq-step">2. 選擇匯出格式：CSV（Excel格式）或PDF（報告格式）</div>
+                                            <div class="faq-step">3. 點擊對應的匯出按鈕</div>
+                                            <div class="faq-step">4. 系統會自動下載或開啟檔案</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item-modern">
+                                    <div class="faq-question" onclick="toggleFaq(this)">
+                                        <span class="faq-icon">📷</span>
+                                        <h4>如何檢查照片完整性？</h4>
+                                        <span class="faq-toggle">▼</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <div class="faq-steps">
+                                            <div class="faq-step">1. 選擇要檢查的年份和月份</div>
+                                            <div class="faq-step">2. 點擊「檢查照片」按鈕</div>
+                                            <div class="faq-step">3. 系統會顯示照片完整性統計</div>
+                                            <div class="faq-step">4. 查看哪些人員缺少照片</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item-modern">
+                                    <div class="faq-question" onclick="toggleFaq(this)">
+                                        <span class="faq-icon">✅</span>
+                                        <h4>如何標記案件完成？</h4>
+                                        <span class="faq-toggle">▼</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <div class="faq-steps">
+                                            <div class="faq-step">1. 在人員資料卡片中找到狀態區域</div>
+                                            <div class="faq-step">2. 點擊「完成」按鈕</div>
+                                            <div class="faq-step">3. 系統會自動記錄完成時間</div>
+                                            <div class="faq-step">4. 如需取消，可點擊「設為未完成」</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item-modern">
+                                    <div class="faq-question" onclick="toggleFaq(this)">
+                                        <span class="faq-icon">💾</span>
+                                        <h4>如何備份和還原資料？</h4>
+                                        <span class="faq-toggle">▼</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <div class="faq-steps">
+                                            <div class="faq-step">1. 進入「系統設定」功能</div>
+                                            <div class="faq-step">2. 在資料管理區域找到備份按鈕</div>
+                                            <div class="faq-step">3. 點擊「備份資料」下載備份檔案</div>
+                                            <div class="faq-step">4. 還原時點擊「還原資料」並選擇備份檔案</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="faq-item-modern">
+                                    <div class="faq-question" onclick="toggleFaq(this)">
+                                        <span class="faq-icon">🌗</span>
+                                        <h4>如何切換主題模式？</h4>
+                                        <span class="faq-toggle">▼</span>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <div class="faq-steps">
+                                            <div class="faq-step">1. 可在頂部導航欄點擊主題按鈕</div>
+                                            <div class="faq-step">2. 或進入「系統設定」→「外觀設定」</div>
+                                            <div class="faq-step">3. 點擊「切換主題」按鈕</div>
+                                            <div class="faq-step">4. 系統會在淺色和深色主題間切換</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="help-step">
-                                <div class="step-number">📊</div>
-                                <div class="step-content">
-                                    <h4>統計分析</h4>
-                                    <p>本月統計、月份分佈圖表、資料分析等統計功能</p>
-                                </div>
+                        </div>
+                        
+                        <!-- 聯絡支援卡片 -->
+                        <div class="help-card-modern support-card">
+                            <div class="card-header">
+                                <span class="card-icon">📞</span>
+                                <h3>聯絡與支援</h3>
+                                <span class="card-subtitle">需要更多幫助？聯絡我們的支援團隊</span>
                             </div>
-                            <div class="help-step">
-                                <div class="step-number">⚙️</div>
-                                <div class="step-content">
-                                    <h4>系統設定</h4>
-                                    <p>主題切換、資料維護、備份還原、系統工具等設定功能</p>
+                            <div class="support-grid">
+                                <div class="support-item">
+                                    <div class="support-icon">💬</div>
+                                    <h4>技術支援</h4>
+                                    <p>遇到技術問題或系統故障</p>
+                                    <div class="support-action">聯絡系統管理員</div>
                                 </div>
-                            </div>
-                            <div class="help-step">
-                                <div class="step-number">❓</div>
-                                <div class="step-content">
-                                    <h4>使用說明</h4>
-                                    <p>操作指南、常見問題、功能說明等幫助文件</p>
+                                <div class="support-item">
+                                    <div class="support-icon">📖</div>
+                                    <h4>操作教學</h4>
+                                    <p>需要詳細的操作指導</p>
+                                    <div class="support-action">查看完整文檔</div>
+                                </div>
+                                <div class="support-item">
+                                    <div class="support-icon">💡</div>
+                                    <h4>功能建議</h4>
+                                    <p>提出新功能或改進建議</p>
+                                    <div class="support-action">提交意見回饋</div>
+                                </div>
+                                <div class="support-item">
+                                    <div class="support-icon">🐛</div>
+                                    <h4>錯誤回報</h4>
+                                    <p>發現系統錯誤或異常</p>
+                                    <div class="support-action">回報問題</div>
                                 </div>
                             </div>
                         </div>

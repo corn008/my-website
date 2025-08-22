@@ -944,9 +944,10 @@ body:not(.dark-theme) .theme-btn .theme-text {
 }
 
 .function-header p {
-    color: #6c757d;
+    color: #495057;
     font-size: 0.95rem;
     margin: 0;
+    font-weight: 500;
 }
 
 .function-grid {
@@ -2493,6 +2494,11 @@ body:not(.dark-theme) .theme-btn .theme-text {
     background: linear-gradient(135deg, #3a3a3a 0%, #222 100%);
     color: #e6e6e6;
 }
+
+.dark-theme .function-header p {
+    color: #e0e0e0;
+    font-weight: 500;
+}
 .dark-theme .function-card {
     background: #1e1e1e;
     color: #e0e0e0;
@@ -2755,7 +2761,8 @@ body:not(.dark-theme) .theme-btn .theme-text {
 .function-header p {
     font-size: 1rem;
     margin: 0;
-    opacity: 0.9;
+    color: #495057;
+    font-weight: 500;
     line-height: 1.6;
 }
 
@@ -3521,5 +3528,1034 @@ body:not(.dark-theme) .theme-btn .theme-text {
     .login-back-btn:active {
         transform: scale(0.95);
     }
+}
+
+/* ============ 現代化UI樣式 ============ */
+
+/* 統一的區域標題樣式 */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.section-icon {
+    font-size: 2rem;
+    opacity: 0.9;
+}
+
+.section-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: normal;
+    margin-left: auto;
+}
+
+.dark-theme .section-subtitle {
+    color: #bbb;
+}
+
+/* ============ 卹滿照護現代化樣式 ============ */
+
+.care-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.care-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.care-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+}
+
+.care-card .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.care-card .card-icon {
+    font-size: 1.5rem;
+    opacity: 0.9;
+}
+
+.care-card .card-content {
+    padding: 1.5rem;
+}
+
+/* 現代化篩選控制項 */
+.filter-controls-modern {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.search-group-modern {
+    grid-column: 1 / -1;
+}
+
+.filter-group-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modern-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.dark-theme .modern-label {
+    color: #e2e8f0;
+}
+
+.label-icon {
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+.modern-select {
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.modern-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-input-wrapper {
+    position: relative;
+}
+
+.modern-search-input {
+    width: 100%;
+    padding: 12px 16px 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    outline: none;
+    padding-right: 45px;
+}
+
+.modern-search-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-clear-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #e2e8f0;
+    border: none;
+    border-radius: 6px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.search-clear-btn:hover {
+    background: #cbd5e0;
+}
+
+/* 現代化操作按鈕 */
+.action-buttons-modern {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.modern-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-family: inherit;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.modern-btn:hover::before {
+    transform: translateX(100%);
+}
+
+.modern-btn .btn-icon {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.modern-btn .btn-text {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+}
+
+.modern-btn .btn-description {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(72, 187, 120, 0.3);
+}
+
+.export-btn {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+    color: white;
+}
+
+.export-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(66, 153, 225, 0.3);
+}
+
+.pdf-btn {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+    color: white;
+}
+
+.pdf-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(237, 137, 54, 0.3);
+}
+
+.check-btn {
+    background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%);
+    color: white;
+}
+
+.check-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(159, 122, 234, 0.3);
+}
+
+/* 現代化資料顯示區域 */
+.data-display-modern {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.data-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.data-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+.data-icon {
+    font-size: 1.3rem;
+    opacity: 0.9;
+}
+
+.data-info {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.data-content-modern {
+    min-height: 200px;
+    padding: 2rem;
+}
+
+.no-data-modern {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #666;
+}
+
+.no-data-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.no-data-modern h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.no-data-modern p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* ============ 統計分析現代化樣式 ============ */
+
+.statistics-content-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.statistics-card-modern {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.statistics-card-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+}
+
+.statistics-card-modern .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.statistics-card-modern .card-subtitle {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: normal;
+}
+
+.statistics-grid-modern {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.stat-item-modern {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.stat-item-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+}
+
+.stat-content .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.stat-content .stat-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.stat-content .stat-description {
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.3;
+}
+
+.total-stat {
+    border-color: #48bb78;
+}
+
+.total-stat .stat-icon {
+    color: #48bb78;
+}
+
+.total-stat .stat-number {
+    color: #48bb78;
+}
+
+.pending-stat {
+    border-color: #ed8936;
+}
+
+.pending-stat .stat-icon {
+    color: #ed8936;
+}
+
+.pending-stat .stat-number {
+    color: #ed8936;
+}
+
+.completed-stat {
+    border-color: #38a169;
+}
+
+.completed-stat .stat-icon {
+    color: #38a169;
+}
+
+.completed-stat .stat-number {
+    color: #38a169;
+}
+
+.progress-stat {
+    border-color: #4299e1;
+}
+
+.progress-stat .stat-icon {
+    color: #4299e1;
+}
+
+.progress-stat .stat-number {
+    color: #4299e1;
+}
+
+/* 響應式設計調整 */
+@media (max-width: 768px) {
+    .care-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .filter-controls-modern {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .action-buttons-modern {
+        grid-template-columns: 1fr;
+    }
+    
+    .statistics-grid-modern {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* 深色主題適配 */
+.dark-theme .care-card,
+.dark-theme .statistics-card-modern,
+.dark-theme .settings-card-modern,
+.dark-theme .help-card-modern {
+    background: linear-gradient(135deg, rgba(45, 55, 72, 0.9) 0%, rgba(45, 55, 72, 0.8) 100%);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .modern-label {
+    color: #e2e8f0;
+}
+
+.dark-theme .modern-select,
+.dark-theme .modern-search-input {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+.dark-theme .modern-select:focus,
+.dark-theme .modern-search-input:focus {
+    border-color: #667eea;
+}
+
+.dark-theme .stat-item-modern {
+    background: #2d3748;
+    border-color: #4a5568;
+}
+
+.dark-theme .stat-content .stat-label {
+    color: #e2e8f0;
+}
+
+.dark-theme .stat-content .stat-description {
+    color: #a0aec0;
+}
+
+/* ============ 現代化詳細資料模態框樣式 ============ */
+
+.person-detail-modal-modern {
+    background: white;
+    border-radius: 20px;
+    padding: 0;
+    max-width: 800px;
+    width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    position: relative;
+}
+
+.detail-header-modern {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.detail-header-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.detail-header-modern:hover::before {
+    left: 100%;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.person-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
+
+.person-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.person-title h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.person-subtitle {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+.close-btn-modern {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.close-btn-modern:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.close-icon {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.detail-content-modern {
+    padding: 2rem;
+}
+
+.detail-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.detail-section {
+    background: linear-gradient(135deg, rgba(248, 249, 250, 0.8) 0%, rgba(233, 236, 239, 0.8) 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(233, 236, 239, 0.5);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.detail-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+.section-header-modern {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+.section-icon-modern {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.section-header-modern h4 {
+    margin: 0;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* 基本資料網格 */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.info-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
+}
+
+.info-icon {
+    font-size: 1.8rem;
+    opacity: 0.8;
+    color: #667eea;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* 狀態與備註網格 */
+.status-memo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.status-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.status-card.completed {
+    border-color: #48bb78;
+    background: linear-gradient(135deg, rgba(72, 187, 120, 0.1) 0%, rgba(56, 161, 105, 0.1) 100%);
+}
+
+.status-card.pending {
+    border-color: #ed8936;
+    background: linear-gradient(135deg, rgba(237, 137, 54, 0.1) 0%, rgba(221, 107, 32, 0.1) 100%);
+}
+
+.status-icon {
+    font-size: 1.8rem;
+}
+
+.status-card.completed .status-icon {
+    color: #48bb78;
+}
+
+.status-card.pending .status-icon {
+    color: #ed8936;
+}
+
+.status-content {
+    flex: 1;
+}
+
+.status-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+}
+
+.status-value {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.status-card.completed .status-value {
+    color: #48bb78;
+}
+
+.status-card.pending .status-value {
+    color: #ed8936;
+}
+
+.status-time {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.memo-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.2rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.memo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: #9f7aea;
+}
+
+.memo-icon {
+    font-size: 1.8rem;
+    color: #9f7aea;
+    margin-top: 0.2rem;
+}
+
+.memo-content {
+    flex: 1;
+}
+
+.memo-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+}
+
+.memo-value {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+/* 時間資訊網格 */
+.time-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.time-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.time-card.completed {
+    border-color: #48bb78;
+    background: linear-gradient(135deg, rgba(72, 187, 120, 0.1) 0%, rgba(56, 161, 105, 0.1) 100%);
+}
+
+.time-icon {
+    font-size: 1.8rem;
+    color: #667eea;
+}
+
+.time-card.completed .time-icon {
+    color: #48bb78;
+}
+
+.time-content {
+    flex: 1;
+}
+
+.time-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+}
+
+.time-value {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+/* 地圖容器 */
+.map-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.detail-map {
+    width: 100%;
+    height: 300px;
+    border: none;
+}
+
+/* 操作按鈕 */
+.detail-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.edit-btn {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+    color: white;
+}
+
+.edit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(66, 153, 225, 0.3);
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+    color: white;
+}
+
+.delete-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(245, 101, 101, 0.3);
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .person-detail-modal-modern {
+        width: 98%;
+        max-height: 95vh;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .person-avatar {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .person-title h3 {
+        font-size: 1.5rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .status-memo-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .time-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-actions {
+        flex-direction: column;
+    }
+    
+    .detail-map {
+        height: 250px;
+    }
+}
+
+/* 深色主題適配 */
+.dark-theme .person-detail-modal-modern {
+    background: #1a202c;
+    color: #e2e8f0;
+}
+
+.dark-theme .detail-section {
+    background: linear-gradient(135deg, rgba(45, 55, 72, 0.8) 0%, rgba(26, 32, 44, 0.8) 100%);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .info-card,
+.dark-theme .status-card,
+.dark-theme .memo-card,
+.dark-theme .time-card {
+    background: #2d3748;
+    border-color: #4a5568;
+}
+
+.dark-theme .info-label,
+.dark-theme .status-label,
+.dark-theme .memo-label,
+.dark-theme .time-label {
+    color: #a0aec0;
+}
+
+.dark-theme .info-value,
+.dark-theme .status-value,
+.dark-theme .memo-value,
+.dark-theme .time-value {
+    color: #e2e8f0;
+}
+
+.dark-theme .section-header-modern h4 {
+    color: #e2e8f0;
+}
+
+.dark-theme .detail-actions {
+    border-color: #4a5568;
 }
 
