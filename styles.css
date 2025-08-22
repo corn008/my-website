@@ -5317,7 +5317,7 @@ body:not(.dark-theme) textarea::placeholder { color: #6b7280; opacity: 1; }
 .dark-theme textarea {
     background: #3a3a3a;            /* 比 #404040 更亮一點，提升邊界辨識 */
     color: #ffffff;                  /* 固定白字 */
-    border-color: rgba(148,163,184,0.45);
+    border-color: rgba(148,163,184,0.5); /* 邊界更明顯 */
 }
 .dark-theme .filter-select:focus,
 .dark-theme .search-input:focus,
@@ -5542,5 +5542,345 @@ body:not(.dark-theme) .header-back-btn:hover {
 .help-container {
     max-width: 800px;
     margin: 0 auto;
+}
+
+/* 深色主題：整體表單與下拉的對比提升（含新類別） */
+.dark-theme .filter-select,
+.dark-theme .search-input,
+.dark-theme select,
+.dark-theme input,
+.dark-theme textarea {
+    background: #3a3a3a;            /* 比 #404040 更亮一點，提升邊界辨識 */
+    color: #ffffff;                  /* 固定白字 */
+    border-color: rgba(148,163,184,0.5); /* 邊界更明顯 */
+}
+
+/* 手機預覽人員列表頭像和名字布局優化 */
+@media (max-width: 768px) {
+    /* 人員卡片網格調整 */
+    .person-list {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0 0.8rem;
+    }
+    
+    /* 人員卡片內部布局優化 */
+    .person-card {
+        padding: 1.2rem;
+        border-radius: 16px;
+    }
+    
+    /* 人員頭部區域優化 */
+    .person-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* 照片區域優化 */
+    .person-photo {
+        flex-shrink: 0;
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 3px solid rgba(102, 126, 234, 0.2);
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .person-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 9px;
+    }
+    
+    .person-photo .no-photo {
+        font-size: 2rem;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    /* 基本資訊區域優化 */
+    .person-basic-info {
+        flex: 1;
+        min-width: 0; /* 防止文字溢出 */
+    }
+    
+    /* 姓名樣式優化 */
+    .person-name {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.8rem;
+        line-height: 1.2;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    /* 詳細資訊優化 */
+    .person-details p {
+        font-size: 0.9rem;
+        margin-bottom: 0.6rem;
+        line-height: 1.4;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .person-details p strong {
+        color: #2c3e50;
+        min-width: 60px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+    
+    /* 狀態區域優化 */
+    .status-section {
+        margin-top: 1rem;
+        padding: 0.8rem;
+        background: rgba(248, 249, 250, 0.8);
+        border-radius: 10px;
+        border: 1px solid rgba(233, 236, 239, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+    
+    .status-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    /* 完成按鈕優化 */
+    .mark-complete,
+    .mark-incomplete {
+        padding: 4px 10px;
+        font-size: 0.75rem;
+        border-radius: 16px;
+        min-height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* 完成時間顯示優化 */
+    .completed-time {
+        font-size: 0.75rem;
+        color: #6c757d;
+        margin-left: auto;
+        font-style: italic;
+    }
+    
+    /* 備註區域優化 */
+    .memo-section {
+        margin: 1rem 0;
+        padding: 0.8rem;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+        border-radius: 10px;
+        border: 1px solid rgba(102, 126, 234, 0.15);
+    }
+    
+    .memo-text {
+        font-size: 0.85rem;
+        color: #495057;
+        line-height: 1.4;
+    }
+    
+    /* 地圖區域優化 */
+    .map-section {
+        margin: 1rem 0;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .map-embed {
+        width: 100%;
+        height: 180px;
+        border: none;
+    }
+}
+
+/* 超小螢幕進一步優化 */
+@media (max-width: 480px) {
+    .person-list {
+        padding: 0 0.6rem;
+        gap: 0.8rem;
+    }
+    
+    .person-card {
+        padding: 1rem;
+        border-radius: 14px;
+    }
+    
+    .person-header {
+        gap: 0.8rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .person-photo {
+        width: 70px;
+        height: 70px;
+        border-radius: 10px;
+        border-width: 2px;
+    }
+    
+    .person-photo .no-photo {
+        font-size: 1.8rem;
+    }
+    
+    .person-name {
+        font-size: 1.3rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .person-details p {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .person-details p strong {
+        min-width: 55px;
+        font-size: 0.8rem;
+    }
+    
+    .status-section {
+        margin-top: 0.8rem;
+        padding: 0.6rem;
+        gap: 0.6rem;
+    }
+    
+    .status-label {
+        font-size: 0.75rem;
+    }
+    
+    .status-badge {
+        padding: 3px 10px;
+        font-size: 0.7rem;
+    }
+    
+    .mark-complete,
+    .mark-incomplete {
+        padding: 3px 8px;
+        font-size: 0.7rem;
+        min-height: 24px;
+    }
+    
+    .completed-time {
+        font-size: 0.7rem;
+    }
+    
+    .memo-section {
+        margin: 0.8rem 0;
+        padding: 0.6rem;
+    }
+    
+    .memo-text {
+        font-size: 0.8rem;
+    }
+    
+    .map-embed {
+        height: 160px;
+    }
+}
+
+/* 橫向手機優化 */
+@media (max-width: 768px) and (orientation: landscape) {
+    .person-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+    }
+    
+    .person-photo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .person-name {
+        font-size: 1.2rem;
+    }
+    
+    .person-details p {
+        font-size: 0.8rem;
+    }
+    
+    .map-embed {
+        height: 140px;
+    }
+}
+
+/* 深色主題下的移動端優化 */
+@media (max-width: 768px) {
+    .dark-theme .person-card {
+        background: rgba(45, 45, 45, 0.95);
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+    
+    .dark-theme .person-name {
+        background: linear-gradient(135deg, #8b9dc3 0%, #a8a4e6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .dark-theme .person-details p {
+        color: #b0b0b0;
+    }
+    
+    .dark-theme .person-details p strong {
+        color: #d0d0d0;
+    }
+    
+    .dark-theme .status-section {
+        background: rgba(60, 60, 60, 0.8);
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+    
+    .dark-theme .status-label {
+        color: #b0b0b0;
+    }
+    
+    .dark-theme .memo-section {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+    
+    .dark-theme .memo-text {
+        color: #b0b0b0;
+    }
+    
+    .dark-theme .person-photo {
+        background: linear-gradient(135deg, #404040 0%, #505050 100%);
+        border-color: rgba(102, 126, 234, 0.4);
+    }
+    
+    .dark-theme .person-photo .no-photo {
+        color: #808080;
+        background: linear-gradient(135deg, #404040 0%, #505050 100%);
+    }
 }
 
