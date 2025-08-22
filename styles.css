@@ -6052,3 +6052,24 @@ body:not(.dark-theme) .theme-btn .theme-text {
     }
 }
 
+/* 將人員卡片設為相對定位以放置角落按鈕 */
+.person-card { position: relative; }
+
+/* 角落小按鈕位置 */
+.person-actions-compact { position: absolute; top: 8px; left: 8px; right: 8px; display: flex; justify-content: space-between; align-items: center; margin-top: 0; padding: 0; }
+
+/* 個別定位（左刪除、右編輯） */
+.btn-delete-compact { order: 1; }
+.btn-edit-compact { order: 3; }
+
+/* 讓中間留白避免擠在一起 */
+.person-actions-compact::before { content: ""; flex: 1; order: 2; }
+
+@media (max-width: 768px) {
+  .person-actions-compact { top: 6px; left: 6px; right: 6px; }
+}
+
+@media (max-width: 480px) {
+  .person-actions-compact { top: 4px; left: 4px; right: 4px; }
+}
+
