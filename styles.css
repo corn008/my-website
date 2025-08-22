@@ -746,7 +746,7 @@ body {
 .unified-header {
     background: linear-gradient(135deg, #8B5FBF 0%, #6A4C93 50%, #667eea 100%);
     color: white;
-    padding: 12px 30px;
+    padding: 8px 30px; /* 從 12px 縮小 */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -754,7 +754,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
-    min-height: 60px;
+    min-height: 50px; /* 從 60px 縮小 */
 }
 
 /* 左側時間區塊 */
@@ -861,13 +861,18 @@ body {
 
 /* 功能選擇區域整合 */
 .function-selection {
-    padding: 0.5rem 0;
+    padding: 0.5rem 0.6rem; /* 從 1rem 縮小為 0.5rem */
+    min-height: auto;
 }
 
 .function-header {
     text-align: center;
-    margin-bottom: 1.5rem;
-    padding: 0 1rem;
+    margin-bottom: 1rem; /* 從 1.5rem 縮小為 1rem */
+    padding: 1rem 1rem; /* 從 1.2rem 縮小為 1rem */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24px;
+    color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
 .function-header h2 {
@@ -885,10 +890,9 @@ body {
 
 .function-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.2rem;
-    max-width: 600px;
-    margin: 0 auto;
+    margin-top: 0.5rem; /* 從 1rem 縮小為 0.5rem */
 }
 
 .function-card {
@@ -1093,10 +1097,7 @@ body {
 }
 
 @media (max-width: 480px) {
-    .unified-header {
-        padding: 8px 10px;
-        gap: 8px;
-    }
+    .unified-header { padding: 6px 8px; gap: 6px; }
     
     .login-header, .login-footer {
         padding: 8px 10px;
@@ -1120,14 +1121,9 @@ body {
         padding: 4px 8px;
     }
     
-    .main-content {
-        margin-top: 0;
-        padding: 1rem 0.3rem;
-    }
+    .main-content { margin-top: 0; padding: 0.2rem 0.6rem; }
     
-    .function-card {
-        padding: 1rem 0.6rem;
-    }
+    .function-card { padding: 1rem 0.6rem; }
     
     .function-card .card-icon {
         width: 45px;
@@ -1142,10 +1138,7 @@ body {
     .care-section,
     .statistics-section,
     .settings-section,
-    .help-section {
-        padding: 1rem 0.8rem;
-        border-radius: 15px;
-    }
+    .help-section { padding: 1rem 0.8rem; border-radius: 15px; }
 }
 
 /* 橫向模式整合 */
