@@ -719,7 +719,13 @@ function deletePerson(personId) {
         if (originalLength > newLength) {
             // 直接保存到 localStorage
             localStorage.setItem('personList', JSON.stringify(personList));
+            // 重新渲染照護列表
             filterData();
+            // 若統計頁面開啟中，立即刷新統計資料與月份分佈
+            const statisticsSection = document.getElementById('statistics');
+            if (statisticsSection && statisticsSection.style.display !== 'none') {
+                updateStatistics();
+            }
             showNotification(`${person.name} 的資料已刪除`, 'success');
             console.log('✅ 刪除操作完成');
         } else {
