@@ -167,10 +167,10 @@
                         </div>
                         
                         <div class="action-buttons">
-                            <button id="add-person-btn" type="button" class="btn btn-success" onclick="showAddPersonForm()">新增人員</button>
-                            <button id="export-csv-btn" type="button" class="btn btn-export" onclick="exportToCSV()">匯出本月 CSV</button>
-                            <button id="export-pdf-btn" type="button" class="btn btn-export-orange" onclick="exportToPDF()">匯出 PDF</button>
-                            <button id="check-photos-btn" type="button" class="btn btn-check" onclick="checkPhotos()">檢查照片</button>
+                                                    <button id="add-person-btn" type="button" class="btn btn-success">新增人員</button>
+                        <button id="export-csv-btn" type="button" class="btn btn-export">匯出本月 CSV</button>
+                        <button id="export-pdf-btn" type="button" class="btn btn-export-orange">匯出 PDF</button>
+                        <button id="check-photos-btn" type="button" class="btn btn-check">檢查照片</button>
                         </div>
                     </div>
                     
@@ -525,13 +525,7 @@
                             <option value="12">12月</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="edit-status">狀態</label>
-                        <select id="edit-status" name="status">
-                            <option value="pending">未完成</option>
-                            <option value="completed">已完成</option>
-                        </select>
-                    </div>
+
                 </div>
 
                 <!-- 照片區塊 -->
@@ -543,7 +537,7 @@
                     <div class="form-group">
                         <label for="edit-photo">更新照片</label>
                         <div class="file-upload-area">
-                            <input type="file" name="photo" accept="image/*">
+                            <input type="file" id="edit-photo" name="photo" accept="image/*">
                             <div class="file-upload-content">
                                 <span class="file-upload-text">選擇新照片 (選填)</span>
                             </div>

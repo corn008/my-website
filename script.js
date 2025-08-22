@@ -285,7 +285,7 @@ function exportToCSV() {
     const selectedMonth = document.getElementById('month-select')?.value || '';
     
     if (!selectedYear) {
-        showNotification('請先選擇年份', 'warning');
+        window.showNotification && window.showNotification('請先選擇年份', 'warning');
         return;
     }
     
@@ -300,7 +300,7 @@ function exportToCSV() {
     });
     
     if (filteredData.length === 0) {
-        showNotification('沒有資料可匯出', 'warning');
+        window.showNotification && window.showNotification('沒有資料可匯出', 'warning');
         return;
     }
     
@@ -326,7 +326,7 @@ function exportToCSV() {
     link.download = `照護資料_${targetYear}年${targetMonth ? targetMonth + '月' : ''}.csv`;
     link.click();
     
-    showNotification(`CSV 匯出完成，共 ${filteredData.length} 筆資料`, 'success');
+    window.showNotification && window.showNotification(`CSV 匯出完成，共 ${filteredData.length} 筆資料`, 'success');
 }
 
 function exportToPDF() {
@@ -429,7 +429,7 @@ function backupData() {
     link.download = `照護資料備份_${new Date().toISOString().split('T')[0]}.json`;
     link.click();
     
-    showNotification('資料備份完成', 'success');
+    window.showNotification && window.showNotification('資料備份完成', 'success');
 }
 
 function restoreData() {
@@ -447,16 +447,16 @@ function restoreData() {
                         if (confirm(`確定要還原資料嗎？這將覆蓋現有的 ${personList.length} 筆資料，並匯入 ${data.length} 筆新資料。`)) {
                             personList = data;
                             localStorage.setItem('personList', JSON.stringify(personList));
-                            showNotification(`資料還原完成，共匯入 ${data.length} 筆資料`, 'success');
+                            window.showNotification && window.showNotification(`資料還原完成，共匯入 ${data.length} 筆資料`, 'success');
                             if (document.getElementById('care').style.display !== 'none') {
                                 filterData();
                             }
                         }
                     } else {
-                        showNotification('檔案格式錯誤', 'error');
+                        window.showNotification && window.showNotification('檔案格式錯誤', 'error');
                     }
                 } catch (error) {
-                    showNotification('檔案讀取失敗', 'error');
+                    window.showNotification && window.showNotification('檔案讀取失敗', 'error');
                 }
             };
             reader.readAsText(file);
@@ -547,7 +547,7 @@ function checkPhotos() {
     const selectedYear = document.getElementById('year-select')?.value || new Date().getFullYear();
     
     if (!selectedMonth || !selectedYear) {
-        showNotification('請先選擇年份和月份', 'warning');
+        window.showNotification && window.showNotification('請先選擇年份和月份', 'warning');
         return;
     }
     
@@ -561,7 +561,7 @@ function checkPhotos() {
     );
     
     if (monthData.length === 0) {
-        showNotification('該月份沒有資料', 'warning');
+        window.showNotification && window.showNotification('該月份沒有資料', 'warning');
         return;
     }
     
@@ -601,8 +601,19 @@ function markAsComplete(personId) {
         person.status = 'completed';
         person.completedAt = new Date();
         localStorage.setItem('personList', JSON.stringify(personList));
-        showNotification(`${person.name} 已標記為完成（${formatDateTime(person.completedAt)}）`, 'success');
-        filterData();
+        window.showNotification && window.showNotification(`${person.name} 已標記為完成（${formatDateTime(person.completedAt)}）`, 'success');
+        if (window.filterData) window.filterData();
+    }
+}
+
+function markAsIncomplete(personId) {
+    const person = personList.find(p => p.id === personId);
+    if (person) {
+        person.status = 'pending';
+        person.completedAt = null;
+        localStorage.setItem('personList', JSON.stringify(personList));
+        window.showNotification && window.showNotification(`${person.name} 已設為未完成`, 'success');
+        if (window.filterData) window.filterData();
     }
 }
 
@@ -645,7 +656,7 @@ function clearSearch() {
 function editPerson(personId) {
     const person = personList.find(p => p.id === personId);
     if (!person) {
-        showNotification('未找到人員資料', 'error');
+        window.showNotification && window.showNotification('未找到人員資料', 'error');
         return;
     }
     
@@ -653,7 +664,7 @@ function editPerson(personId) {
     const form = document.getElementById('edit-form');
     
     if (!modal || !form) {
-        showNotification('編輯模態框載入失敗', 'error');
+        window.showNotification && window.showNotification('編輯模態框載入失敗', 'error');
         return;
     }
     
@@ -671,15 +682,22 @@ function editPerson(personId) {
     }
     
     // 填充表單
-    form.querySelector('[name="name"]').value = person.name || '';
-    form.querySelector('[name="phone"]').value = person.phone || '';
+    const nameInput = form.querySelector('[name="name"]');
+    const phoneInput = form.querySelector('[name="phone"]');
     const editCaseInput = form.querySelector('[name="caseNumber"]');
+    const addressInput = form.querySelector('[name="address"]');
+    const memoInput = form.querySelector('[name="memo"]');
+    const yearInput = form.querySelector('[name="year"]');
+    const monthInput = form.querySelector('[name="month"]');
+    
+    if (nameInput) nameInput.value = person.name || '';
+    if (phoneInput) phoneInput.value = person.phone || '';
     if (editCaseInput) editCaseInput.value = person.caseNumber || '';
-    form.querySelector('[name="address"]').value = person.address || '';
-    form.querySelector('[name="memo"]').value = person.memo || '';
-    form.querySelector('[name="year"]').value = person.createdYear || '';
-    form.querySelector('[name="month"]').value = person.createdMonth || '';
-    form.querySelector('[name="status"]').value = person.status || 'pending';
+    if (addressInput) addressInput.value = person.address || '';
+    if (memoInput) memoInput.value = person.memo || '';
+    if (yearInput) yearInput.value = person.createdYear || '';
+    if (monthInput) monthInput.value = person.createdMonth || '';
+    // 状态现在由卡片上的按钮直接管理，不再在编辑表单中设置
     
     // 顯示照片預覽
     const photoPreview = form.querySelector('.photo-preview');
@@ -705,15 +723,7 @@ function editPerson(personId) {
         const m = parseInt(formData.get('month'));
         if (!isNaN(y)) person.createdYear = y;
         if (!isNaN(m)) person.createdMonth = m;
-        const newStatus = formData.get('status');
-        // 狀態切換時處理完成時間
-        if (newStatus === 'completed' && person.status !== 'completed') {
-            person.completedAt = new Date();
-        }
-        if (newStatus === 'pending') {
-            person.completedAt = null;
-        }
-        person.status = newStatus;
+
         
         // 處理新照片
         const newPhoto = formData.get('photo');
@@ -727,7 +737,7 @@ function editPerson(personId) {
                 if (editModalEl) editModalEl.style.display = 'none';
                 filterData();
                 if (document.getElementById('statistics').style.display !== 'none') { updateStatistics(); }
-                showNotification('人員資料已更新', 'success');
+                window.showNotification && window.showNotification('人員資料已更新', 'success');
             };
             reader.readAsDataURL(newPhoto);
         } else {
@@ -737,7 +747,7 @@ function editPerson(personId) {
             if (editModalEl) editModalEl.style.display = 'none';
             filterData();
             if (document.getElementById('statistics').style.display !== 'none') { updateStatistics(); }
-            showNotification('人員資料已更新', 'success');
+            window.showNotification && window.showNotification('人員資料已更新', 'success');
         }
     };
     
@@ -755,7 +765,7 @@ function deletePerson(personId) {
     
     if (!person) {
         console.log('❌ 未找到要刪除的人員');
-        showNotification('未找到要刪除的人員', 'error');
+        window.showNotification && window.showNotification('未找到要刪除的人員', 'error');
         return;
     }
     
@@ -788,11 +798,11 @@ function deletePerson(personId) {
             if (statisticsSection && statisticsSection.style.display !== 'none') {
                 updateStatistics();
             }
-            showNotification(`${person.name} 的資料已刪除`, 'success');
+            window.showNotification && window.showNotification(`${person.name} 的資料已刪除`, 'success');
             console.log('✅ 刪除操作完成');
         } else {
             console.log('❌ 刪除操作失敗');
-            showNotification('刪除操作失敗', 'error');
+            window.showNotification && window.showNotification('刪除操作失敗', 'error');
         }
     } else {
         console.log('用戶取消刪除操作');
@@ -803,7 +813,7 @@ function deletePerson(personId) {
 function showPersonDetail(personId) {
     const person = personList.find(p => p.id === personId);
     if (!person) {
-        showNotification('未找到人員資料', 'error');
+        window.showNotification && window.showNotification('未找到人員資料', 'error');
         return;
     }
     
@@ -938,10 +948,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const exportCsvBtn = document.getElementById('export-csv-btn');
     const exportPdfBtn = document.getElementById('export-pdf-btn');
     const checkPhotosBtn = document.getElementById('check-photos-btn');
-    if (addPersonBtn) addPersonBtn.addEventListener('click', () => { try { showAddPersonForm(); } catch(e) { showNotification('開啟新增表單失敗', 'error'); } });
-    if (exportCsvBtn) exportCsvBtn.addEventListener('click', () => { try { exportToCSV(); } catch(e) { showNotification('匯出CSV失敗', 'error'); } });
-    if (exportPdfBtn) exportPdfBtn.addEventListener('click', () => { try { exportToPDF(); } catch(e) { showNotification('匯出PDF失敗', 'error'); } });
-    if (checkPhotosBtn) checkPhotosBtn.addEventListener('click', () => { try { checkPhotos(); } catch(e) { showNotification('檢查照片失敗', 'error'); } });
+    if (addPersonBtn) addPersonBtn.addEventListener('click', () => { try { showAddPersonForm(); } catch(e) { window.showNotification && window.showNotification('開啟新增表單失敗', 'error'); } });
+    if (exportCsvBtn) exportCsvBtn.addEventListener('click', () => { try { exportToCSV(); } catch(e) { window.showNotification && window.showNotification('匯出CSV失敗', 'error'); } });
+    if (exportPdfBtn) exportPdfBtn.addEventListener('click', () => { try { exportToPDF(); } catch(e) { window.showNotification && window.showNotification('匯出PDF失敗', 'error'); } });
+    if (checkPhotosBtn) checkPhotosBtn.addEventListener('click', () => { try { checkPhotos(); } catch(e) { window.showNotification && window.showNotification('檢查照片失敗', 'error'); } });
 
     // 登入表單處理
     loginForm.addEventListener('submit', function(e) {
@@ -956,7 +966,7 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             loginSection.style.display = 'none';
             mainSection.style.display = 'block';
-            showNotification('登入成功！歡迎使用留守資訊系統', 'success');
+            window.showNotification && window.showNotification('登入成功！歡迎使用留守資訊系統', 'success');
             
             // 初始化系統並顯示功能選擇介面
             initializeSystem();
@@ -967,7 +977,7 @@ document.addEventListener('DOMContentLoaded', function() {
             isHandlingPopstate = false;
             localStorage.setItem('currentView', 'function-selection');
         } else {
-            showNotification('帳號或密碼錯誤，請重新輸入', 'error');
+            window.showNotification && window.showNotification('帳號或密碼錯誤，請重新輸入', 'error');
         }
     });
     
@@ -983,28 +993,28 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 基本驗證
         if (!name || !caseNumber || !phone || !address) {
-            showNotification('請填寫所有必填欄位', 'error');
+            window.showNotification && window.showNotification('請填寫所有必填欄位', 'error');
             return;
         }
         
         // 額外驗證
         if (name.length < 2) {
-            showNotification('姓名至少需要2個字元', 'error');
+            window.showNotification && window.showNotification('姓名至少需要2個字元', 'error');
             return;
         }
         
         if (caseNumber.length < 1) {
-            showNotification('個案號碼不能為空', 'error');
+            window.showNotification && window.showNotification('個案號碼不能為空', 'error');
             return;
         }
         
         if (phone.length < 8) {
-            showNotification('電話號碼格式不正確', 'error');
+            window.showNotification && window.showNotification('電話號碼格式不正確', 'error');
             return;
         }
         
         if (address.length < 5) {
-            showNotification('地址至少需要5個字元', 'error');
+            window.showNotification && window.showNotification('地址至少需要5個字元', 'error');
             return;
         }
         
@@ -1026,7 +1036,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 驗證月份範圍
                 if (updatedMonth < 1 || updatedMonth > 12) {
-                    showNotification('月份必須在1-12之間', 'error');
+                    window.showNotification && window.showNotification('月份必須在1-12之間', 'error');
                     return;
                 }
                 
@@ -1054,12 +1064,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const photoFile = formData.get('photo');
                 if (photoFile && photoFile.size > 0) {
                     if (photoFile.size > 5 * 1024 * 1024) {
-                        showNotification('照片檔案大小不能超過5MB', 'error');
+                        window.showNotification && window.showNotification('照片檔案大小不能超過5MB', 'error');
                         return;
                     }
                     
                     if (!photoFile.type.startsWith('image/')) {
-                        showNotification('請選擇有效的圖片檔案', 'error');
+                        window.showNotification && window.showNotification('請選擇有效的圖片檔案', 'error');
                         return;
                     }
                     
@@ -1069,7 +1079,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         updatePersonInList(updatedPerson);
                     };
                     reader.onerror = function() {
-                        showNotification('照片讀取失敗，請重試', 'error');
+                        window.showNotification && window.showNotification('照片讀取失敗，請重試', 'error');
                     };
                     reader.readAsDataURL(photoFile);
                 } else {
@@ -1082,7 +1092,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedMonth = formData.get('month');
             
             if (!selectedMonth) {
-                showNotification('請選擇分配月份', 'error');
+                window.showNotification && window.showNotification('請選擇分配月份', 'error');
                 return;
             }
             
@@ -1095,7 +1105,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 驗證月份範圍
             if (createdMonth < 1 || createdMonth > 12) {
-                showNotification('月份必須在1-12之間', 'error');
+                window.showNotification && window.showNotification('月份必須在1-12之間', 'error');
                 return;
             }
             
@@ -1132,20 +1142,20 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (photoFile) {
                 if (!photoFile.type || !photoFile.type.startsWith('image/')) {
-                    showNotification('請選擇有效的圖片檔案', 'error');
+                    window.showNotification && window.showNotification('請選擇有效的圖片檔案', 'error');
                     // 照片無效，仍保存其他資料
                     addPersonToList(personData);
                     return;
                 }
                 
                 if (photoFile.size > 5 * 1024 * 1024) {
-                    showNotification('照片過大，將不附加照片但仍保存資料', 'warning');
+                    window.showNotification && window.showNotification('照片過大，將不附加照片但仍保存資料', 'warning');
                     addPersonToList(personData);
                     return;
                 }
                 
                 // 顯示載入提示
-                showNotification('正在處理照片，請稍候...', 'info');
+                window.showNotification && window.showNotification('正在處理照片，請稍候...', 'info');
                 
                 const reader = new FileReader();
                 let hasSettled = false;
@@ -1157,11 +1167,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 reader.onload = function(e) { settle(e.target.result); };
                 reader.onerror = function() {
-                    showNotification('照片讀取失敗，將不附加照片但仍保存資料', 'warning');
+                    window.showNotification && window.showNotification('照片讀取失敗，將不附加照片但仍保存資料', 'warning');
                     settle(null);
                 };
                 reader.onabort = function() {
-                    showNotification('照片讀取中止，將不附加照片但仍保存資料', 'warning');
+                    window.showNotification && window.showNotification('照片讀取中止，將不附加照片但仍保存資料', 'warning');
                     settle(null);
                 };
                 reader.readAsDataURL(photoFile);
@@ -1191,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 檢查檔案大小
                 if (file.size > 5 * 1024 * 1024) {
-                    showNotification(`檔案 ${file.name} 大小不能超過5MB`, 'error');
+                    window.showNotification && window.showNotification(`檔案 ${file.name} 大小不能超過5MB`, 'error');
                     this.value = '';
                     photoPreview.innerHTML = '';
                     fileUploadText.textContent = '沒有選擇檔案';
@@ -1200,7 +1210,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 檢查檔案類型
                 if (!file.type.startsWith('image/')) {
-                    showNotification(`檔案 ${file.name} 不是有效的圖片檔案`, 'error');
+                    window.showNotification && window.showNotification(`檔案 ${file.name} 不是有效的圖片檔案`, 'error');
                     this.value = '';
                     photoPreview.innerHTML = '';
                     fileUploadText.textContent = '沒有選擇檔案';
@@ -1214,7 +1224,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 photoPreview.innerHTML = `<img src="${e.target.result}" alt="照片預覽">`;
             };
             reader.onerror = function() {
-                showNotification('照片讀取失敗，請重試', 'error');
+                window.showNotification && window.showNotification('照片讀取失敗，請重試', 'error');
             };
             reader.readAsDataURL(files[0]);
         } else {
@@ -1369,7 +1379,7 @@ document.addEventListener('DOMContentLoaded', function() {
         closeModal();
         
         // 顯示成功訊息
-        showNotification(`人員 ${personData.name} 新增成功！`, 'success');
+        window.showNotification && window.showNotification(`人員 ${personData.name} 新增成功！`, 'success');
         
         // 重新篩選和顯示資料
         filterData();
@@ -1494,12 +1504,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                  <p><strong>電話：</strong>${person.phone}</p>
                                  <p><strong>地址：</strong>${person.address}</p>
                                  <p><strong>個案號碼：</strong>${person.caseNumber}</p>
-                                <div class="status-section">
-                                    <span class="status-label">狀態：</span>
-                                    <span class="status-badge ${person.status === 'completed' ? 'completed' : 'pending'}">${person.status === 'completed' ? '已完成' : '未完成'}</span>
-                                    ${person.status !== 'completed' ? '<button class="btn btn-small btn-success mark-complete" onclick="markAsComplete(' + person.id + ')">完成</button>' : ''}
-                                    ${person.completedAt ? '<span class="completed-time">完成於：' + formatDateTime(person.completedAt) + '</span>' : ''}
-                                </div>
+                                                                 <div class="status-section">
+                                     <span class="status-label">狀態：</span>
+                                     <span class="status-badge ${person.status === 'completed' ? 'completed' : 'pending'}">${person.status === 'completed' ? '已完成' : '未完成'}</span>
+                                     ${person.status !== 'completed' ? '<button class="btn btn-small btn-success mark-complete" onclick="markAsComplete(' + person.id + ')">完成</button>' : '<button class="btn btn-small btn-warning mark-incomplete" onclick="markAsIncomplete(' + person.id + ')">設為未完成</button>'}
+                                     ${person.completedAt ? '<span class="completed-time">完成於：' + formatDateTime(person.completedAt) + '</span>' : ''}
+                                 </div>
                             </div>
                         </div>
                     </div>
@@ -1773,7 +1783,7 @@ document.addEventListener('DOMContentLoaded', function() {
         personList.push(testPerson);
         localStorage.setItem('personList', JSON.stringify(personList));
         filterData();
-        showNotification(`測試人員新增成功！已設定為 ${createdYear}年${createdMonth}月`, 'success');
+        window.showNotification && window.showNotification(`測試人員新增成功！已設定為 ${createdYear}年${createdMonth}月`, 'success');
         console.log('測試人員已新增:', testPerson);
     };
     
@@ -2314,9 +2324,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 顯示修復結果
         if (fixedCount > 0) {
-            showNotification(`資料格式修復完成！共修復 ${fixedCount}/${totalCount} 筆資料`, 'success');
+            window.showNotification && window.showNotification(`資料格式修復完成！共修復 ${fixedCount}/${totalCount} 筆資料`, 'success');
         } else {
-            showNotification('所有資料格式都正確，無需修復', 'info');
+            window.showNotification && window.showNotification('所有資料格式都正確，無需修復', 'info');
         }
         
         // 如果當前在統計頁面，更新統計資料
@@ -2327,7 +2337,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 快速測試功能
     function quickTest() {
-        showNotification('開始執行系統測試...', 'info');
+        window.showNotification && window.showNotification('開始執行系統測試...', 'info');
         
         // 測試資料儲存
         const testData = {
@@ -2353,7 +2363,7 @@ document.addEventListener('DOMContentLoaded', function() {
             personList = personList.filter(p => p.id !== testData.id);
             localStorage.setItem('personList', JSON.stringify(personList));
             
-            showNotification('系統測試完成！所有功能正常運作', 'success');
+            window.showNotification && window.showNotification('系統測試完成！所有功能正常運作', 'success');
         }, 2000);
     }
     
@@ -2391,7 +2401,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         displayPeople(filtered);
-        showNotification(`搜尋結果: ${filtered.length} 筆資料`, 'info');
+        window.showNotification && window.showNotification(`搜尋結果: ${filtered.length} 筆資料`, 'info');
     }
     
     // 清除搜尋功能
@@ -2400,7 +2410,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('search-year').value = '';
         document.getElementById('search-month').value = '';
         filterData();
-        showNotification('搜尋條件已清除', 'info');
+        window.showNotification && window.showNotification('搜尋條件已清除', 'info');
     }
     
     // 資料備份、還原、系統資訊功能 - 已移至全域函數
@@ -2435,46 +2445,49 @@ document.addEventListener('DOMContentLoaded', function() {
         
         monthDistribution.innerHTML = html;
     }
-});
 
-// 將所有函數附加到全域範圍，使其可以被 onclick 屬性調用
-window.showSection = showSection;
-window.showModal = wrapSafe('showModal', showModal);
-window.closeModal = wrapSafe('closeModal', closeModal);
-window.goBack = wrapSafe('goBack', goBack);
-window.getCurrentActiveSection = wrapSafe('getCurrentActiveSection', getCurrentActiveSection);
-window.initializeMobileGestures = wrapSafe('initializeMobileGestures', initializeMobileGestures);
-window.initializeMobileBackButton = wrapSafe('initializeMobileBackButton', initializeMobileBackButton);
-window.toggleTheme = wrapSafe('toggleTheme', toggleTheme);
-window.exportToCSV = wrapSafe('exportToCSV', exportToCSV);
-window.exportToPDF = wrapSafe('exportToPDF', exportToPDF);
-window.backupData = wrapSafe('backupData', backupData);
-window.restoreData = wrapSafe('restoreData', restoreData);
-window.showSystemInfo = wrapSafe('showSystemInfo', showSystemInfo);
-window.checkPhotos = wrapSafe('checkPhotos', checkPhotos);
-window.showAddPersonForm = wrapSafe('showAddPersonForm', showAddPersonForm);
-window.markAsComplete = wrapSafe('markAsComplete', markAsComplete);
-window.searchPeople = wrapSafe('searchPeople', searchPeople);
-window.clearSearch = wrapSafe('clearSearch', clearSearch);
-window.editPerson = wrapSafe('editPerson', editPerson);
-window.deletePerson = wrapSafe('deletePerson', deletePerson);
-window.filterData = wrapSafe('filterData', filterData);
-window.updateStatistics = wrapSafe('updateStatistics', updateStatistics);
-window.fixDataFormat = wrapSafe('fixDataFormat', fixDataFormat);
-window.quickTest = wrapSafe('quickTest', quickTest);
-window.showNotification = wrapSafe('showNotification', showNotification);
-window.displayPeople = wrapSafe('displayPeople', displayPeople);
-window.saveData = wrapSafe('saveData', saveData);
-window.initializeStatsYearSelect = wrapSafe('initializeStatsYearSelect', initializeStatsYearSelect);
-window.initializeSearchYearSelect = wrapSafe('initializeSearchYearSelect', initializeSearchYearSelect);
-window.showPersonDetail = wrapSafe('showPersonDetail', showPersonDetail);
-window.showMap = wrapSafe('showMap', showMap);
-window.updateMonthDistribution = wrapSafe('updateMonthDistribution', updateMonthDistribution);
-window.loadData = wrapSafe('loadData', loadData);
-window.loadTheme = wrapSafe('loadTheme', loadTheme);
-window.startTimeUpdate = wrapSafe('startTimeUpdate', startTimeUpdate);
-window.addPersonToList = wrapSafe('addPersonToList', addPersonToList);
-window.updatePersonInList = wrapSafe('updatePersonInList', updatePersonInList);
-window.initializeSystem = wrapSafe('initializeSystem', initializeSystem);
-window.initializeDateSelectors = wrapSafe('initializeDateSelectors', initializeDateSelectors);
-window.logout = wrapSafe('logout', logout);
+    // 將主要函數附加到全域（置於閉包內，確保能取得作用域內定義）
+    window.showSection = showSection;
+    window.showModal = wrapSafe('showModal', showModal);
+    window.closeModal = wrapSafe('closeModal', closeModal);
+    window.goBack = wrapSafe('goBack', goBack);
+    window.getCurrentActiveSection = wrapSafe('getCurrentActiveSection', getCurrentActiveSection);
+    window.initializeMobileGestures = wrapSafe('initializeMobileGestures', initializeMobileGestures);
+    window.initializeMobileBackButton = wrapSafe('initializeMobileBackButton', initializeMobileBackButton);
+    window.toggleTheme = wrapSafe('toggleTheme', toggleTheme);
+    window.exportToCSV = wrapSafe('exportToCSV', exportToCSV);
+    window.exportToPDF = wrapSafe('exportToPDF', exportToPDF);
+    window.backupData = wrapSafe('backupData', backupData);
+    window.restoreData = wrapSafe('restoreData', restoreData);
+    window.showSystemInfo = wrapSafe('showSystemInfo', showSystemInfo);
+    window.checkPhotos = wrapSafe('checkPhotos', checkPhotos);
+    window.showAddPersonForm = wrapSafe('showAddPersonForm', showAddPersonForm);
+    window.markAsComplete = wrapSafe('markAsComplete', markAsComplete);
+    window.markAsIncomplete = wrapSafe('markAsIncomplete', markAsIncomplete);
+    window.searchPeople = wrapSafe('searchPeople', searchPeople);
+    window.clearSearch = wrapSafe('clearSearch', clearSearch);
+    window.editPerson = wrapSafe('editPerson', editPerson);
+    window.deletePerson = wrapSafe('deletePerson', deletePerson);
+    if (typeof filterData === 'function') {
+        window.filterData = wrapSafe('filterData', filterData);
+    }
+    window.updateStatistics = wrapSafe('updateStatistics', updateStatistics);
+    window.fixDataFormat = wrapSafe('fixDataFormat', fixDataFormat);
+    window.quickTest = wrapSafe('quickTest', quickTest);
+    window.showNotification = wrapSafe('showNotification', showNotification);
+    window.displayPeople = wrapSafe('displayPeople', displayPeople);
+    window.saveData = wrapSafe('saveData', saveData);
+    window.initializeStatsYearSelect = wrapSafe('initializeStatsYearSelect', initializeStatsYearSelect);
+    window.initializeSearchYearSelect = wrapSafe('initializeSearchYearSelect', initializeSearchYearSelect);
+    window.showPersonDetail = wrapSafe('showPersonDetail', showPersonDetail);
+    window.showMap = wrapSafe('showMap', showMap);
+    window.updateMonthDistribution = wrapSafe('updateMonthDistribution', updateMonthDistribution);
+    window.loadData = wrapSafe('loadData', loadData);
+    window.loadTheme = wrapSafe('loadTheme', loadTheme);
+    window.startTimeUpdate = wrapSafe('startTimeUpdate', startTimeUpdate);
+    window.addPersonToList = wrapSafe('addPersonToList', addPersonToList);
+    window.updatePersonInList = wrapSafe('updatePersonInList', updatePersonInList);
+    window.initializeSystem = wrapSafe('initializeSystem', initializeSystem);
+    window.initializeDateSelectors = wrapSafe('initializeDateSelectors', initializeDateSelectors);
+    window.logout = wrapSafe('logout', logout);
+});
