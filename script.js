@@ -354,46 +354,41 @@ function exportToPDF() {
         }
         
         const monthTitle = targetMonth ? `${targetMonth}月` : '';
-        const nowStr = new Date().toLocaleString('zh-TW');
         const docHtml = `<!DOCTYPE html>
-        <html><head><meta charset="utf-8" />
+        <html><head><meta charset=\"utf-8\" />
             <title>${monthTitle}遺族訪視照片</title>
             <style>
                 @page { size: A4; margin: 16mm; }
                 body { font-family: 'Microsoft JhengHei', Arial, sans-serif; margin: 0; color: #222; }
                 .title { text-align: center; font-size: 26px; font-weight: 700; margin: 4mm 0 8mm; }
-                .content { padding-bottom: 22mm; } /* 為固定頁腳保留空間，避免遮到內容 */
+                .content { padding-bottom: 0; }
                 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; }
                 .card { border: 1px solid #eee; border-radius: 8px; padding: 6mm; box-shadow: 0 2px 6px rgba(0,0,0,0.05); text-align: center; }
                 .photo-box { width: 100%; aspect-ratio: 1 / 1; border: 1px solid #e5e5e5; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: #fafafa; overflow: hidden; }
                 .photo-box img { width: 100%; height: 100%; object-fit: contain; }
                 .name { margin-top: 4mm; font-size: 16px; font-weight: 700; }
                 .case { margin-top: 1.5mm; font-size: 12px; color: #666; letter-spacing: 0.5px; }
-                .footer { position: fixed; bottom: 8mm; left: 16mm; right: 16mm; text-align: right; font-size: 11px; color: #666; background: transparent; }
                 .card, .photo-box { break-inside: avoid; }
                 @media print {
-                  /* 手機列印或瀏覽器縮放時，縮小間距 */
                   .grid { gap: 8mm; }
                   .card { padding: 5mm; }
-                  .content { padding-bottom: 24mm; }
                 }
             </style>
         </head><body>
-            <div class="content">
-                <div class="title">${monthTitle}遺族訪視照片</div>
-                <div class="grid">
+            <div class=\"content\">
+                <div class=\"title\">${monthTitle}遺族訪視照片</div>
+                <div class=\"grid\">
                     ${filteredData.map(person => `
-                    <div class="card">
-                        <div class="photo-box">
-                            ${person.photo ? `<img src="${person.photo}" alt="${person.name}" />` : `<span class="empty">無照片</span>`}
+                    <div class=\"card\">
+                        <div class=\"photo-box\">
+                            ${person.photo ? `<img src=\"${person.photo}\" alt=\"${person.name}\" />` : `<span class=\"empty\">無照片</span>`}
                         </div>
-                        <div class="name">${person.name}</div>
-                        <div class="case">${person.caseNumber || ''}</div>
+                        <div class=\"name\">${person.name}</div>
+                        <div class=\"case\">${person.caseNumber || ''}</div>
                     </div>
                     `).join('')}
                 </div>
             </div>
-            <div class="footer">匯出時間：${nowStr}</div>
         </body></html>`;
 
         let iframe = document.getElementById('print-iframe');
@@ -415,7 +410,7 @@ function exportToPDF() {
         doc.write(docHtml);
         doc.close();
 
-        const timeoutId = setTimeout(() => {
+        setTimeout(() => {
             try { printDoc.focus(); printDoc.print(); } catch (err) {
                 window.showNotification && window.showNotification('列印啟動失敗，請允許列印或改用瀏覽器列印', 'warning');
             }

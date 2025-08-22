@@ -6064,3 +6064,14 @@ body:not(.dark-theme) .theme-btn .theme-text {
   .person-actions-compact { top: 4px; left: 4px; right: 4px; }
 }
 
+/* 功能區標題旁的返回主畫面按鈕可讀性加強（淺色主題） */
+body:not(.dark-theme) .header-back-btn {
+    background: #ffffff;
+    color: #111827 !important; /* 深灰文字 */
+    border: 1px solid rgba(0,0,0,0.08);
+    text-shadow: none;
+}
+body:not(.dark-theme) .header-back-btn:hover {
+    background: #f3f4f6;
+}
+
