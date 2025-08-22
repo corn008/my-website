@@ -84,6 +84,127 @@ function closeModal() {
     });
 }
 
+// 登入頁面返回上一頁/上一層
+function goBack() {
+    // 檢查是否在手機瀏覽器中
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // 檢查是否有歷史記錄
+    if (window.history.length > 1) {
+        // 有歷史記錄，使用瀏覽器返回
+        history.back();
+        return;
+    }
+    
+    // 檢查當前頁面狀態
+    const mainSection = document.getElementById('main-section');
+    const loginSection = document.getElementById('login-section');
+    
+    if (mainSection && mainSection.style.display !== 'none') {
+        // 已登入狀態
+        const currentSection = getCurrentActiveSection();
+        if (currentSection && currentSection !== 'function-selection') {
+            // 在功能頁面，返回主選單
+            showSection('function-selection');
+        } else {
+            // 在主選單，顯示確認對話框
+            if (confirm('確定要登出系統嗎？')) {
+                logout();
+            }
+        }
+    } else if (loginSection && loginSection.style.display !== 'none') {
+        // 在登入頁面
+        if (isMobile) {
+            // 手機上，嘗試關閉頁面或顯示提示
+            if (confirm('確定要離開系統嗎？')) {
+                // 嘗試關閉視窗（可能被瀏覽器阻擋）
+                window.close();
+                // 如果無法關閉，則顯示提示
+                showNotification('請使用手機的返回鍵或手勢返回', 'info');
+            }
+        } else {
+            // 桌面版，顯示提示
+            showNotification('請使用瀏覽器的返回按鈕', 'info');
+        }
+    }
+}
+
+// 獲取當前活躍的區段
+function getCurrentActiveSection() {
+    const sections = ['function-selection', 'care', 'statistics', 'settings', 'help'];
+    for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element && element.style.display !== 'none') {
+            return section;
+        }
+    }
+    return null;
+}
+
+// 添加手機手勢支援
+function initializeMobileGestures() {
+    let startX = 0;
+    let startY = 0;
+    let isSwiping = false;
+    
+    // 觸摸開始
+    document.addEventListener('touchstart', function(e) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        isSwiping = false;
+    }, { passive: true });
+    
+    // 觸摸移動
+    document.addEventListener('touchmove', function(e) {
+        if (!startX || !startY) return;
+        
+        const deltaX = e.touches[0].clientX - startX;
+        const deltaY = e.touches[0].clientY - startY;
+        
+        // 檢查是否為水平滑動
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+            isSwiping = true;
+        }
+    }, { passive: true });
+    
+    // 觸摸結束
+    document.addEventListener('touchend', function(e) {
+        if (!isSwiping || !startX) return;
+        
+        const deltaX = e.changedTouches[0].clientX - startX;
+        
+        // 從右邊緣向左滑動（返回手勢）
+        if (deltaX < -100 && startX > window.innerWidth * 0.8) {
+            goBack();
+        }
+        
+        // 重置狀態
+        startX = 0;
+        startY = 0;
+        isSwiping = false;
+    }, { passive: true });
+}
+
+// 添加手機瀏覽器返回按鈕支援
+function initializeMobileBackButton() {
+    // 監聽 popstate 事件（瀏覽器返回按鈕）
+    window.addEventListener('popstate', function(e) {
+        // 防止重複處理
+        if (e.state && e.state.handled) return;
+        
+        // 標記已處理
+        history.replaceState({ handled: true }, '');
+        
+        // 執行返回邏輯
+        goBack();
+    });
+    
+    // 在頁面載入時添加歷史記錄
+    if (window.history.length === 1) {
+        history.replaceState({ handled: true }, '');
+    }
+}
+
 function toggleTheme() {
     const body = document.body;
     const currentTheme = body.classList.contains('dark-theme') ? 'dark' : 'light';
@@ -701,6 +822,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 啟動時間更新（包括登入頁面）
     startTimeUpdate();
+    
+    // 初始化手機功能
+    initializeMobileGestures();
+    initializeMobileBackButton();
     
     // 登入表單處理
     loginForm.addEventListener('submit', function(e) {
@@ -2073,6 +2198,10 @@ document.addEventListener('DOMContentLoaded', function() {
 window.showSection = showSection;
 window.showModal = showModal;
 window.closeModal = closeModal;
+window.goBack = goBack;
+window.getCurrentActiveSection = getCurrentActiveSection;
+window.initializeMobileGestures = initializeMobileGestures;
+window.initializeMobileBackButton = initializeMobileBackButton;
 window.toggleTheme = toggleTheme;
 window.exportToCSV = exportToCSV;
 window.exportToPDF = exportToPDF;
