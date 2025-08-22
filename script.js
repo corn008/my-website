@@ -876,6 +876,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化手機功能（返回由 hash 處理即可）
     initializeMobileGestures();
     
+    // 綁定卹滿照護功能按鈕（雙保險：即使 inline onclick 失效，事件也會觸發）
+    const addPersonBtn = document.getElementById('add-person-btn');
+    const exportCsvBtn = document.getElementById('export-csv-btn');
+    const exportPdfBtn = document.getElementById('export-pdf-btn');
+    const checkPhotosBtn = document.getElementById('check-photos-btn');
+    if (addPersonBtn) addPersonBtn.addEventListener('click', () => { try { showAddPersonForm(); } catch(e) { showNotification('開啟新增表單失敗', 'error'); } });
+    if (exportCsvBtn) exportCsvBtn.addEventListener('click', () => { try { exportToCSV(); } catch(e) { showNotification('匯出CSV失敗', 'error'); } });
+    if (exportPdfBtn) exportPdfBtn.addEventListener('click', () => { try { exportToPDF(); } catch(e) { showNotification('匯出PDF失敗', 'error'); } });
+    if (checkPhotosBtn) checkPhotosBtn.addEventListener('click', () => { try { checkPhotos(); } catch(e) { showNotification('檢查照片失敗', 'error'); } });
+
     // 登入表單處理
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
