@@ -855,11 +855,11 @@ body {
 /* 主要內容區域整合 */
 .main-content {
     background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
-    padding: 1rem 0.8rem; /* 減少上方空白 */
+    padding: 0.6rem 0.8rem; /* 進一步減少上方空白 */
     margin-top: 0;
     position: relative;
     z-index: 1;
-    min-height: calc(100vh - 72px);
+    min-height: auto; /* 不強制撐滿畫面，避免大面積空白 */
 }
 
 /* 功能選擇區域整合 */
@@ -2676,9 +2676,9 @@ body {
 /* 功能網格 */
 .function-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem; /* 縮小卡片間距 */
+    margin-top: 1rem; /* 縮小與標題間距 */
 }
 
 /* 功能卡片 */
