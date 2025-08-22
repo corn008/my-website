@@ -579,12 +579,9 @@ body {
 }
 
 @media (max-width: 480px) {
-    .login-header, .login-footer, .unified-header {
-        padding: 8px 12px; /* 手機上縮小頂部留白 */
-        min-height: 52px;
-    }
+    .login-header, .login-footer, .unified-header { padding: 6px 10px; min-height: 48px; }
     
-    .login-container { padding: 10px 8px; }
+    .login-container { padding: 8px 6px; }
     
     .login-card {
         padding: 2rem 1.5rem;
