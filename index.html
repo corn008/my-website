@@ -3,77 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的网页项目</title>
+    <title>照護管理系統</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="header">
-        <nav class="nav">
-            <div class="nav-brand">我的网站</div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">首页</a></li>
-                <li><a href="#about" class="nav-link">关于</a></li>
-                <li><a href="#contact" class="nav-link">联系</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section id="home" class="hero">
-            <div class="container">
-                <h1 class="hero-title">欢迎来到我的网站</h1>
-                <p class="hero-subtitle">这是一个使用HTML、CSS和JavaScript构建的现代化网页</p>
-                <button class="btn btn-primary" id="cta-button">开始探索</button>
-            </div>
-        </section>
-
-        <section id="about" class="about">
-            <div class="container">
-                <h2>关于我们</h2>
-                <div class="cards">
-                    <div class="card">
-                        <h3>HTML</h3>
-                        <p>结构化的网页内容</p>
+    <!-- 登入介面 -->
+    <div id="login-section" class="login-section">
+        <div class="login-container">
+            <div class="login-card">
+                <h1 class="login-title">照護管理系統</h1>
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="username">帳號：</label>
+                        <input type="text" id="username" name="username" required>
                     </div>
-                    <div class="card">
-                        <h3>CSS</h3>
-                        <p>美观的样式设计</p>
+                    <div class="form-group">
+                        <label for="password">密碼：</label>
+                        <input type="password" id="password" name="password" required>
                     </div>
-                    <div class="card">
-                        <h3>JavaScript</h3>
-                        <p>交互式功能实现</p>
-                    </div>
+                    <button type="submit" class="btn btn-primary">登入</button>
+                </form>
+                <div class="login-info">
+                    <p>預設帳號：admin</p>
+                    <p>預設密碼：123456</p>
                 </div>
             </div>
-        </section>
-
-        <section id="contact" class="contact">
-            <div class="container">
-                <h2>联系我们</h2>
-                <form class="contact-form" id="contact-form">
-                    <div class="form-group">
-                        <label for="name">姓名：</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">邮箱：</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">留言：</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">发送消息</button>
-                </form>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 我的网页项目. 保留所有权利.</p>
         </div>
-    </footer>
+    </div>
+
+    <!-- 主系統介面 -->
+    <div id="main-section" class="main-section" style="display: none;">
+        <header class="header">
+            <nav class="nav">
+                <div class="nav-brand">照護管理系統</div>
+                <ul class="nav-menu">
+                    <li><a href="#dashboard" class="nav-link">儀表板</a></li>
+                    <li><a href="#care" class="nav-link">照護管理</a></li>
+                    <li><a href="#staff" class="nav-link">人員管理</a></li>
+                    <li><button class="btn btn-logout" id="logout-btn">登出</button></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <!-- 儀表板 -->
+            <section id="dashboard" class="dashboard">
+                <div class="container">
+                    <h1>歡迎使用照護管理系統</h1>
+                    <div class="dashboard-cards">
+                        <div class="dashboard-card">
+                            <h3>照護管理</h3>
+                            <p>管理照護記錄和排程</p>
+                            <button class="btn btn-primary" onclick="showSection('care')">進入照護管理</button>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>人員管理</h3>
+                            <p>管理照護人員資料</p>
+                            <button class="btn btn-primary" onclick="showSection('staff')">進入人員管理</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 照護管理 -->
+            <section id="care" class="care-section" style="display: none;">
+                <div class="container">
+                    <h2>照護管理</h2>
+                    <div class="care-controls">
+                        <div class="filter-group">
+                            <label for="year-select">年份：</label>
+                            <select id="year-select" class="form-select">
+                                <option value="">請選擇年份</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="month-select">月份：</label>
+                            <select id="month-select" class="form-select">
+                                <option value="">請選擇月份</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="filterRecords()">篩選記錄</button>
+                    </div>
+                    <div class="care-records">
+                        <h3>照護記錄</h3>
+                        <div id="records-list" class="records-list">
+                            <!-- 記錄將在這裡動態顯示 -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 人員管理 -->
+            <section id="staff" class="staff-section" style="display: none;">
+                <div class="container">
+                    <h2>人員管理</h2>
+                    <button class="btn btn-primary" onclick="showAddStaffForm()">新增人員</button>
+                    
+                    <div class="staff-list">
+                        <h3>人員列表</h3>
+                        <div id="staff-list" class="staff-grid">
+                            <!-- 人員卡片將在這裡動態顯示 -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2024 照護管理系統. 保留所有權利.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 新增人員模態框 -->
+    <div id="add-staff-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新增人員</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="add-staff-form" class="modal-form">
+                <div class="form-group">
+                    <label for="staff-name">姓名：</label>
+                    <input type="text" id="staff-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="staff-phone">電話：</label>
+                    <input type="tel" id="staff-phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="staff-address">地址：</label>
+                    <textarea id="staff-address" name="address" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="staff-memo">備忘：</label>
+                    <textarea id="staff-memo" name="memo" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="staff-photo">照片：</label>
+                    <input type="file" id="staff-photo" name="photo" accept="image/*">
+                    <div id="photo-preview" class="photo-preview"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">新增</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
