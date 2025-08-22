@@ -16,11 +16,42 @@ body {
 .login-section {
     min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     position: relative;
     overflow: hidden;
+}
+
+/* 登入頁面標題欄 */
+.login-header, .login-footer {
+    background: linear-gradient(135deg, #8B5FBF 0%, #6A4C93 50%, #667eea 100%);
+    color: white;
+    padding: 12px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    min-height: 60px;
+}
+
+.login-header {
+    position: sticky;
+    top: 0;
+}
+
+.login-footer {
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
+}
+
+/* 登入頁面的空白區塊（保持平衡） */
+.empty-block {
+    min-width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .login-section::before {
@@ -46,6 +77,10 @@ body {
     padding: 20px;
     position: relative;
     z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
 }
 
 .login-card {
@@ -206,136 +241,472 @@ body {
     font-size: 1rem;
 }
 
+.credential-item {
+    display: flex;
+    align-items: center;
+    margin: 0.8rem 0;
+    color: #667eea;
+    font-size: 0.9rem;
+    font-weight: 500;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.key-icon {
+    font-size: 1rem;
+}
+
 /* ===== 主系統介面樣式 ===== */
 
-/* 主系統介面 */
+/* 主系統介面樣式 */
 .main-section {
     min-height: 100vh;
-    background: #f8f9fa;
+    background: linear-gradient(180deg, #667eea 0%, #f8f9fa 50%, #ffffff 100%);
+    overflow-x: hidden;
+    display: none; /* 預設隱藏，登入後才顯示 */
 }
 
-/* 頂部導航 - 固定定位 */
-.main-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* 整合標題區塊和主要內容區塊 */
+/* 統一頂部標題欄 */
+.unified-header {
+    background: linear-gradient(135deg, #8B5FBF 0%, #6A4C93 50%, #667eea 100%);
     color: white;
-    padding: 1rem 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
+    padding: 12px 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    min-height: 60px;
 }
 
-.header-left {
+/* 左側時間區塊 */
+.time-block {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 8px 16px;
+    border-radius: 20px;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 100px;
+}
+
+.time-label {
+    font-size: 11px;
+    opacity: 0.9;
+    margin-bottom: 2px;
+    font-weight: 400;
 }
 
 .time-display {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    padding: 0.8rem 1rem;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+/* 中央系統標題 */
+.system-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
     text-align: center;
+    flex: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 2px;
+}
+
+/* 右側用戶區塊 */
+.user-block {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.time-label {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 0.3rem;
-    font-weight: 500;
+.user-icon {
+    font-size: 16px;
+    opacity: 0.9;
 }
 
-.current-time {
+.user-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    margin-right: 8px;
+}
+
+.theme-btn, .logout-btn {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.theme-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+.logout-btn {
+    background: rgba(220, 53, 69, 0.7);
+    border-color: rgba(220, 53, 69, 0.8);
+}
+
+.logout-btn:hover {
+    background: rgba(220, 53, 69, 0.9);
+    border-color: rgba(220, 53, 69, 1);
+    transform: translateY(-1px);
+}
+
+/* 主要內容區域整合 */
+.main-content {
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 1.5rem 1rem;
+    margin-top: 0;
+    position: relative;
+    z-index: 1;
+    min-height: calc(100vh - 80px);
+}
+
+/* 功能選擇區域整合 */
+.function-selection {
+    padding: 0.5rem 0;
+}
+
+.function-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+}
+
+.function-header h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: white;
-    font-family: 'Courier New', monospace;
+    color: #2c3e50;
+    margin-bottom: 0.3rem;
 }
 
-.header-center {
-    flex: 1;
+.function-header p {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.function-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.function-card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem 1.2rem;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.function-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.function-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+.function-card:hover::before {
+    opacity: 1;
+}
+
+.function-card .card-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 1.2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.function-card h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.8rem;
+}
+
+.function-card p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* 其他功能區域樣式整合 */
+.care-section,
+.statistics-section,
+.settings-section,
+.help-section {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-top: 0.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.care-section h2,
+.statistics-section h2,
+.settings-section h2,
+.help-section h2 {
+    color: #2c3e50;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
     text-align: center;
 }
 
-.system-title {
-    font-size: 2rem;
-    margin: 0;
-    font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-}
-
-.user-greeting {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
+/* 頂部返回按鈕樣式 */
+.header-back-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    font-size: 0.9rem;
-    font-weight: 500;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.header-buttons {
-    display: flex;
-    gap: 0.8rem;
-}
-
-.header-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    padding: 0.6rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    font-size: 0.75rem;
     font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-right: 0.5rem;
 }
 
-.header-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+.header-back-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+}
+
+/* 返回按鈕樣式整合 */
+.back-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.back-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-.header-btn.logout-btn {
-    background: rgba(220, 53, 69, 0.8);
-    border-color: rgba(220, 53, 69, 0.6);
+/* 響應式設計整合 */
+@media (max-width: 768px) {
+    .unified-header {
+        padding: 10px 15px;
+        flex-direction: column;
+        gap: 10px;
+        min-height: auto;
+    }
+    
+    .login-header, .login-footer {
+        padding: 10px 15px;
+        flex-direction: column;
+        gap: 10px;
+        min-height: auto;
+    }
+    
+    .time-block, .user-block, .empty-block {
+        min-width: auto;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .system-title {
+        font-size: 20px;
+        order: -1;
+    }
+    
+    .theme-btn, .logout-btn, .header-back-btn {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+    
+    .header-back-btn {
+        margin-right: 0.3rem;
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+    
+    .main-content {
+        margin-top: 0;
+        padding: 1rem 0.5rem 1.5rem 0.5rem;
+    }
+    
+    .function-grid {
+        gap: 0.8rem;
+    }
+    
+    .function-card {
+        padding: 1.3rem 0.8rem;
+    }
+    
+    .function-card .card-icon {
+        width: 55px;
+        height: 55px;
+        font-size: 1.8rem;
+    }
+    
+    .function-card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .care-section,
+    .statistics-section,
+    .settings-section,
+    .help-section {
+        padding: 1.2rem 0.8rem;
+        margin-top: 0.3rem;
+    }
 }
 
-.header-btn.logout-btn:hover {
-    background: rgba(220, 53, 69, 0.9);
+@media (max-width: 480px) {
+    .unified-header {
+        padding: 8px 10px;
+        gap: 8px;
+    }
+    
+    .login-header, .login-footer {
+        padding: 8px 10px;
+        gap: 8px;
+    }
+    
+    .system-title {
+        font-size: 18px;
+    }
+    
+    .time-label, .user-name {
+        font-size: 10px;
+    }
+    
+    .time-display {
+        font-size: 12px;
+    }
+    
+    .theme-btn, .logout-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+    
+    .main-content {
+        margin-top: 0;
+        padding: 1rem 0.3rem;
+    }
+    
+    .function-card {
+        padding: 1rem 0.6rem;
+    }
+    
+    .function-card .card-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.6rem;
+    }
+    
+    .function-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    .care-section,
+    .statistics-section,
+    .settings-section,
+    .help-section {
+        padding: 1rem 0.8rem;
+        border-radius: 15px;
+    }
 }
 
-/* 主要內容區域 - 調整頂部間距 */
-.main-content {
-    padding-top: 120px; /* 為固定導航留出空間 */
-    min-height: calc(100vh - 120px);
+/* 橫向模式整合 */
+@media (orientation: landscape) and (max-height: 600px) {
+    .unified-header {
+        padding: 6px 20px;
+        gap: 8px;
+        min-height: 50px;
+    }
+    
+    .system-title {
+        font-size: 18px;
+    }
+    
+    .time-block, .user-block {
+        padding: 6px 12px;
+    }
+    
+    .theme-btn, .logout-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+    
+    .main-content {
+        margin-top: 0;
+        padding: 0.8rem;
+    }
+    
+    .function-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 0.8rem;
+    }
+    
+    .function-card {
+        padding: 1rem 0.8rem;
+    }
 }
 
 /* 卹滿照護區域 */
@@ -1438,11 +1809,11 @@ body {
     color: #ffffff;
 }
 
-.dark-theme .main-header {
-    background: rgba(45, 45, 45, 0.95);
+.dark-theme .unified-header {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 50%, #333 100%);
     backdrop-filter: blur(20px);
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    border-bottom-color: rgba(85, 85, 85, 0.3);
+    border-bottom: 1px solid rgba(85, 85, 85, 0.3);
 }
 
 .dark-theme .system-title {
@@ -2093,7 +2464,7 @@ body {
 /* 手機響應式設計 */
 @media (max-width: 768px) {
     /* 頂部導航手機優化 */
-    .main-header {
+    .unified-header {
         padding: 0.8rem 0;
     }
     

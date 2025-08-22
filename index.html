@@ -9,6 +9,22 @@
 <body>
     <!-- 登入介面 -->
     <div id="login-section" class="login-section">
+        <!-- 頂部標題欄（登入頁面版本） -->
+        <header class="login-header">
+            <!-- 左側時間區塊 -->
+            <div class="time-block">
+                <div class="time-label">現在時間</div>
+                <div id="login-time" class="time-display">13:29:09</div>
+            </div>
+            
+            <!-- 中央系統標題 -->
+            <h1 class="system-title">留守資訊系統</h1>
+            
+            <!-- 右側空白區塊（保持平衡） -->
+            <div class="empty-block"></div>
+        </header>
+        
+        <!-- 中央登入卡片 -->
         <div class="login-container">
             <div class="login-card">
                 <h1 class="login-title">留守資訊系統</h1>
@@ -24,76 +40,98 @@
                     <button type="submit" class="btn btn-primary">登入</button>
                 </form>
                 <div class="login-info">
-                    <p>預設帳號：admin</p>
-                    <p>預設密碼：123456</p>
+                    <div class="credential-item">
+                        <span class="key-icon">🔑</span>
+                        <span>預設帳號：admin</span>
+                    </div>
+                    <div class="credential-item">
+                        <span class="key-icon">🔑</span>
+                        <span>預設密碼：123456</span>
+                    </div>
                 </div>
             </div>
         </div>
+        
+        <!-- 底部標題欄（登入頁面版本） -->
+        <footer class="login-footer">
+            <!-- 左側時間區塊 -->
+            <div class="time-block">
+                <div class="time-label">現在時間</div>
+                <div id="login-time-footer" class="time-display">13:29:09</div>
+            </div>
+            
+            <!-- 中央系統標題 -->
+            <h1 class="system-title">留守資訊系統</h1>
+            
+            <!-- 右側空白區塊（保持平衡） -->
+            <div class="empty-block"></div>
+        </footer>
     </div>
 
     <!-- 主系統介面 -->
-    <div id="main-section" class="main-section" style="display: none;">
-        <!-- 頂部導航 -->
-        <header class="main-header">
-            <div class="header-content">
-                <div class="header-left">
-                    <div class="time-display">
-                        <div class="time-label">現在時間</div>
-                        <div class="current-time" id="current-time">10:20:54</div>
-                    </div>
+    <section id="main-section" class="main-section">
+        <!-- 統一頂部標題欄 -->
+        <header class="unified-header">
+            <!-- 左側時間區塊 -->
+            <div class="time-block">
+                <div class="time-label">現在時間</div>
+                <div id="current-time" class="time-display">13:29:09</div>
+            </div>
+            
+            <!-- 中央系統標題 -->
+            <h1 class="system-title">留守資訊系統</h1>
+            
+            <!-- 右側用戶區塊 -->
+            <div class="user-block">
+                <button id="header-back-btn" class="header-back-btn" onclick="showSection('function-selection')" style="display: none;">
+                    <span>←</span> 主選單
+                </button>
+                <span class="user-icon">👤</span>
+                <span class="user-name">admin</span>
+                <button class="theme-btn" onclick="toggleTheme()">切換主題</button>
+                <button class="logout-btn" onclick="logout()">登出</button>
+            </div>
+        </header>
+        
+        <!-- 主要內容區域 -->
+        <div class="main-content">
+            <!-- 功能選擇區域 -->
+            <div id="function-selection" class="function-selection">
+                <div class="function-header">
+                    <h2>功能選擇</h2>
+                    <p>請選擇您要使用的功能模組</p>
                 </div>
-                <div class="header-center">
-                    <h1 class="system-title">留守資訊系統</h1>
-                </div>
-                <div class="header-right">
-                    <div class="user-info">
-                        <span class="user-greeting">嗨, admin</span>
+                
+                <div class="function-grid">
+                    <!-- 卹滿照護功能 -->
+                    <div class="function-card" onclick="showSection('care')">
+                        <div class="card-icon">👥</div>
+                        <h3>卹滿照護</h3>
+                        <p>人員管理、資料查詢、匯出報表</p>
                     </div>
-                    <div class="header-buttons">
-                        <button class="header-btn" onclick="toggleTheme()">切換主題</button>
-                        <button class="header-btn logout-btn" onclick="logout()">登出</button>
+                    
+                    <!-- 統計分析功能 -->
+                    <div class="function-card" onclick="showSection('statistics')">
+                        <div class="card-icon">📊</div>
+                        <h3>統計分析</h3>
+                        <p>資料統計、圖表分析、趨勢報告</p>
+                    </div>
+                    
+                    <!-- 系統設定功能 -->
+                    <div class="function-card" onclick="showSection('settings')">
+                        <div class="card-icon">⚙️</div>
+                        <h3>系統設定</h3>
+                        <p>主題設定、資料備份、系統維護</p>
+                    </div>
+                    
+                    <!-- 使用說明功能 -->
+                    <div class="function-card" onclick="showSection('help')">
+                        <div class="card-icon">❓</div>
+                        <h3>使用說明</h3>
+                        <p>操作指南、常見問題、聯絡支援</p>
                     </div>
                 </div>
             </div>
-        </header>
-
-        <!-- 主要內容區域 -->
-        <main class="main-content">
-            <!-- 功能選擇區域 -->
-            <section id="function-selection" class="function-selection">
-                <div class="function-container">
-                    <div class="function-header">
-                        <h2>請選擇功能</h2>
-                        <p>點擊下方按鈕進入對應功能模組</p>
-                    </div>
-                    
-                    <div class="function-grid">
-                        <div class="function-card" onclick="showSection('care')">
-                            <div class="function-icon">👥</div>
-                            <h3>卹滿照護</h3>
-                            <p>人員管理、資料查詢、匯出報表</p>
-                        </div>
-                        
-                        <div class="function-card" onclick="showSection('statistics')">
-                            <div class="function-icon">📊</div>
-                            <h3>統計分析</h3>
-                            <p>數據統計、圖表分析、報表生成</p>
-                        </div>
-                        
-                        <div class="function-card" onclick="showSection('settings')">
-                            <div class="function-icon">⚙️</div>
-                            <h3>系統設定</h3>
-                            <p>用戶管理、權限設定、系統配置</p>
-                        </div>
-                        
-                        <div class="function-card" onclick="showSection('help')">
-                            <div class="function-icon">❓</div>
-                            <h3>使用說明</h3>
-                            <p>操作指南、常見問題、聯絡支援</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             <!-- 卹滿照護區域 -->
             <section id="care" class="care-section" style="display: none;">
@@ -129,8 +167,8 @@
                         
                         <div class="action-buttons">
                             <button class="btn btn-success" onclick="showAddPersonForm()">新增人員</button>
-                            <button class="btn btn-export" onclick="exportCSV()">匯出本月 CSV</button>
-                            <button class="btn btn-export-orange" onclick="exportPDF()">匯出 PDF</button>
+                            <button class="btn btn-export" onclick="exportToCSV()">匯出本月 CSV</button>
+                            <button class="btn btn-export-orange" onclick="exportToPDF()">匯出 PDF</button>
                             <button class="btn btn-check" onclick="checkPhotos()">檢查照片</button>
                         </div>
                     </div>
@@ -339,8 +377,8 @@
                     </div>
                 </div>
             </section>
-        </main>
-    </div>
+        </div>
+    </section>
 
     <!-- 新增人員模態框 -->
     <div id="add-person-modal" class="modal" style="display: none;">
@@ -370,7 +408,7 @@
                     </div>
                     <div class="form-group">
                         <label for="person-case-number">編號 *</label>
-                        <input type="text" id="person-case-number" name="caseNumber" placeholder="請輸入郵令號碼" required>
+                        <input type="text" id="person-case-number" name="caseNumber" placeholder="請輸入編號" required>
                     </div>
                     <div class="form-group">
                         <label for="person-month">月份 *</label>
