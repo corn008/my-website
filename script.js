@@ -2627,3 +2627,20 @@ function toggleFaq(questionElement) {
         questionElement.classList.add('active');
     }
 }
+
+function loadTheme() {
+    try {
+        const savedTheme = localStorage.getItem('currentTheme') || 'light';
+        const body = document.body;
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-theme');
+        } else {
+            body.classList.remove('dark-theme');
+        }
+        return savedTheme;
+    } catch (_) {
+        // 若存取 localStorage 失敗，保守採用淺色主題
+        document.body.classList.remove('dark-theme');
+        return 'light';
+    }
+}
