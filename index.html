@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>照護管理系統</title>
+    <title>留守資訊系統</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div id="login-section" class="login-section">
         <div class="login-container">
             <div class="login-card">
-                <h1 class="login-title">照護管理系統</h1>
+                <h1 class="login-title">留守資訊系統</h1>
                 <form id="login-form" class="login-form">
                     <div class="form-group">
                         <label for="username">帳號：</label>
@@ -33,121 +33,158 @@
 
     <!-- 主系統介面 -->
     <div id="main-section" class="main-section" style="display: none;">
-        <header class="header">
-            <nav class="nav">
-                <div class="nav-brand">照護管理系統</div>
-                <ul class="nav-menu">
-                    <li><a href="#dashboard" class="nav-link">儀表板</a></li>
-                    <li><a href="#care" class="nav-link">照護管理</a></li>
-                    <li><a href="#staff" class="nav-link">人員管理</a></li>
-                    <li><button class="btn btn-logout" id="logout-btn">登出</button></li>
-                </ul>
-            </nav>
+        <!-- 頂部導航 -->
+        <header class="main-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="time-display">
+                        <div class="time-label">現在時間</div>
+                        <div class="current-time" id="current-time">10:20:54</div>
+                    </div>
+                </div>
+                <div class="header-center">
+                    <h1 class="system-title">留守資訊系統</h1>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-greeting">嗨, admin</span>
+                    </div>
+                    <div class="header-buttons">
+                        <button class="header-btn active" onclick="showSection('care')">卹滿照護</button>
+                        <button class="header-btn" onclick="toggleTheme()">切換主題</button>
+                        <button class="header-btn logout-btn" onclick="logout()">登出</button>
+                    </div>
+                </div>
+            </div>
         </header>
 
-        <main>
-            <!-- 儀表板 -->
-            <section id="dashboard" class="dashboard">
-                <div class="container">
-                    <h1>歡迎使用照護管理系統</h1>
-                    <div class="dashboard-cards">
-                        <div class="dashboard-card">
-                            <h3>照護管理</h3>
-                            <p>管理照護記錄和排程</p>
-                            <button class="btn btn-primary" onclick="showSection('care')">進入照護管理</button>
-                        </div>
-                        <div class="dashboard-card">
-                            <h3>人員管理</h3>
-                            <p>管理照護人員資料</p>
-                            <button class="btn btn-primary" onclick="showSection('staff')">進入人員管理</button>
-                        </div>
+        <!-- 主要內容區域 -->
+        <main class="main-content">
+            <!-- 卹滿照護區域 -->
+            <section id="care" class="care-section">
+                <div class="care-container">
+                    <div class="care-header">
+                        <h2>卹滿照護</h2>
                     </div>
-                </div>
-            </section>
-
-            <!-- 照護管理 -->
-            <section id="care" class="care-section" style="display: none;">
-                <div class="container">
-                    <h2>照護管理</h2>
-                    <div class="care-controls">
-                        <div class="filter-group">
-                            <label for="year-select">年份：</label>
-                            <select id="year-select" class="form-select">
-                                <option value="">請選擇年份</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label for="month-select">月份：</label>
-                            <select id="month-select" class="form-select">
-                                <option value="">請選擇月份</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="filterRecords()">篩選記錄</button>
-                    </div>
-                    <div class="care-records">
-                        <h3>照護記錄</h3>
-                        <div id="records-list" class="records-list">
-                            <!-- 記錄將在這裡動態顯示 -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 人員管理 -->
-            <section id="staff" class="staff-section" style="display: none;">
-                <div class="container">
-                    <h2>人員管理</h2>
-                    <button class="btn btn-primary" onclick="showAddStaffForm()">新增人員</button>
                     
-                    <div class="staff-list">
-                        <h3>人員列表</h3>
-                        <div id="staff-list" class="staff-grid">
-                            <!-- 人員卡片將在這裡動態顯示 -->
+                    <!-- 篩選和搜尋區域 -->
+                    <div class="filter-search-area">
+                        <div class="filter-controls">
+                            <div class="filter-group">
+                                <label for="year-select">年份</label>
+                                <select id="year-select" class="form-select">
+                                    <option value="">請選擇年份</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="month-select">月份</label>
+                                <select id="month-select" class="form-select">
+                                    <option value="">請選擇月份</option>
+                                </select>
+                            </div>
+                            <div class="search-group">
+                                <input type="text" id="search-input" class="search-input" placeholder="搜尋姓名/個案號碼">
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <button class="btn btn-success" onclick="showAddPersonForm()">新增人員</button>
+                            <button class="btn btn-export" onclick="exportCSV()">匯出本月 CSV</button>
+                            <button class="btn btn-export-orange" onclick="exportPDF()">匯出 PDF</button>
+                            <button class="btn btn-check" onclick="checkPhotos()">檢查照片</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 資料顯示區域 -->
+                    <div class="data-display-area">
+                        <div id="data-content" class="data-content">
+                            <p class="no-data-message">目前沒有資料</p>
                         </div>
                     </div>
                 </div>
             </section>
         </main>
-
-        <footer class="footer">
-            <div class="container">
-                <p>&copy; 2024 照護管理系統. 保留所有權利.</p>
-            </div>
-        </footer>
     </div>
 
     <!-- 新增人員模態框 -->
-    <div id="add-staff-modal" class="modal" style="display: none;">
+    <div id="add-person-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>新增人員</h3>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
-            <form id="add-staff-form" class="modal-form">
-                <div class="form-group">
-                    <label for="staff-name">姓名：</label>
-                    <input type="text" id="staff-name" name="name" required>
+            <form id="add-person-form" class="modal-form">
+                <!-- 基本資料區塊 -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-icon">👤</span>
+                        <h4>基本資料</h4>
+                    </div>
+                    <div class="form-group">
+                        <label for="person-name">姓名 *</label>
+                        <input type="text" id="person-name" name="name" placeholder="請輸入姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="person-phone">電話 *</label>
+                        <input type="tel" id="person-phone" name="phone" placeholder="請輸入電話號碼" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="person-address">地址 *</label>
+                        <textarea id="person-address" name="address" rows="3" placeholder="請輸入完整地址" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="person-case-number">編號 *</label>
+                        <input type="text" id="person-case-number" name="caseNumber" placeholder="請輸入郵令號碼" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="person-month">月份 *</label>
+                        <select id="person-month" name="month" required>
+                            <option value="">請選擇月份</option>
+                            <option value="01">1月</option>
+                            <option value="02">2月</option>
+                            <option value="03">3月</option>
+                            <option value="04">4月</option>
+                            <option value="05">5月</option>
+                            <option value="06">6月</option>
+                            <option value="07">7月</option>
+                            <option value="08">8月</option>
+                            <option value="09">9月</option>
+                            <option value="10">10月</option>
+                            <option value="11">11月</option>
+                            <option value="12">12月</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="staff-phone">電話：</label>
-                    <input type="tel" id="staff-phone" name="phone" required>
+
+                <!-- 備註與照片區塊 -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <span class="section-icon">💬</span>
+                        <h4>備註與照片</h4>
+                    </div>
+                    <div class="form-group">
+                        <label for="person-memo">備註</label>
+                        <textarea id="person-memo" name="memo" rows="3" placeholder="請輸入備註資訊 (選填)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="person-photo">照片 (可多選)</label>
+                        <div class="file-upload-area">
+                            <input type="file" id="person-photo" name="photo" accept="image/*" multiple>
+                            <div class="file-upload-content">
+                                <span class="file-upload-text">沒有選擇檔案</span>
+                            </div>
+                        </div>
+                        <div class="file-info">
+                            <span class="info-icon">ℹ️</span>
+                            <span>支援 JPG、PNG、GIF 格式，可選擇多張照片</span>
+                        </div>
+                        <div id="photo-preview" class="photo-preview"></div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="staff-address">地址：</label>
-                    <textarea id="staff-address" name="address" rows="3" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="staff-memo">備忘：</label>
-                    <textarea id="staff-memo" name="memo" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="staff-photo">照片：</label>
-                    <input type="file" id="staff-photo" name="photo" accept="image/*">
-                    <div id="photo-preview" class="photo-preview"></div>
-                </div>
+
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">新增</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">新增人員</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">返回列表</button>
                 </div>
             </form>
         </div>
