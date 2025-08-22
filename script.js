@@ -1635,15 +1635,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         <iframe class="map-embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${encodeURIComponent(person.address)}&output=embed"></iframe>
                     </div>
                     
-                    <div class="action-buttons">
-                        <button class="btn btn-detail" data-person-id="${person.id}" onclick="showPersonDetail(${person.id})">
-                            <span class="btn-icon">👁️</span>詳細
+                    <div class="person-actions-compact">
+                        <button class="btn btn-edit-compact" data-person-id="${person.id}" onclick="editPerson(${person.id})" title="編輯">
+                            <span class="btn-icon">✏️</span>
                         </button>
-                        <button class="btn btn-edit" data-person-id="${person.id}" onclick="editPerson(${person.id})">
-                            <span class="btn-icon">✏️</span>編輯
-                        </button>
-                        <button class="btn btn-delete" data-person-id="${person.id}" onclick="deletePerson(${person.id})">
-                            <span class="btn-icon">🗑️</span>刪除
+                        <button class="btn btn-delete-compact" data-person-id="${person.id}" onclick="deletePerson(${person.id})" title="刪除">
+                            <span class="btn-icon">🗑️</span>
                         </button>
                     </div>
                 </div>
@@ -1656,13 +1653,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // 事件委派（雙保險）：即使 inline onclick 失效，仍能觸發功能
         if (!dataContent.__actionsBound) {
             dataContent.addEventListener('click', function(e) {
-                const detailBtn = e.target.closest && e.target.closest('.btn.btn-detail');
-                const editBtn = e.target.closest && e.target.closest('.btn.btn-edit');
-                const delBtn = e.target.closest && e.target.closest('.btn.btn-delete');
-                if (detailBtn) {
-                    const pid = parseInt(detailBtn.getAttribute('data-person-id'));
-                    if (!isNaN(pid)) { try { showPersonDetail(pid); } catch (_) {} }
-                } else if (editBtn) {
+                const editBtn = e.target.closest && e.target.closest('.btn.btn-edit-compact');
+                const delBtn = e.target.closest && e.target.closest('.btn.btn-delete-compact');
+                if (editBtn) {
                     const pid = parseInt(editBtn.getAttribute('data-person-id'));
                     if (!isNaN(pid)) { try { editPerson(pid); } catch (_) {} }
                 } else if (delBtn) {
@@ -1675,21 +1668,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 直接綁定每顆按鈕（再多一層保險）
         try {
-            dataContent.querySelectorAll('.btn.btn-detail').forEach(btn => {
-                btn.addEventListener('click', function(ev){
-                    ev.preventDefault(); ev.stopPropagation();
-                    const pid = parseInt(btn.getAttribute('data-person-id'));
-                    if (!isNaN(pid)) showPersonDetail(pid);
-                }, { once: false });
-            });
-            dataContent.querySelectorAll('.btn.btn-edit').forEach(btn => {
+            dataContent.querySelectorAll('.btn.btn-edit-compact').forEach(btn => {
                 btn.addEventListener('click', function(ev){
                     ev.preventDefault(); ev.stopPropagation();
                     const pid = parseInt(btn.getAttribute('data-person-id'));
                     if (!isNaN(pid)) editPerson(pid);
                 }, { once: false });
             });
-            dataContent.querySelectorAll('.btn.btn-delete').forEach(btn => {
+            dataContent.querySelectorAll('.btn.btn-delete-compact').forEach(btn => {
                 btn.addEventListener('click', function(ev){
                     ev.preventDefault(); ev.stopPropagation();
                     const pid = parseInt(btn.getAttribute('data-person-id'));
