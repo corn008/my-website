@@ -97,6 +97,24 @@ body {
     top: 0;
 }
 
+/* 登入標題 + 右側時間（精簡版） */
+.title-with-time {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.login-time-inline {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
 .login-footer {
     position: sticky;
     bottom: 0;
@@ -561,14 +579,12 @@ body {
 }
 
 @media (max-width: 480px) {
-    .login-header, .login-footer {
-        padding: 12px 20px;
-        min-height: 60px;
+    .login-header, .login-footer, .unified-header {
+        padding: 8px 12px; /* 手機上縮小頂部留白 */
+        min-height: 52px;
     }
     
-    .login-container {
-        padding: 15px 10px;
-    }
+    .login-container { padding: 10px 8px; }
     
     .login-card {
         padding: 2rem 1.5rem;
@@ -765,10 +781,10 @@ body {
 }
 
 .time-display {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 16px; /* 放大避免視覺上像是空白 */
+    font-weight: 700;
     font-family: 'Courier New', monospace;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
 }
 
 /* 中央系統標題 */
@@ -1012,7 +1028,7 @@ body {
 /* 響應式設計整合 */
 @media (max-width: 768px) {
     .unified-header {
-        padding: 10px 15px;
+        padding: 6px 12px; /* 壓縮頂部留白 */
         flex-direction: column;
         gap: 10px;
         min-height: auto;

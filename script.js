@@ -1421,6 +1421,16 @@ document.addEventListener('DOMContentLoaded', function() {
             loginTimeFooterElement.textContent = timeString;
         }
     }
+
+    // 從背景回到前景時，立即刷新時間並確保計時器存在
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            updateTime();
+            if (!timeInterval) {
+                timeInterval = setInterval(updateTime, 1000);
+            }
+        }
+    });
     
     // 通知系統
     function showNotification(message, type = 'info') {
