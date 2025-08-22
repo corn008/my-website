@@ -2416,6 +2416,23 @@ body {
     border-bottom: 1px solid rgba(85, 85, 85, 0.3);
 }
 
+/* 深色主題下，主要內容與卡片全面套色 */
+.dark-theme .main-content {
+    background: linear-gradient(180deg, #1b1b1b 0%, #121212 100%);
+}
+.dark-theme .function-header {
+    background: linear-gradient(135deg, #3a3a3a 0%, #222 100%);
+    color: #e6e6e6;
+}
+.dark-theme .function-card {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    border-color: rgba(255,255,255,0.06);
+}
+.dark-theme .function-card h3 { color: #f2f2f2; }
+.dark-theme .theme-btn { color: #fff; }
+.dark-theme .logout-btn { background: rgba(220,53,69,0.9); border-color: rgba(220,53,69,1); }
+
 .dark-theme .system-title {
     color: #ffffff;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -3163,7 +3180,7 @@ body {
     
     /* 主要內容區域優化 */
     .main-content {
-        padding-top: 180px; /* 為手機導航留出更多空間 */
+        padding-top: 0; /* 取消多餘上內距，避免大空白 */
     }
     
     .function-selection {
