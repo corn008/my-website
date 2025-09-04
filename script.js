@@ -356,37 +356,10 @@ function exportToPDF() {
         const monthTitle = targetMonth ? `${targetMonth}月` : '';
         const docHtml = `<!DOCTYPE html>
         <html><head>
-            <meta charset=\"utf-8\" />
-            <meta name=\"robots\" content=\"noindex, nofollow\" />
-            <meta name=\"format-detection\" content=\"telephone=no\" />
+            <meta charset="utf-8">
+            <meta name="robots" content="noindex, nofollow">
+            <meta name="format-detection" content="telephone=no">
             <title>${monthTitle}遺族訪視照片</title>
-            <script>
-                // 隱藏列印時的URL
-                window.addEventListener('beforeprint', function() {
-                    // 移除可能的URL顯示元素
-                    const elements = document.querySelectorAll('[data-print-url], .print-url, .url-display');
-                    elements.forEach(el => el.style.display = 'none');
-                });
-                
-                // 設置列印樣式
-                document.addEventListener('DOMContentLoaded', function() {
-                    const style = document.createElement('style');
-                    style.textContent = \`
-                        @media print {
-                            @page { 
-                                margin: 16mm !important;
-                                @bottom-left { content: none !important; }
-                                @bottom-right { content: none !important; }
-                                @bottom-center { content: none !important; }
-                            }
-                            body::after { display: none !important; }
-                            body::before { display: none !important; }
-                            *[data-print-url] { display: none !important; }
-                        }
-                    \`;
-                    document.head.appendChild(style);
-                });
-            </script>
             <style>
                 @page { 
                     size: A4; 
@@ -398,7 +371,28 @@ function exportToPDF() {
                     @top-right { content: none !important; }
                     @top-center { content: none !important; }
                 }
-                body { font-family: 'Microsoft JhengHei', Arial, sans-serif; margin: 0; color: #222; }
+                @page :first { 
+                    @bottom-left { content: none !important; }
+                    @bottom-right { content: none !important; }
+                    @bottom-center { content: none !important; }
+                }
+                @page :left { 
+                    @bottom-left { content: none !important; }
+                    @bottom-right { content: none !important; }
+                    @bottom-center { content: none !important; }
+                }
+                @page :right { 
+                    @bottom-left { content: none !important; }
+                    @bottom-right { content: none !important; }
+                    @bottom-center { content: none !important; }
+                }
+                body { 
+                    font-family: 'Microsoft JhengHei', Arial, sans-serif; 
+                    margin: 0; 
+                    color: #222; 
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
                 .title { text-align: center; font-size: 26px; font-weight: 700; margin: 4mm 0 8mm; }
                 .content { padding-bottom: 0; }
                 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; }
@@ -409,27 +403,34 @@ function exportToPDF() {
                 .case { margin-top: 1.5mm; font-size: 12px; color: #666; letter-spacing: 0.5px; }
                 .card, .photo-box { break-inside: avoid; }
                 @media print {
-                  .grid { gap: 8mm; }
-                  .card { padding: 5mm; }
-                  @page { 
-                    margin: 16mm; 
-                    @bottom-left { content: none !important; }
-                    @bottom-right { content: none !important; }
-                    @bottom-center { content: none !important; }
-                  }
+                    .grid { gap: 8mm; }
+                    .card { padding: 5mm; }
+                    @page { 
+                        margin: 16mm !important; 
+                        @bottom-left { content: none !important; }
+                        @bottom-right { content: none !important; }
+                        @bottom-center { content: none !important; }
+                        @top-left { content: none !important; }
+                        @top-right { content: none !important; }
+                        @top-center { content: none !important; }
+                    }
+                    body::after { display: none !important; }
+                    body::before { display: none !important; }
+                    *[data-print-url] { display: none !important; }
+                    footer, .footer, .print-footer, .page-footer { display: none !important; }
                 }
             </style>
         </head><body>
-            <div class=\"content\">
-                <div class=\"title\">${monthTitle}遺族訪視照片</div>
-                <div class=\"grid\">
+            <div class="content">
+                <div class="title">${monthTitle}遺族訪視照片</div>
+                <div class="grid">
                     ${filteredData.map(person => `
-                    <div class=\"card\">
-                        <div class=\"photo-box\">
-                            ${person.photo ? `<img src=\"${person.photo}\" alt=\"${person.name}\" />` : `<span class=\"empty\">無照片</span>`}
+                    <div class="card">
+                        <div class="photo-box">
+                            ${person.photo ? `<img src="${person.photo}" alt="${person.name}" />` : `<span class="empty">無照片</span>`}
                         </div>
-                        <div class=\"name\">${person.name}</div>
-                        <div class=\"case\">${person.caseNumber || ''}</div>
+                        <div class="name">${person.name}</div>
+                        <div class="case">${person.caseNumber || ''}</div>
                     </div>
                     `).join('')}
                 </div>
@@ -481,17 +482,51 @@ function exportToPDF() {
                     
                     // 延遲列印以確保樣式生效
                     setTimeout(() => {
-                        // 嘗試使用不同的列印方法來隱藏URL
+                        // 在列印前最後一次隱藏URL
                         try {
-                            // 方法1: 直接列印
+                            // 強制隱藏所有可能的URL元素
+                            const allElements = printWindow.document.querySelectorAll('*');
+                            allElements.forEach(el => {
+                                if (el.textContent && el.textContent.includes('http')) {
+                                    el.style.display = 'none';
+                                }
+                            });
+                            
+                            // 添加最終的CSS來隱藏URL
+                            const finalStyle = printWindow.document.createElement('style');
+                            finalStyle.textContent = \`
+                                @media print {
+                                    @page { 
+                                        margin: 16mm !important;
+                                        @bottom-left { content: none !important; }
+                                        @bottom-right { content: none !important; }
+                                        @bottom-center { content: none !important; }
+                                        @top-left { content: none !important; }
+                                        @top-right { content: none !important; }
+                                        @top-center { content: none !important; }
+                                    }
+                                    body { 
+                                        margin: 0 !important; 
+                                        padding: 0 !important; 
+                                        overflow: hidden !important;
+                                    }
+                                    * { 
+                                        -webkit-print-color-adjust: exact !important;
+                                        color-adjust: exact !important;
+                                    }
+                                }
+                            `;
+                            printWindow.document.head.appendChild(finalStyle);
+                            
+                            // 嘗試列印
                             printWindow.print();
                         } catch (e1) {
                             try {
-                                // 方法2: 使用window.print()
+                                // 備用方法
                                 printWindow.window.print();
                             } catch (e2) {
                                 try {
-                                    // 方法3: 使用document.execCommand
+                                    // 最後的備用方法
                                     printWindow.document.execCommand('print', false, null);
                                 } catch (e3) {
                                     console.error('所有列印方法都失敗:', e1, e2, e3);
@@ -499,7 +534,7 @@ function exportToPDF() {
                                 }
                             }
                         }
-                    }, 100);
+                    }, 200);
                 } else {
                     printDoc.focus(); 
                     printDoc.print(); 
@@ -515,6 +550,22 @@ function exportToPDF() {
             try {
                 const printWindow = iframe.contentWindow;
                 if (printWindow && printWindow.document) {
+                    // 強制移除所有可能的URL元素
+                    const allElements = printWindow.document.querySelectorAll('*');
+                    allElements.forEach(el => {
+                        if (el.textContent && (
+                            el.textContent.includes('http') || 
+                            el.textContent.includes('www.') ||
+                            el.textContent.includes('.com') ||
+                            el.textContent.includes('.dev') ||
+                            el.textContent.includes('.pages')
+                        )) {
+                            el.style.display = 'none';
+                            el.style.visibility = 'hidden';
+                            el.style.opacity = '0';
+                        }
+                    });
+                    
                     // 添加額外的CSS來隱藏URL
                     const additionalStyle = printWindow.document.createElement('style');
                     additionalStyle.textContent = `
@@ -533,9 +584,21 @@ function exportToPDF() {
                             *[data-print-url] { display: none !important; }
                             .print-url { display: none !important; }
                             .url-display { display: none !important; }
+                            /* 隱藏所有包含URL的元素 */
+                            *[data-url] { display: none !important; }
+                            .url-element { display: none !important; }
                         }
                     `;
                     printWindow.document.head.appendChild(additionalStyle);
+                    
+                    // 設置頁面標題為空，避免URL顯示
+                    printWindow.document.title = '';
+                    
+                    // 移除所有可能的URL屬性
+                    const allLinks = printWindow.document.querySelectorAll('a[href]');
+                    allLinks.forEach(link => {
+                        link.removeAttribute('href');
+                    });
                 }
             } catch (e) {
                 console.log('添加額外樣式失敗:', e);
