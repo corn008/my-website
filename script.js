@@ -494,7 +494,7 @@ function exportToPDF() {
                             
                             // 添加最終的CSS來隱藏URL
                             const finalStyle = printWindow.document.createElement('style');
-                            finalStyle.textContent = \`
+                            finalStyle.textContent = `
                                 @media print {
                                     @page { 
                                         margin: 16mm !important;
