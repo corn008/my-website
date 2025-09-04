@@ -355,10 +355,49 @@ function exportToPDF() {
         
         const monthTitle = targetMonth ? `${targetMonth}月` : '';
         const docHtml = `<!DOCTYPE html>
-        <html><head><meta charset=\"utf-8\" />
+        <html><head>
+            <meta charset=\"utf-8\" />
+            <meta name=\"robots\" content=\"noindex, nofollow\" />
+            <meta name=\"format-detection\" content=\"telephone=no\" />
             <title>${monthTitle}遺族訪視照片</title>
+            <script>
+                // 隱藏列印時的URL
+                window.addEventListener('beforeprint', function() {
+                    // 移除可能的URL顯示元素
+                    const elements = document.querySelectorAll('[data-print-url], .print-url, .url-display');
+                    elements.forEach(el => el.style.display = 'none');
+                });
+                
+                // 設置列印樣式
+                document.addEventListener('DOMContentLoaded', function() {
+                    const style = document.createElement('style');
+                    style.textContent = \`
+                        @media print {
+                            @page { 
+                                margin: 16mm !important;
+                                @bottom-left { content: none !important; }
+                                @bottom-right { content: none !important; }
+                                @bottom-center { content: none !important; }
+                            }
+                            body::after { display: none !important; }
+                            body::before { display: none !important; }
+                            *[data-print-url] { display: none !important; }
+                        }
+                    \`;
+                    document.head.appendChild(style);
+                });
+            </script>
             <style>
-                @page { size: A4; margin: 16mm; }
+                @page { 
+                    size: A4; 
+                    margin: 16mm; 
+                    @bottom-left { content: none !important; }
+                    @bottom-right { content: none !important; }
+                    @bottom-center { content: none !important; }
+                    @top-left { content: none !important; }
+                    @top-right { content: none !important; }
+                    @top-center { content: none !important; }
+                }
                 body { font-family: 'Microsoft JhengHei', Arial, sans-serif; margin: 0; color: #222; }
                 .title { text-align: center; font-size: 26px; font-weight: 700; margin: 4mm 0 8mm; }
                 .content { padding-bottom: 0; }
@@ -372,6 +411,12 @@ function exportToPDF() {
                 @media print {
                   .grid { gap: 8mm; }
                   .card { padding: 5mm; }
+                  @page { 
+                    margin: 16mm; 
+                    @bottom-left { content: none !important; }
+                    @bottom-right { content: none !important; }
+                    @bottom-center { content: none !important; }
+                  }
                 }
             </style>
         </head><body>
@@ -411,10 +456,91 @@ function exportToPDF() {
         doc.close();
 
         setTimeout(() => {
-            try { printDoc.focus(); printDoc.print(); } catch (err) {
+            try { 
+                // 嘗試使用更現代的列印方式，隱藏URL
+                const printWindow = iframe.contentWindow;
+                if (printWindow) {
+                    // 設置列印選項
+                    printWindow.focus();
+                    
+                    // 在列印前添加額外的CSS來隱藏URL
+                    const style = printWindow.document.createElement('style');
+                    style.textContent = `
+                        @media print {
+                            @page { 
+                                margin: 16mm !important;
+                                @bottom-left { content: none !important; }
+                                @bottom-right { content: none !important; }
+                                @bottom-center { content: none !important; }
+                            }
+                            body::after { display: none !important; }
+                            body::before { display: none !important; }
+                        }
+                    `;
+                    printWindow.document.head.appendChild(style);
+                    
+                    // 延遲列印以確保樣式生效
+                    setTimeout(() => {
+                        // 嘗試使用不同的列印方法來隱藏URL
+                        try {
+                            // 方法1: 直接列印
+                            printWindow.print();
+                        } catch (e1) {
+                            try {
+                                // 方法2: 使用window.print()
+                                printWindow.window.print();
+                            } catch (e2) {
+                                try {
+                                    // 方法3: 使用document.execCommand
+                                    printWindow.document.execCommand('print', false, null);
+                                } catch (e3) {
+                                    console.error('所有列印方法都失敗:', e1, e2, e3);
+                                    window.showNotification && window.showNotification('列印功能無法使用，請手動使用瀏覽器列印功能', 'warning');
+                                }
+                            }
+                        }
+                    }, 100);
+                } else {
+                    printDoc.focus(); 
+                    printDoc.print(); 
+                }
+            } catch (err) {
+                console.error('列印錯誤:', err);
                 window.showNotification && window.showNotification('列印啟動失敗，請允許列印或改用瀏覽器列印', 'warning');
             }
         }, 200);
+
+        // 添加額外的列印設置來隱藏URL
+        setTimeout(() => {
+            try {
+                const printWindow = iframe.contentWindow;
+                if (printWindow && printWindow.document) {
+                    // 添加額外的CSS來隱藏URL
+                    const additionalStyle = printWindow.document.createElement('style');
+                    additionalStyle.textContent = `
+                        @media print {
+                            @page { 
+                                margin: 16mm !important;
+                                @bottom-left { content: none !important; }
+                                @bottom-right { content: none !important; }
+                                @bottom-center { content: none !important; }
+                                @top-left { content: none !important; }
+                                @top-right { content: none !important; }
+                                @top-center { content: none !important; }
+                            }
+                            body::after { display: none !important; }
+                            body::before { display: none !important; }
+                            *[data-print-url] { display: none !important; }
+                            .print-url { display: none !important; }
+                            .url-display { display: none !important; }
+                        }
+                    `;
+                    printWindow.document.head.appendChild(additionalStyle);
+                }
+            } catch (e) {
+                console.log('添加額外樣式失敗:', e);
+            }
+        }, 50);
 
         window.showNotification && window.showNotification(`PDF 匯出就緒，共 ${filteredData.length} 筆資料`, 'success');
     } catch (err) {
@@ -730,9 +856,9 @@ function editPerson(personId) {
         // 處理新照片
         const newPhoto = formData.get('photo');
         if (newPhoto && newPhoto.size > 0) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                person.photo = e.target.result;
+            // 使用新的壓縮功能
+            compressImage(newPhoto, 0.8, 800, 600).then(compressedData => {
+                person.photo = compressedData;
                 window.saveData && window.saveData();
                 closeModal();
                 const editModalEl = document.getElementById('edit-modal');
@@ -740,8 +866,22 @@ function editPerson(personId) {
                 filterData();
                 if (document.getElementById('statistics').style.display !== 'none') { updateStatistics(); }
                 window.showNotification && window.showNotification('人員資料已更新', 'success');
-            };
-            reader.readAsDataURL(newPhoto);
+            }).catch(error => {
+                console.error('照片壓縮失敗:', error);
+                // 如果壓縮失敗，使用原始照片
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    person.photo = e.target.result;
+                    window.saveData && window.saveData();
+                    closeModal();
+                    const editModalEl = document.getElementById('edit-modal');
+                    if (editModalEl) editModalEl.style.display = 'none';
+                    filterData();
+                    if (document.getElementById('statistics').style.display !== 'none') { updateStatistics(); }
+                    window.showNotification && window.showNotification('人員資料已更新', 'success');
+                };
+                reader.readAsDataURL(newPhoto);
+            });
         } else {
             window.saveData && window.saveData();
             closeModal();
@@ -1014,6 +1154,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化系統
     initializeSystem();
     
+    // 初始化文件上傳功能
+    initializeFileUpload();
+    
     // 應用已儲存的主題設定
     if (currentTheme === 'dark') {
         document.body.classList.add('dark-theme');
@@ -1236,7 +1379,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                if (photoFile.size > 5 * 1024 * 1024) {
+                if (photoFile.size > 10 * 1024 * 1024) {
                     window.showNotification && window.showNotification('照片過大，將不附加照片但仍保存資料', 'warning');
                     addPersonToList(personData);
                     return;
@@ -1245,24 +1388,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 顯示載入提示
                 window.showNotification && window.showNotification('正在處理照片，請稍候...', 'info');
                 
-                const reader = new FileReader();
-                let hasSettled = false;
-                const settle = (withPhoto) => {
-                    if (hasSettled) return;
-                    hasSettled = true;
-                    if (withPhoto) personData.photo = withPhoto;
+                // 使用新的壓縮功能
+                compressImage(photoFile, 0.8, 800, 600).then(compressedData => {
+                    personData.photo = compressedData;
                     addPersonToList(personData);
-                };
-                reader.onload = function(e) { settle(e.target.result); };
-                reader.onerror = function() {
-                    window.showNotification && window.showNotification('照片讀取失敗，將不附加照片但仍保存資料', 'warning');
-                    settle(null);
-                };
-                reader.onabort = function() {
-                    window.showNotification && window.showNotification('照片讀取中止，將不附加照片但仍保存資料', 'warning');
-                    settle(null);
-                };
-                reader.readAsDataURL(photoFile);
+                    window.showNotification && window.showNotification('照片處理完成', 'success');
+                }).catch(error => {
+                    console.error('照片壓縮失敗:', error);
+                    // 如果壓縮失敗，使用原始照片
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        personData.photo = e.target.result;
+                        addPersonToList(personData);
+                    };
+                    reader.onerror = function() {
+                        window.showNotification && window.showNotification('照片讀取失敗，將不附加照片但仍保存資料', 'warning');
+                        addPersonToList(personData);
+                    };
+                    reader.readAsDataURL(photoFile);
+                });
             } else {
                 // 沒有選擇照片，直接新增
                 addPersonToList(personData);
@@ -2614,6 +2758,9 @@ document.addEventListener('DOMContentLoaded', function() {
     window.toggleFaq = wrapSafe('toggleFaq', toggleFaq);
     window.handlePhoneClick = wrapSafe('handlePhoneClick', handlePhoneClick);
     window.handleAddressClick = wrapSafe('handleAddressClick', handleAddressClick);
+    window.initializeFileUpload = wrapSafe('initializeFileUpload', initializeFileUpload);
+    window.compressImage = wrapSafe('compressImage', compressImage);
+    window.showPhotoPreview = wrapSafe('showPhotoPreview', showPhotoPreview);
 });
 
 // FAQ 折疊展開功能
@@ -2714,6 +2861,219 @@ function handlePhoneClick(event, phoneNumber) {
         event.preventDefault();
         window.showNotification && window.showNotification('處理電話號碼時發生錯誤', 'error');
     }
+}
+
+// 初始化文件上傳功能
+function initializeFileUpload() {
+    // 初始化新增表單的上傳功能
+    const addUploadArea = document.getElementById('file-upload-area');
+    const addPhotoInput = document.getElementById('person-photo');
+    const addPreview = document.getElementById('photo-preview');
+    const addProgress = document.getElementById('upload-progress');
+    
+    if (addUploadArea && addPhotoInput) {
+        setupFileUpload(addUploadArea, addPhotoInput, addPreview, addProgress);
+    }
+    
+    // 初始化編輯表單的上傳功能
+    const editUploadArea = document.getElementById('edit-file-upload-area');
+    const editPhotoInput = document.getElementById('edit-photo');
+    const editPreview = document.querySelector('#edit-modal .photo-preview');
+    const editProgress = document.getElementById('edit-upload-progress');
+    
+    if (editUploadArea && editPhotoInput) {
+        setupFileUpload(editUploadArea, editPhotoInput, editPreview, editProgress);
+    }
+}
+
+// 設置文件上傳功能
+function setupFileUpload(uploadArea, fileInput, preview, progress) {
+    if (!uploadArea || !fileInput) return;
+    
+    // 拖拽功能
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.classList.add('drag-over');
+    });
+    
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileSelection(files, fileInput, preview, progress);
+        }
+    });
+    
+    // 點擊上傳區域觸發文件選擇
+    uploadArea.addEventListener('click', function(e) {
+        if (e.target === uploadArea || e.target.closest('.file-upload-content')) {
+            fileInput.click();
+        }
+    });
+    
+    // 文件選擇變化
+    fileInput.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            handleFileSelection(e.target.files, fileInput, preview, progress);
+        }
+    });
+}
+
+// 處理文件選擇
+function handleFileSelection(files, fileInput, preview, progress) {
+    const validFiles = Array.from(files).filter(file => {
+        return file.type.startsWith('image/');
+    });
+    
+    if (validFiles.length === 0) {
+        window.showNotification && window.showNotification('請選擇有效的圖片檔案', 'error');
+        return;
+    }
+    
+    if (validFiles.length !== files.length) {
+        window.showNotification && window.showNotification(`已過濾 ${files.length - validFiles.length} 個無效檔案`, 'warning');
+    }
+    
+    // 顯示進度條
+    if (progress) {
+        progress.style.display = 'block';
+        const progressFill = progress.querySelector('.progress-fill');
+        const progressText = progress.querySelector('.progress-text');
+        
+        if (progressFill) progressFill.style.width = '0%';
+        if (progressText) progressText.textContent = '處理中...';
+    }
+    
+    // 處理多張照片
+    processMultiplePhotos(validFiles, fileInput, preview, progress);
+}
+
+// 處理多張照片
+function processMultiplePhotos(files, fileInput, preview, progress) {
+    const processedPhotos = [];
+    let completedCount = 0;
+    
+    files.forEach((file, index) => {
+        compressImage(file, 0.8, 800, 600).then(compressedData => {
+            processedPhotos[index] = compressedData;
+            completedCount++;
+            
+            // 更新進度
+            if (progress) {
+                const progressFill = progress.querySelector('.progress-fill');
+                const progressText = progress.querySelector('.progress-text');
+                const progressPercent = (completedCount / files.length) * 100;
+                
+                if (progressFill) progressFill.style.width = progressPercent + '%';
+                if (progressText) progressText.textContent = `處理中... ${completedCount}/${files.length}`;
+            }
+            
+            // 所有照片處理完成
+            if (completedCount === files.length) {
+                // 更新文件輸入
+                if (files.length === 1) {
+                    fileInput.files = files;
+                }
+                
+                // 顯示預覽
+                showPhotoPreview(processedPhotos, preview);
+                
+                // 隱藏進度條
+                if (progress) {
+                    setTimeout(() => {
+                        progress.style.display = 'none';
+                    }, 1000);
+                }
+                
+                window.showNotification && window.showNotification(`成功處理 ${files.length} 張照片`, 'success');
+            }
+        }).catch(error => {
+            console.error('照片壓縮失敗:', error);
+            completedCount++;
+            
+            if (completedCount === files.length) {
+                if (progress) {
+                    progress.style.display = 'none';
+                }
+                window.showNotification && window.showNotification('照片處理完成，部分照片可能未壓縮', 'warning');
+            }
+        });
+    });
+}
+
+// 照片壓縮功能
+function compressImage(file, quality = 0.8, maxWidth = 800, maxHeight = 600) {
+    return new Promise((resolve, reject) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = function() {
+            // 計算新尺寸
+            let { width, height } = img;
+            
+            if (width > maxWidth || height > maxHeight) {
+                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                width *= ratio;
+                height *= ratio;
+            }
+            
+            // 設置canvas尺寸
+            canvas.width = width;
+            canvas.height = height;
+            
+            // 繪製壓縮後的圖片
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // 轉換為base64
+            const compressedData = canvas.toDataURL('image/jpeg', quality);
+            resolve(compressedData);
+        };
+        
+        img.onerror = function() {
+            reject(new Error('圖片載入失敗'));
+        };
+        
+        // 讀取文件
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            img.src = e.target.result;
+        };
+        reader.onerror = function() {
+            reject(new Error('文件讀取失敗'));
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// 顯示照片預覽
+function showPhotoPreview(photos, previewContainer) {
+    if (!previewContainer || !photos || photos.length === 0) return;
+    
+    let previewHTML = '<div class="photo-preview-grid">';
+    
+    photos.forEach((photo, index) => {
+        if (photo) {
+            previewHTML += `
+                <div class="photo-preview-item">
+                    <img src="${photo}" alt="預覽照片 ${index + 1}" class="preview-image">
+                    <div class="photo-overlay">
+                        <span class="photo-number">${index + 1}</span>
+                    </div>
+                </div>
+            `;
+        }
+    });
+    
+    previewHTML += '</div>';
+    previewContainer.innerHTML = previewHTML;
 }
 
 // 處理地址點擊
